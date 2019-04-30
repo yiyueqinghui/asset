@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-
 //axios  https://www.npmjs.com/package/axios
 let http = axios.create({
   baseURL: process.env.API_ROOT,
@@ -9,6 +8,23 @@ let http = axios.create({
   transformRequest: [],     //请求之前,修改request数据
   transformResponse:[]      //响应之后,修改response数据
 });
+
+//请求拦截器
+http.interceptors.request.use(function (config) {
+  console.log(config);
+  return config;
+}, function (error) {
+  return Promise.reject(error);
+});
+
+//响应拦截器
+http.interceptors.response.use(function (response) {
+  response = response.data;
+  return response;
+}, function (error) {
+  return Promise.reject(error);
+});
+
 
 // 深度合并对象
 function deepObjectMerge(FirstOBJ, SecondOBJ) {

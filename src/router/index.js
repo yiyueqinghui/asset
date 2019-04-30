@@ -1,15 +1,18 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '@/components/home'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: '/',
+      path:'/',
+      component:()=> import('@/page/index')     //按需加载组件
+    },
+    {
+      path: '/home',
       name: 'Home',
-      component:Home
+      component:()=> import('@/page/home')
     }
   ]
 })
