@@ -1,6 +1,8 @@
 <template>
-    <div id="home">
-       首页{{msg}},请求状态 {{status }}
+    <div id="home" >
+       <p>首页{{msg}},请求状态 {{status }}</p>
+       <div style="width:200px;height:100px;background: #000;"></div>
+       <el-button @click="zoom">缩放</el-button>
     </div>
 </template>
 
@@ -10,7 +12,8 @@
       data(){
         return {
           msg:'',
-          status:0
+          status:0,
+          show:false
         }
       },
       methods:{
@@ -23,6 +26,9 @@
             console.log(res);
             this.status = res.status;
           })
+        },
+        zoom(){
+
         }
       },
       created(){
@@ -38,5 +44,6 @@
   #home{
     color:@color;
   }
+
 
 </style>
