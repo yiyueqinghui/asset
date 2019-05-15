@@ -91,6 +91,11 @@
                 title:'门禁卡管理',
                 url:'/card',
                 icon:''
+              },
+              {
+                title:'ICP管理',
+                url:'/icp',
+                icon:''
               }
             ]
           },

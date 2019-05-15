@@ -27,6 +27,10 @@ export default new Router({
           component:()=>import('@/page/assetManage/card')
         },
         {
+          path:'/icp',
+          component:()=>import('@/page/assetManage/icp')
+        },
+        {
           path:'/wareHousing',
           component:()=>import('@/page/assetManage/wareHousing')
         },
