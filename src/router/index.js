@@ -19,6 +19,10 @@ export default new Router({
           component:()=>import('@/page/assetManage/car')
         },
         {
+          path:'/invoice',
+          component:()=>import('@/page/assetManage/invoice')
+        },
+        {
           path:'/wareHousing',
           component:()=>import('@/page/assetManage/wareHousing')
         },

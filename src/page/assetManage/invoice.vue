@@ -1,5 +1,5 @@
 <template>
-    <div id="car">
+    <div id="invoice">
       <!--查寻-->
       <el-form :inline="true"  :model="searchData" >
          <el-form-item label="现使用机构">
@@ -23,49 +23,20 @@
         </el-table-column>
         <el-table-column type="index" label="序号" width="60" align="center">
         </el-table-column>
-        <el-table-column  label="公司名称" prop="name"  align="center">
+        <el-table-column  label="资产类型" prop="name"  align="center">
         </el-table-column>
-        <el-table-column  label="车辆牌照" prop="type"  align="center">
+        <el-table-column  label="发票类型" prop="type"  align="center">
         </el-table-column>
-        <el-table-column  label="投保人" prop="code"  align="center">
+        <el-table-column  label="发票号码" prop="code"  align="center">
         </el-table-column>
-        <el-table-column  label="被保人" prop="size"  align="center">
+        <el-table-column  label="开票日期" prop="size"  align="center">
         </el-table-column>
-        <el-table-column  label="年检日期" prop="SN"  align="center">
+        <el-table-column  label="发票金额" prop="SN"  align="center">
         </el-table-column>
-        <el-table-column  label="保险有效日期" prop="purchaseDate"  align="center">
+        <el-table-column  label="备注" prop="purchaseDate"  align="center">
         </el-table-column>
-        <el-table-column  label="公里数" prop="blong"  align="center">
-        </el-table-column>
-        <el-table-column  label="最新保养日期" prop="bill"  align="center">
-        </el-table-column>
-        <el-table-column  label="预计下次保养期" prop="money"  align="center">
-        </el-table-column>
-        <el-table-column  label="钥匙数量" prop="useCompany"  align="center">
-        </el-table-column>
-        <el-table-column  label="钥匙编号" prop="useDepart"  align="center">
-        </el-table-column>
-        <el-table-column  label="使用人" prop="usePerson"  align="center">
-        </el-table-column>
-        <el-table-column  label="现使用机构" prop="supplier"  align="center">
-        </el-table-column>
-        <el-table-column  label="管理人" prop="contacts"  align="center">
-        </el-table-column>
-        <el-table-column  label="使用人电话" prop="tel"  align="center">
-        </el-table-column>
-        <el-table-column  label="存放地点" prop="site"  align="center">
-        </el-table-column>
-        <el-table-column  label="（照片)被保人"  align="center">
-          <template slot-scope="scope">
-            <img class="tabPic" :src="scope.row.src" />
-          </template>
-        </el-table-column>
-        <el-table-column  label="（照片）行驶本"  align="center">
-          <template slot-scope="scope">
-            <img class="tabPic" :src="scope.row.src" />
-          </template>
-        </el-table-column>
-        <el-table-column  label="（照片）保养"  align="center">
+
+        <el-table-column  label="（照片）发票"  align="center">
           <template slot-scope="scope">
             <img class="tabPic" :src="scope.row.src" />
           </template>
@@ -102,83 +73,38 @@
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="8">
-              <SelfInput  labelName="资产名称" keyName="name" :val="formData.name" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="2" labelName="资产类型" keyName="name" :val="formData.name" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="2"  labelName="车辆牌照" :selectList="typeList"  keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="2"  labelName="发票类型" :selectList="typeList"  keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="投保人" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
+              <SelfInput  labelName="发票号码" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="8">
-              <SelfInput  labelName="被保人" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="3" labelName="开票日期" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="3" labelName="年检日期" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="3" labelName="发票金额" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  type="3" labelName="保险有效日期" keyName="purchaseDate" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="8">
-              <SelfInput :disabled="true"  labelName="公里数" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="8">
-              <SelfInput type="3" labelName="最新保养日期" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="8">
-              <SelfInput type="3" labelName="预计下次保养期" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="8">
-              <SelfInput :disabled="true"  labelName="钥匙数量" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="8">
-              <SelfInput type="1" labelName="钥匙编号" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="8">
-              <SelfInput type="1" labelName="使用人" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="8">
-              <SelfInput :disabled="true"  labelName="现使用机构" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="8">
-              <SelfInput type="1" labelName="管理人" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="8">
-              <SelfInput type="1" labelName="使用人联系电话" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput :disabled="true"  type="1" labelName="（附件）被保人" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  type="1" labelName="" keyName="" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
 
           <el-row>
           <el-col :sm="12">
-            <SelfInput :disabled="true"  type="1" labelName="（附件）行驶本" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <SelfInput :disabled="true"  type="1" labelName="（附件）发票" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
         </el-row>
-
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput :disabled="true"  type="1" labelName="（附件）车辆保养" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
 
           <el-row>
             <el-col :sm="12">
               <SelfInput :disabled="true"  type="4" labelName="备注" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
-
         </el-form>
 
         <div slot="footer" class="dialog-footer">

@@ -81,6 +81,11 @@
                 title:'汽车管理',
                 url:'/car',
                 icon:''
+              },
+              {
+                title:'票据管理',
+                url:'/invoice',
+                icon:''
               }
             ]
           },
