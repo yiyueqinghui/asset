@@ -1,0 +1,66 @@
+*{
+  margin:0;
+  padding:0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+a{
+  text-decoration: none;
+}
+td{
+  min-width:30px;
+}
+html,body{
+  height: 100%;
+}
+.fa{
+  font-size: 20px;
+}
+.el-pagination{
+  margin:15px 0;
+}
+.el-form-item__label{
+  font-weight: 600;
+  font-size: 16px;
+}
+.tabPic{
+  height:40px;
+}
+/*dialog样式修改*/
+.el-dialog__header {
+  background: rgb(102, 153, 204);
+}
+.el-dialog__header .el-dialog__title{
+  color: #ffffff;
+}
+.el-dialog__header .el-dialog__close{
+  color: #ffffff!important;
+}
+.dialog_subtitle {
+  color: #1696ff;
+  font-size: 16px;
+  padding: 5px 0 10px 0;
+  border-top: 1px solid #aee2ff;
+}
+.labelStyle>label {
+  width: 100px;
+  height: 40px;
+  padding-left:22px;
+  text-align: justify;
+}
+.labelStyle>label:after{
+   display: inline-block;
+   content:'';
+   width:100%;
+}
+.isRequired>label{
+  padding-left:0!important;
+}
+.isRequired>label:before{
+  position: relative;
+  right: -10px;
+}
+.self-input .el-input__inner{
+  width: 180px;
+}

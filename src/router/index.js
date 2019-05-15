@@ -7,9 +7,17 @@ export default new Router({
   routes: [
     {
       path:'/',
-      redirect:'/tab',
+      redirect:'/staff',
       component:()=> import('@/page/index'),     //按需加载组件
       children:[
+        {
+          path:'/staff',
+          component:()=>import('@/page/staff')
+        },
+        {
+          path:'/wareHousing',
+          component:()=>import('@/page/assetManage/wareHousing')
+        },
         {
           path:'/tab',
           component:()=>import('@/page/first/tab')

@@ -1,0 +1,94 @@
+<template>
+    <div class="slefInput">
+      <!--输入框-->
+      <el-form-item  :class="{labelStyle:labelStyle,isRequired:isRequired}" v-if="this.type==1" :label="labelName" :rules="[{required:required}]">
+        <el-input @input="changeVal" v-model="modelVal" :disabled="disabled"></el-input>
+      </el-form-item>
+      <!--选择框-->
+      <el-form-item  v-else-if="this.type==2" :label="labelName" :rules="[{required:required}]">
+        <el-select v-model="modelVal" filterable placeholder="请选择" @input="changeVal" :disabled="disabled">
+          <el-option
+            v-for="item in selectList"
+            :key="item.value"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <!--日期-->
+      <el-form-item :style="{paddingLeft:paddingSpace+'px'}"  v-else-if="this.type==3" :label="labelName" :rules="[{required:required}]">
+        <el-date-picker @input="changeVal"
+          v-model="modelVal"
+          type="date"
+          format="yyyy-MM-dd"
+          value-format="yyyy-MM-dd"
+          placeholder="选择日期"
+          :disabled="disabled">
+        </el-date-picker>
+      </el-form-item>
+
+    </div>
+</template>
+
+<script>
+    export default {
+      props:{
+        type:{
+          type:String,
+          default:'1'
+        },
+        labelName:{
+          type:String,
+          default:''
+        },
+        keyName:{
+          type:String,
+          default:''
+        },
+        val:{
+          default:''
+        },
+        required:{
+          type:Boolean,
+          default:false
+        },
+        selectList:{
+          type:Array,
+          default:function(){
+            return [];
+          }
+        },
+        disabled:{
+          type:Boolean,
+          default:false
+        }
+
+      },
+      name: "self-input",
+      data(){
+        return {
+           modelVal:'',
+           labelStyle:false,
+           isRequired:false,
+           paddingSpace:0
+        }
+      },
+      methods:{
+        changeVal(val){
+          console.log(val);
+          this.$emit('changeFormVal',[this.keyName,val]);
+        }
+      },
+      mounted(){
+        this.modelVal = this.val;
+        console.log(this.labelName.length);
+        if(this.labelName.length < 4){
+          this.labelStyle = true;
+        }
+
+      }
+    }
+</script>
+
+<style scoped>
+
+</style>

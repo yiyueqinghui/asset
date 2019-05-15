@@ -19,7 +19,7 @@
                 <el-dropdown-item>删除</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-            <span>王小虎</span>
+            <span>流年</span>
           </el-col>
         </el-row>
       </header>
@@ -99,7 +99,6 @@
       width: 100%;
       height: 100%;
       position: relative;
-      z-index: 100;
       header {
         padding:0 20px;
         background-color: #B3C0D1;
@@ -119,12 +118,6 @@
         padding-left: 20px;
       }
     }
-
-
-
-  }
-  .el-scrollbar__wrap{
-    overflow-x:hidden;
   }
 
 

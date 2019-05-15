@@ -4,7 +4,7 @@
       <img class="logo" :src="collapse?'../../static/img/logo-2.png':'../../static/img/logo-1.png'" />
       <el-menu class="el-menu-vertical-demo" :collapse="collapse" default-active="0-0" background-color="#2b3647" text-color="#a0abbf" active-text-color="#ffffff">
         <template v-for="(item,oneId) in tab">
-          <router-link to=""  v-if="!item.nav">
+          <router-link :to="item.url"  v-if="!item.nav">
             <el-menu-item :index="tabindex(oneId)">
               <!--<i class="el-icon-location"></i>-->
               <i :class="['fa',item.icon,'fa-fw']"></i>
@@ -64,37 +64,43 @@
         slideWidth:200,
         tab:[
           {
+            title:'员工个人显示页面',
+            icon:'',
+            url:'/staff'
+          },
+          {
+            title:'资产管理',
+            icon:'',
+            nav:[
+              {
+                title:'资产入库',
+                url:'/wareHousing',
+                icon:''
+              }
+            ]
+          },
+          {
             title:'导航一',
-            icon:'fa-home',
+            icon:'',
             nav:[
               {
                 title:'表格页',
                 url:'/tab',
-                icon:'fa-home'
+                icon:''
               },
               {
                 title:'图表页',
                 url:'/chart',
-                icon:'fa-home'
+                icon:''
               },
               {
                 title:'选项一',
-                icon:'fa-home',
+                icon:'',
                 nav:[
                   {
                     title:'选项1.3.1',
                     url:'/',
-                    icon:'fa-home'
-                  },
-                  {
-                    title:'选项1.3.2',
-                    url:'/',
-                    icon:'fa-home'
-                  },
-                  {
-                    title:'选项1.3.3',
-                    url:'/',
-                    icon:'fa-home'
+                    icon:''
                   }
                 ]
               }
@@ -102,30 +108,26 @@
           },
           {
             title:'导航一',
-            icon:'fa-home',
+            icon:'',
             nav:[
               {
                 title:'选项一',
                 url:'/',
-                icon:'fa-home'
+                icon:''
               },
               {
                 title:'选项一',
                 url:'/',
-                icon:'fa-home'
+                icon:''
               },
               {
                 title:'选项一',
                 url:'/',
-                icon:'fa-home'
+                icon:''
               }
             ]
-          },
-          {
-            title:'导航三',
-            url:'/',
-            icon:'fa-home'
           }
+
         ]
       }
     },
@@ -139,13 +141,18 @@
   }
 </script>
 
-<style scoped lang="less">
+<style lang="less">
   .asideNav {
     width: 200px;
     float: left;
     background-color: #2b3647;
     position: relative;
     z-index: 1000;
+    .el-scrollbar{
+      .el-scrollbar__wrap{
+        overflow-x:hidden;
+      }
+    }
     .logo{
       width:auto;
       height:50px;
@@ -169,5 +176,7 @@
       }
     }
   }
+
+
 
 </style>
