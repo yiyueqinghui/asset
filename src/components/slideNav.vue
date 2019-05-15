@@ -76,6 +76,11 @@
                 title:'资产入库',
                 url:'/wareHousing',
                 icon:''
+              },
+              {
+                title:'汽车管理',
+                url:'/car',
+                icon:''
               }
             ]
           },
