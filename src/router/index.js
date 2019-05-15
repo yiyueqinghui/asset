@@ -31,6 +31,10 @@ export default new Router({
           component:()=>import('@/page/assetManage/icp')
         },
         {
+          path:'/brand',
+          component:()=>import('@/page/assetManage/brand')
+        },
+        {
           path:'/wareHousing',
           component:()=>import('@/page/assetManage/wareHousing')
         },

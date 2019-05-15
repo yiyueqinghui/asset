@@ -96,6 +96,11 @@
                 title:'ICP管理',
                 url:'/icp',
                 icon:''
+              },
+              {
+                title:'商标管理',
+                url:'/brand',
+                icon:''
               }
             ]
           },
