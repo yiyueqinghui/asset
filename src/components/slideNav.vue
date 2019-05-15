@@ -86,6 +86,11 @@
                 title:'票据管理',
                 url:'/invoice',
                 icon:''
+              },
+              {
+                title:'门禁卡管理',
+                url:'/card',
+                icon:''
               }
             ]
           },

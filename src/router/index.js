@@ -23,6 +23,10 @@ export default new Router({
           component:()=>import('@/page/assetManage/invoice')
         },
         {
+          path:'/card',
+          component:()=>import('@/page/assetManage/card')
+        },
+        {
           path:'/wareHousing',
           component:()=>import('@/page/assetManage/wareHousing')
         },
