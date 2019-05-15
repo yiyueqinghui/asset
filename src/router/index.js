@@ -15,6 +15,26 @@ export default new Router({
           component:()=>import('@/page/staff')
         },
         {
+          path:'/car',
+          component:()=>import('@/page/assetManage/car')
+        },
+        {
+          path:'/invoice',
+          component:()=>import('@/page/assetManage/invoice')
+        },
+        {
+          path:'/card',
+          component:()=>import('@/page/assetManage/card')
+        },
+        {
+          path:'/icp',
+          component:()=>import('@/page/assetManage/icp')
+        },
+        {
+          path:'/brand',
+          component:()=>import('@/page/assetManage/brand')
+        },
+        {
           path:'/wareHousing',
           component:()=>import('@/page/assetManage/wareHousing')
         },

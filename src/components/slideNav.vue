@@ -76,6 +76,31 @@
                 title:'资产入库',
                 url:'/wareHousing',
                 icon:''
+              },
+              {
+                title:'汽车管理',
+                url:'/car',
+                icon:''
+              },
+              {
+                title:'票据管理',
+                url:'/invoice',
+                icon:''
+              },
+              {
+                title:'门禁卡管理',
+                url:'/card',
+                icon:''
+              },
+              {
+                title:'ICP管理',
+                url:'/icp',
+                icon:''
+              },
+              {
+                title:'商标管理',
+                url:'/brand',
+                icon:''
               }
             ]
           },
