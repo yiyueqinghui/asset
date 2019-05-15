@@ -61,6 +61,16 @@ html,body{
   position: relative;
   right: -10px;
 }
+.remarks{
+  position: relative;
+}
+.remarks>label{
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform:translateY(-50%);
+}
+
 .self-input .el-input__inner{
   width: 180px;
 }

@@ -91,16 +91,17 @@
         :close-on-click-modal="false" :close-on-press-escape="false"
         :title="formTitle"
         :visible.sync="dialogFormVisible"
+        :rules="rules"
         width="960px">
-        <EditorInfo :edit-date="editDate"></EditorInfo>
+        <EditorInfo v-if="dialogFormVisible" :edit-date="editDate"></EditorInfo>
         <el-form :model="formData"  label-width="100px"  class="demo-form-inline self-input">
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="8">
-              <SelfInput  labelName="资产名称" keyName="name" :val="formData.name" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  labelName="资产名称" keyName="name" :val="formData.name" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="2"  labelName="资产类别" :selectList="typeList"  keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="2"  labelName="资产类别" :selectList="typeList"  keyName="type" :required="true" :val="formData.type"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
               <SelfInput  labelName="资产编码" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
@@ -119,18 +120,54 @@
           </el-row>
           <el-row>
             <el-col :sm="8">
-              <SelfInput type="2" :disabled="true"  labelName="所属机构" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="2" labelName="所属机构" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
               <SelfInput labelName="发票号码" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-
+              <SelfInput labelName="实付金额" keyName="money" :val="formData.money" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
-
-
-
+          <el-row>
+            <el-col :sm="8">
+              <SelfInput type="2"  labelName="使用公司" :selectList="companyList"  keyName="useCompany" :val="formData.useCompany" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="8">
+              <SelfInput type="2" labelName="使用部门" :selectList="departList" keyName="useDepart" :val="formData.useDepart" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="8">
+              <SelfInput labelName="使用人" keyName="usePerson" :val="formData.usePerson" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="8">
+              <SelfInput  labelName="存放地点"  keyName="site" :val="formData.site" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <SelfInput type="4" labelName="备注"  keyName="remarks" :val="formData.remarks" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+          </el-row>
+          <!--维保信息-->
+          <el-row class="dialog_subtitle">维保信息</el-row>
+          <el-row>
+            <el-col :sm="8">
+              <SelfInput  labelName="供应商"  keyName="supplier" :val="formData.supplier" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="8">
+              <SelfInput  labelName="联系人"  keyName="contacts" :val="formData.contacts" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="8">
+              <SelfInput  labelName="联系方式"  keyName="tel" :val="formData.tel" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <SelfInput type="4" labelName="维保说明"  keyName="explain" :val="formData.explain" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+          </el-row>
         </el-form>
 
         <div slot="footer" class="dialog-footer">
@@ -186,6 +223,7 @@
           dialogFormVisible:true,
           formTitle: '新增',
           formData: {
+            editDate:'2018-09-09',
             name: '11010001',
             type: '办工卓',
             code: '办公设备',
@@ -198,16 +236,26 @@
             useCompany: '网开',
             useDepart: '研发部',
             usePerson: 'xxx',
+            site: '',
+            remarks: '',
             supplier: '供应商1',
             contacts: '张峰',
             tel: '114',
-            site: '',
-            creater: '李小二',
-            createDate: '2018-9-8',
-            remarks: ''
+            explain:''
+          },
+          rules: {
+            name:[
+              {required: true, message: '请输入资产名称', trigger: 'blur' }
+            ],
+            type:[
+              {required: true, message: '请输入资产类别', trigger: 'blur' }
+            ],
+            code:[
+              {required: true}
+            ]
           },
           dialogLoading: false,
-          editDate: '2019-5-14',
+          editDate: '2019-05-11',
           typeList:[
             {
               value:'类别一'
@@ -217,6 +265,22 @@
             },
             {
               value:'类别三'
+            }
+          ],
+          companyList:[
+            {
+              value:'公司一'
+            },
+            {
+              value:'公司二'
+            }
+          ],
+          departList:[
+            {
+              value:'部门一'
+            },
+            {
+              value:'部门二'
             }
           ]
 
@@ -245,9 +309,10 @@
         },
         // 新增,修改
         clickBtn(type){
-          this.editDate = this.$Store.formatDate();
-          this.dialogFormVisible = true;
+          this.editDate = type == 1 ? this.$Store.formatDate() : this.formData.editDate;
 
+          console.log(this.editDate);
+          this.dialogFormVisible = true;
         },
         handleSelectionChange(val) {
           this.multipleSelection = val;
@@ -261,11 +326,14 @@
           this.currentPage = val;
         },
         confirmBtn(){
+          console.log(this.formData);
+
+
           this.dialogFormVisible = false;
         },
         changeFormVal([key,val]){
           this.formData[key] = val;
-          console.log(this.formData);
+          // console.log(this.formData);
         }
       },
       filters:{
