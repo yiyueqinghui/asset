@@ -1,5 +1,5 @@
 <template>
-    <div id="invoice">
+    <div id="icp">
       <!--查寻-->
       <el-form :inline="true"  :model="searchData" >
          <el-form-item label="资产类型">
@@ -25,18 +25,20 @@
         </el-table-column>
         <el-table-column  label="公司名称" prop="name"  align="center">
         </el-table-column>
-        <el-table-column  label="中文名称" prop="type"  align="center">
+        <el-table-column  label="初次申请时间" prop="type"  align="center">
         </el-table-column>
-        <el-table-column  label="英文名称" prop="code"  align="center">
+        <el-table-column  label="经营许可证编号" prop="code"  align="center">
         </el-table-column>
-        <el-table-column  label="商标分类" prop="size"  align="center">
+        <el-table-column  label="网站名称" prop="size"  align="center">
         </el-table-column>
-        <el-table-column  label="注册日期" prop="SN"  align="center">
+        <el-table-column  label="网址" prop="SN"  align="center">
         </el-table-column>
-        <el-table-column  label="有效日期" prop="purchaseDate"  align="center">
+        <el-table-column  label="有效期" prop="purchaseDate"  align="center">
+        </el-table-column>
+        <el-table-column  label="车检时间记录" prop="purchaseDate"  align="center">
         </el-table-column>
 
-        <el-table-column  label="（照片）商标"  align="center">
+        <el-table-column  label="（照片）附件"  align="center">
           <template slot-scope="scope">
             <img class="tabPic" :src="scope.row.src" />
           </template>
@@ -76,27 +78,33 @@
               <SelfInput type="2" labelName="公司名称" keyName="name" :val="formData.name" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="1"  labelName="中文名称"  keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="1"  labelName="初次申请时间" :selectList="typeList"  keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="英文名称" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
+              <SelfInput  labelName="经营许可证编号" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="8">
-              <SelfInput type="2" labelName="商标分类" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="3" labelName="网站名称" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="3" labelName="注册日期" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="3" labelName="网址" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  type="3" labelName="有效日期" keyName="" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  type="3" labelName="有效期" keyName="" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="8">
+              <SelfInput type="1" labelName="车检时间记录" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+
           </el-row>
 
           <el-row>
           <el-col :sm="12">
-            <SelfInput :disabled="true"  type="1" labelName="（附件）商标" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <SelfInput :disabled="true"  type="1" labelName="（附件）ICP" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
         </el-row>
 
@@ -157,7 +165,7 @@
           multipleSelection: [],    //当前选中的行数据
           currentPage: 1,
           total: 20,
-          dialogFormVisible:true,
+          dialogFormVisible:false,
           formTitle: '新增',
           formData: {
             name: '11010001',

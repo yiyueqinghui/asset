@@ -246,7 +246,7 @@
           multipleSelection: [],    //当前选中的行数据
           currentPage: 1,
           total: 20,
-          dialogFormVisible:true,
+          dialogFormVisible:false,
           formTitle: '新增',
           formData: {
             editDate:'',

@@ -23,20 +23,20 @@
         </el-table-column>
         <el-table-column type="index" label="序号" width="60" align="center">
         </el-table-column>
-        <el-table-column  label="资产类型" prop="name"  align="center">
+        <el-table-column  label="公司名称" prop="name"  align="center">
         </el-table-column>
-        <el-table-column  label="发票类型" prop="type"  align="center">
+        <el-table-column  label="中文名称" prop="type"  align="center">
         </el-table-column>
-        <el-table-column  label="发票号码" prop="code"  align="center">
+        <el-table-column  label="英文名称" prop="code"  align="center">
         </el-table-column>
-        <el-table-column  label="开票日期" prop="size"  align="center">
+        <el-table-column  label="商标分类" prop="size"  align="center">
         </el-table-column>
-        <el-table-column  label="发票金额" prop="SN"  align="center">
+        <el-table-column  label="注册日期" prop="SN"  align="center">
         </el-table-column>
-        <el-table-column  label="备注" prop="purchaseDate"  align="center">
+        <el-table-column  label="有效日期" prop="purchaseDate"  align="center">
         </el-table-column>
 
-        <el-table-column  label="（照片）发票"  align="center">
+        <el-table-column  label="（照片）商标"  align="center">
           <template slot-scope="scope">
             <img class="tabPic" :src="scope.row.src" />
           </template>
@@ -73,30 +73,30 @@
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="8">
-              <SelfInput type="2" labelName="资产类型" keyName="name" :val="formData.name" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="2" labelName="公司名称" keyName="name" :val="formData.name" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="2"  labelName="发票类型" :selectList="typeList"  keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="1"  labelName="中文名称"  keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="发票号码" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
+              <SelfInput  labelName="英文名称" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="8">
-              <SelfInput type="3" labelName="开票日期" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="2" labelName="商标分类" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="3" labelName="发票金额" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="3" labelName="注册日期" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  type="1" labelName="" keyName="" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  type="3" labelName="有效日期" keyName="" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
 
           <el-row>
           <el-col :sm="12">
-            <SelfInput :disabled="true"  type="1" labelName="（附件）发票" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <SelfInput :disabled="true"  type="1" labelName="（附件）商标" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
         </el-row>
 
@@ -157,7 +157,7 @@
           multipleSelection: [],    //当前选中的行数据
           currentPage: 1,
           total: 20,
-          dialogFormVisible:true,
+          dialogFormVisible:false,
           formTitle: '新增',
           formData: {
             name: '11010001',

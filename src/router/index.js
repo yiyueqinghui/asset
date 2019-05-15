@@ -16,27 +16,27 @@ export default new Router({
         },
         {
           path:'/car',
-          component:()=>import('@/page/assetManage/car')
+          component:()=>import('@/page/asset/car')
         },
         {
           path:'/invoice',
-          component:()=>import('@/page/assetManage/invoice')
+          component:()=>import('@/page/asset/invoice')
         },
         {
           path:'/card',
-          component:()=>import('@/page/assetManage/card')
+          component:()=>import('@/page/asset/card')
         },
         {
           path:'/icp',
-          component:()=>import('@/page/assetManage/icp')
+          component:()=>import('@/page/asset/icp')
         },
         {
           path:'/brand',
-          component:()=>import('@/page/assetManage/brand')
+          component:()=>import('@/page/asset/brand')
         },
         {
           path:'/wareHousing',
-          component:()=>import('@/page/assetManage/wareHousing')
+          component:()=>import('@/page/asset/asset')
         },
         {
           path:'/tab',
