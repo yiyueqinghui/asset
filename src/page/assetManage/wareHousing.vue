@@ -91,10 +91,9 @@
         :close-on-click-modal="false" :close-on-press-escape="false"
         :title="formTitle"
         :visible.sync="dialogFormVisible"
-        :rules="rules"
         width="960px">
         <EditorInfo v-if="dialogFormVisible" :edit-date="editDate"></EditorInfo>
-        <el-form :model="formData"  label-width="100px"  class="demo-form-inline self-input">
+        <el-form :model="formData"  label-width="auto"  class="demo-form-inline self-input">
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="8">
@@ -126,7 +125,10 @@
               <SelfInput labelName="发票号码" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput labelName="实付金额" keyName="money" :val="formData.money" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="5" labelName="实付金额" keyName="money" :val="formData.money" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <!--<el-form-item label="实付金额" :rules="{required:true}">-->
+                <!--<el-input type="number" v-model="formData.money" @blur="toChinese" @focus="toNum"></el-input>-->
+              <!--</el-form-item>-->
             </el-col>
           </el-row>
           <el-row>
@@ -205,6 +207,30 @@
               blong: '测试机构',
               bill: '102110987',
               money: 200,
+              moneyChinese:'',
+              useCompany: '网开',
+              useDepart: '研发部',
+              usePerson: 'xxx',
+              supplier: '供应商1',
+              contacts: '张峰',
+              tel: '114',
+              site: '',
+              creater: '李小二',
+              createDate: '2018-9-8',
+              remarks: ''
+            },
+            {
+              status: '1',
+              src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
+              name: '11010001',
+              type: '办工卓',
+              code: '办公设备',
+              size: '双人',
+              SN: '002110C0D0034',
+              purchaseDate: '2018-3-1',
+              blong: '测试机构',
+              bill: '102110987',
+              money: 200,
               useCompany: '网开',
               useDepart: '研发部',
               usePerson: 'xxx',
@@ -223,36 +249,28 @@
           dialogFormVisible:true,
           formTitle: '新增',
           formData: {
-            editDate:'2018-09-09',
-            name: '11010001',
-            type: '办工卓',
-            code: '办公设备',
-            size: '双人',
-            SN: '002110C0D0034',
-            purchaseDate: '2019-05-10',
-            blong: '测试机构',
-            bill: '102110987',
-            money: 200,
-            useCompany: '网开',
-            useDepart: '研发部',
-            usePerson: 'xxx',
+            editDate:'',
+            name: '',
+            type: '',
+            code: '',
+            size: '',
+            SN: '',
+            purchaseDate: '',
+            blong: '',
+            bill: '',
+            money:0,
+            showMoney:0,
+            chineseMoney:'',
+            numMoney:'',
+            useCompany: '',
+            useDepart: '',
+            usePerson: '',
             site: '',
             remarks: '',
-            supplier: '供应商1',
-            contacts: '张峰',
-            tel: '114',
+            supplier: '',
+            contacts: '',
+            tel: '',
             explain:''
-          },
-          rules: {
-            name:[
-              {required: true, message: '请输入资产名称', trigger: 'blur' }
-            ],
-            type:[
-              {required: true, message: '请输入资产类别', trigger: 'blur' }
-            ],
-            code:[
-              {required: true}
-            ]
           },
           dialogLoading: false,
           editDate: '2019-05-11',
@@ -282,14 +300,12 @@
             {
               value:'部门二'
             }
-          ]
+          ],
+
 
         }
       },
       methods:{
-        init(){
-
-        },
         querySearch(queryString, cb) {
           var departmentList = this.departmentList;
           var results = queryString ? departmentList.filter(this.createFilter(queryString)) : departmentList;
@@ -309,14 +325,22 @@
         },
         // 新增,修改
         clickBtn(type){
+          this.formTitle = type == 1 ? '新增':'修改';
           this.editDate = type == 1 ? this.$Store.formatDate() : this.formData.editDate;
-
-          console.log(this.editDate);
+          if(this.multipleSelection.length != 1 && type == 2){
+            this.$message({
+              message: '请选择一条要修改的数据',
+              type: 'warning'
+            });
+            return;
+          }else{
+            this.formData = Object.assign({},this.multipleSelection[0]);
+          }
           this.dialogFormVisible = true;
         },
         handleSelectionChange(val) {
           this.multipleSelection = val;
-          console.log(this.multipleSelection);
+          // console.log(this.multipleSelection);
         },
         handleSizeChange(val) {
           console.log(`每页 ${val} 条`);
@@ -327,13 +351,11 @@
         },
         confirmBtn(){
           console.log(this.formData);
-
-
           this.dialogFormVisible = false;
         },
         changeFormVal([key,val]){
+          console.log(val);
           this.formData[key] = val;
-          // console.log(this.formData);
         }
       },
       filters:{
@@ -354,10 +376,9 @@
         SelfInput
       },
       mounted(){
-         let arr = new Array(30).fill(this.wareData[0]);
-         this.wareData = arr;
-         this.init();
-
+         // let arr = new Array(5).fill(this.wareData[0]);
+         // this.wareData = arr;
+        this.$Store.NumberToChinese(101.31);
 
       }
     }

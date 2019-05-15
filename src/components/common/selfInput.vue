@@ -26,7 +26,7 @@
         </el-date-picker>
       </el-form-item>
       <!--备注-->
-      <el-form-item  v-else-if="4"  :label="labelName" :class="{labelStyle:labelStyle,remarks:true}" :rules="{required:required}" >
+      <el-form-item  v-else-if="this.type==4"  :label="labelName" :class="{labelStyle:labelStyle,remarks:true}" :rules="{required:required}" >
         <el-input
           rows="4"
           type="textarea"
@@ -35,6 +35,11 @@
           @input="changeVal">
         </el-input>
       </el-form-item>
+      <!--金额-->
+      <el-form-item v-else-if="this.type==5" :label="labelName" :class="{labelStyle:labelStyle,remarks:true}" :rules="{required:required}">
+        <el-input  v-model="modelVal" @blur="toChinese" @focus="toNum" @input="changeVal"></el-input>
+      </el-form-item>
+
     </div>
 </template>
 
@@ -78,13 +83,28 @@
            modelVal:'',
            labelStyle:false,
            isRequired:false,
-           paddingSpace:0
+           paddingSpace:0,
+           showMoney:0,
+           numMoney:0,
+           chineseMoney:''
         }
       },
       methods:{
         changeVal(val){
-          // console.log(val);
+          if(this.type == 5){
+            let reg = /[0-9,'.']/;
+            if(!reg.test(this.modelVal)) return;
+          }
           this.$emit('changeFormVal',[this.keyName,val]);
+        },
+        toChinese(){
+          this.numMoney = Number(this.modelVal);
+          let chineseMoney = this.$Store.NumberToChinese(this.numMoney);
+          this.chineseMoney = chineseMoney;
+          this.modelVal = chineseMoney;
+        },
+        toNum(){
+          this.modelVal = this.numMoney;
         }
       },
       mounted(){
