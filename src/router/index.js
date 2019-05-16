@@ -35,6 +35,10 @@ export default new Router({
           component:()=>import('@/page/asset/brand')
         },
         {
+          path:'/workplace',
+          component:()=>import('@/page/asset/workplace')
+        },
+        {
           path:'/wareHousing',
           component:()=>import('@/page/asset/asset')
         },
