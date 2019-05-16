@@ -1,5 +1,9 @@
 //vue 简单的公用数据状态管理，如果复杂的话，必须使用vuex
 let Store = {
+   data:{
+     token:localStorage.getItem('token'),
+     baseApi:localStorage.getItem('baseApi')
+   },
    // 录入时间
    formatDate:()=>{
       let date = new Date(),
@@ -14,13 +18,13 @@ let Store = {
       }
       return y+'-'+formatNum(m)+'-'+formatNum(d)+' '+formatNum(h)+':'+formatNum(min);
    },
-   // 录入人信息
+   //录入人信息
    editorInfo:{
      name:'cj',
      blongOrg:'佳禾集团',
      blongDep:'技术信息部',
    },
-  toDx:function(n) {   //阿拉伯数字转换函数
+   toDx:function(n) {   //阿拉伯数字转换函数
     switch (n) {
       case "0":
         return "零";
@@ -44,9 +48,9 @@ let Store = {
         return "玖";
     }
   },
-  unit: new Array("仟", "佰", "拾", "", "仟", "佰", "拾", "", "角", "分"),
-  // 转换算法主函数
-  NumberToChinese:function(m){
+   unit: new Array("仟", "佰", "拾", "", "仟", "佰", "拾", "", "角", "分"),
+   // 转换算法主函数
+   NumberToChinese:function(m){
     m *= 100;
     m += "";
     var length = m.length;
@@ -69,7 +73,6 @@ let Store = {
       result = this.toDx(m.charAt(length - i - 1)) + this.unit[this.unit.length - i - 1] + result;
     }
     result += result.charAt(result.length - 1) == '元' ? "整" : "";
-    console.log(result);
 
     return result;
   }

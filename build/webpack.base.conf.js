@@ -8,7 +8,11 @@ function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
-
+//复制cpexcel.js,覆盖node_modules下的cpexcel.js
+const ModifyXlsx = require('./modifyXlsx.js');
+let fromPath = path.resolve(__dirname,'../src/vendor/cpexcel.js'),
+  toPath = path.resolve(__dirname,'../node_modules/xlsx-style/dist/cpexcel.js');
+ModifyXlsx.copyIt(fromPath,toPath);
 
 module.exports = {
   context: path.resolve(__dirname, '../'),

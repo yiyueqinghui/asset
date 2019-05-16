@@ -78,6 +78,12 @@
                 icon:''
               },
               {
+                title:'资产领用',
+                url:'/receive',
+                icon:''
+              },
+
+              {
                 title:'汽车管理',
                 url:'/car',
                 icon:''

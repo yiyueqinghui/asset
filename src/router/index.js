@@ -39,6 +39,10 @@ export default new Router({
           component:()=>import('@/page/asset/asset')
         },
         {
+          path:'/receive',
+          component:()=>import('@/page/asset/receive')
+        },
+        {
           path:'/tab',
           component:()=>import('@/page/first/tab')
         },

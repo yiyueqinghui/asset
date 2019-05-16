@@ -2,84 +2,72 @@
     <div id="wareHousing">
       <!--查寻-->
       <el-form :inline="true"  :model="searchData" >
-         <el-form-item label="使用公司部门">
-           <el-select v-model="searchData.department" filterable placeholder="请选择">
-             <el-option
-               v-for="item in departmentList"
-               :key="item.value"
-               :value="item.value">
-             </el-option>
-           </el-select>
+         <el-form-item label="领用日期">
+           <el-date-picker
+             v-model="searchData.startDate"
+             type="date"
+             value-format="yyyy-MM-dd"
+             placeholder="选择开始日期">
+           </el-date-picker>
+           <span>一</span>
+           <el-date-picker
+             v-model="searchData.endDate"
+             type="date"
+             value-format="yyyy-MM-dd"
+             placeholder="选择结束日期">
+           </el-date-picker>
          </el-form-item>
          <el-form-item>
            <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>
-           <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
+           <!--<el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>-->
            <el-dropdown trigger="hover" style="margin-left: 10px;" @command="handleCommand">
               <el-button type="primary" icon="el-icon-document-add">
-                导入/导出
+                导出
               </el-button>
                <el-dropdown-menu slot="dropdown">
                  <el-dropdown-item icon="el-icon-download" command="module">下载导入模板</el-dropdown-item>
-                 <el-dropdown-item icon="el-icon-upload" command="upload" >批量导入资产</el-dropdown-item>
-                 <el-dropdown-item icon="el-icon-download" command="download">导出资产数据</el-dropdown-item>
+                 <!--<el-dropdown-item icon="el-icon-upload" command="upload" >批量导入资产</el-dropdown-item>-->
+                 <el-dropdown-item icon="el-icon-download" command="download">导出领用数据</el-dropdown-item>
                </el-dropdown-menu>
            </el-dropdown>
          </el-form-item>
       </el-form>
       <!--表格-->
-      <el-table :data="wareData"  @selection-change="handleSelectionChange" ref="multipleTable"  border stripe fit style="overflow-x: auto">
+      <el-table :data="tabData"  @selection-change="handleSelectionChange" ref="multipleTable"  border stripe fit style="overflow-x: auto">
         <el-table-column type="selection" width="55">
         </el-table-column>
         <el-table-column type="index" label="序号" width="60" align="center">
         </el-table-column>
-        <el-table-column  label="状态" width="120"  align="center">
-          <template slot-scope="scope">
-            {{scope.row.status | turnStatus }}
-          </template>
+        <el-table-column  label="领用日期"  prop="date" align="center">
         </el-table-column>
-        <el-table-column  label="照片"  align="center">
-          <template slot-scope="scope">
-            <img class="tabPic" :src="scope.row.src" />
-          </template>
+        <el-table-column  label="领用人" prop="person"  align="center">
         </el-table-column>
-        <el-table-column  label="资产名称" prop="name"  align="center">
+        <el-table-column  label="领用后使用公司" width="120" prop="company"  align="center">
         </el-table-column>
-        <el-table-column  label="资产类别" prop="type"  align="center">
+        <el-table-column  label="领用后使用部门" width="120" prop="depart"  align="center">
         </el-table-column>
-        <el-table-column  label="资产编码" prop="code"  align="center">
+        <el-table-column  label="领用后区域" width="100" prop="zone"  align="center">
         </el-table-column>
-        <el-table-column  label="规格型号" prop="size"  align="center">
+        <el-table-column  label="领用后处理人" width="120" prop="dealPerson"  align="center">
         </el-table-column>
-        <el-table-column  label="SN号" prop="SN"  align="center">
+        <el-table-column  label="备注" prop="receiveRemarks"  align="center">
         </el-table-column>
-        <el-table-column  label="购入时间" prop="purchaseDate"  align="center">
-        </el-table-column>
-        <el-table-column  label="所属公司" prop="blong"  align="center">
-        </el-table-column>
-        <el-table-column  label="发票号码" prop="bill"  align="center">
-        </el-table-column>
-        <el-table-column  label="实付金额" prop="money"  align="center">
-        </el-table-column>
-        <el-table-column  label="使用公司" prop="useCompany"  align="center">
-        </el-table-column>
-        <el-table-column  label="使用部门" prop="useDepart"  align="center">
-        </el-table-column>
-        <el-table-column  label="使用人" prop="usePerson"  align="center">
-        </el-table-column>
-        <el-table-column  label="供应商" prop="supplier"  align="center">
-        </el-table-column>
-        <el-table-column  label="联系人(供应商)" prop="contacts"  align="center">
-        </el-table-column>
-        <el-table-column  label="联系电话(供应商)" prop="tel"  align="center">
-        </el-table-column>
-        <el-table-column  label="存放地点" prop="site"  align="center">
-        </el-table-column>
-        <el-table-column  label="创建人" prop="creater"  align="center">
-        </el-table-column>
-        <el-table-column  label="创建时间" prop="createDate"  align="center">
-        </el-table-column>
-        <el-table-column  label="备注" prop="remarks"  align="center">
+        <el-table-column  label="资产明细"  align="center">
+          <el-table-column label="资产名称" width="100" prop="name" align="center"></el-table-column>
+          <el-table-column label="资产类别" prop="type" align="center"></el-table-column>
+          <el-table-column label="资产编码" prop="code" align="center"></el-table-column>
+          <el-table-column label="资产型号" prop="size" align="center"></el-table-column>
+          <el-table-column label="SN号" width="150" prop="SN" align="center"></el-table-column>
+          <el-table-column label="购入时间" prop="purchaseDate" align="center"></el-table-column>
+          <el-table-column label="所属公司" prop="blong" align="center"></el-table-column>
+          <el-table-column label="发票号码" width="100" prop="bill" align="center"></el-table-column>
+          <el-table-column label="金额" prop="money" align="center"></el-table-column>
+          <el-table-column label="使用公司" prop="useCompany" align="center"></el-table-column>
+          <el-table-column label="使用部门" prop="useDepart" align="center"></el-table-column>
+          <el-table-column label="使用人" prop="usePerson" align="center"></el-table-column>
+          <el-table-column label="存放地点" prop="site" align="center"></el-table-column>
+          <el-table-column label="备注" prop="remarks" align="center"></el-table-column>
         </el-table-column>
 
       </el-table>
@@ -203,17 +191,17 @@
       data: function () {
         return {
           searchData: {
-            department: ''
+            startDate:'',
+            endDate:''
           },
-          departmentList: [
-            {"value": "佳禾集团", "en": "JHJT"},
-            {"value": "中恒信", "en": "ZHX"},
-            {"value": "黄鱼儿", "en": "HYR"}
-          ],
-          wareData: [
+          tabData: [
             {
-              status: '1',
-              src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
+              date:'',
+              person:'',
+              company:'佳禾集团',
+              depart:'xxx',
+              zone:'办公区',
+              dealPerson:'cj',
               name: '11010001',
               type: '办工卓',
               code: '办公设备',
@@ -223,21 +211,22 @@
               blong: '测试机构',
               bill: '102110987',
               money: 200,
-              moneyChinese:'',
               useCompany: '网开',
               useDepart: '研发部',
               usePerson: 'xxx',
-              supplier: '供应商1',
-              contacts: '张峰',
-              tel: '114',
               site: '',
-              creater: '李小二',
-              createDate: '2018-9-8',
-              remarks: ''
+              remarks: '',
+              receiveRemarks:''
+
+
             },
             {
-              status: '1',
-              src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
+              date:'',
+              person:'',
+              company:'佳禾集团',
+              depart:'xxx',
+              zone:'办公区',
+              dealPerson:'cj',
               name: '11010001',
               type: '办工卓',
               code: '办公设备',
@@ -250,12 +239,7 @@
               useCompany: '网开',
               useDepart: '研发部',
               usePerson: 'xxx',
-              supplier: '供应商1',
-              contacts: '张峰',
-              tel: '114',
               site: '',
-              creater: '李小二',
-              createDate: '2018-9-8',
               remarks: ''
             }
           ],
@@ -321,6 +305,9 @@
         }
       },
       methods:{
+
+
+
         handleCommand(command){
            if(command == 'upload'){
              this.uploadVisible = true;
@@ -416,6 +403,12 @@
         EditorInfo,
         SelfInput,
         UploadExcel
+      },
+      watch:{
+        searchData:{
+          handler:function(oldval,newval){},
+          deep:true
+        }
       },
       mounted(){
          // let arr = new Array(5).fill(this.wareData[0]);
