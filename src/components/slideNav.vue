@@ -107,6 +107,11 @@
                 title:'商标管理',
                 url:'/brand',
                 icon:''
+              },
+              {
+                title:'办公职场管理',
+                url:'/workplace',
+                icon:''
               }
             ]
           },
