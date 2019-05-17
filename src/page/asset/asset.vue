@@ -28,12 +28,12 @@
          </el-form-item>
       </el-form>
       <!--表格-->
-      <el-table :data="wareData" :filter-method="filterHandler" @selection-change="handleSelectionChange" ref="multipleTable"  border stripe fit stripe style="overflow-x: auto">
+      <el-table :data="wareData"  @selection-change="handleSelectionChange" ref="multipleTable"  border stripe fit stripe style="overflow-x: auto">
         <el-table-column type="selection" width="55">
         </el-table-column>
         <el-table-column type="index" label="序号" width="60" align="center">
         </el-table-column>
-        <el-table-column  label="状态" prop="status" width="120" filterable :filters="statusList"
+        <el-table-column  label="状态" prop="status" width="120" filterable :filters="this.$Store.data.statusList"
            :filter-method="filterStatus" filter-placement="bottom-end"  align="center">
           <template slot-scope="scope">
             {{scope.row.status | turnStatus }}
@@ -211,7 +211,6 @@
             {"value": "中恒信", "en": "ZHX"},
             {"value": "黄鱼儿", "en": "HYR"}
           ],
-          statusList:[],
           wareData: [
             {
               status: '1',
@@ -324,7 +323,7 @@
       },
       methods:{
         init(){
-          this.statusList = [...this.$Store.data.statusList];
+
         },
         handleCommand(command){
            if(command == 'upload'){
@@ -404,14 +403,7 @@
           this.formData[key] = val;
         },
         filterStatus(value,row){
-          console.log(value)
-          console.log(row);
           return row.status === value
-        },
-        filterHandler(value, row, column) {
-          console.log(value);
-          const property = column['property'];
-          return row[property] === value;
         }
       },
       components:{

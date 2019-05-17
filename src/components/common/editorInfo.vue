@@ -1,7 +1,7 @@
 <template>
     <div id="editorInfo">
       <el-form class="formInfo"   :model="formData"  label-width="80px" label-position="left">
-        <el-row class="dialog_subtitle">录入人信息</el-row>
+        <el-row class="dialog_subtitle">{{textObj.title}}</el-row>
         <el-row class="creatorInfo">
           <el-col :span="6" :sm="6" style="padding-right: 20px;">
             <el-form-item label="姓名">
@@ -19,7 +19,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="6" :sm="6">
-            <el-form-item label="录入时间" style="padding-right: 20px;">
+            <el-form-item :label="textObj.label" style="padding-right: 20px;">
               <el-input v-model="formData.editDate" :disabled="true"></el-input>
             </el-form-item>
           </el-col>
@@ -34,6 +34,15 @@
         editDate:{
           type:String,
           default:''
+        },
+        textObj:{
+          type:Object,
+          default:function(){
+            return {
+              title:'录入人信息',
+              label:'录入时间'
+            }
+          }
         }
       },
       data(){
@@ -49,6 +58,7 @@
       mounted(){
         this.formData = Object.assign({},this.$Store.editorInfo);
         this.formData.editDate = this.editDate;
+        console.log(this.editDate);
 
       }
 

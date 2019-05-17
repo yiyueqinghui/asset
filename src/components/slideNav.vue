@@ -82,6 +82,11 @@
                 url:'/receive',
                 icon:''
               },
+              {
+                title:'资产借用&归还',
+                url:'/borrow',
+                icon:''
+              },
 
               {
                 title:'汽车管理',
