@@ -2,7 +2,12 @@
 let Store = {
    data:{
      token:localStorage.getItem('token'),
-     baseApi:localStorage.getItem('baseApi')
+     baseApi:localStorage.getItem('baseApi'),
+     statusList:[
+       { text:'闲置', value:'1' },
+       { text:'在用', value:'2' },
+       { text:'借用',value:'3'}
+     ]
    },
    // 录入时间
    formatDate:()=>{

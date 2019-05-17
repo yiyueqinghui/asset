@@ -28,12 +28,13 @@
          </el-form-item>
       </el-form>
       <!--表格-->
-      <el-table :data="wareData"  @selection-change="handleSelectionChange" ref="multipleTable"  border stripe fit style="overflow-x: auto">
+      <el-table :data="wareData" :filter-method="filterHandler" @selection-change="handleSelectionChange" ref="multipleTable"  border stripe fit stripe style="overflow-x: auto">
         <el-table-column type="selection" width="55">
         </el-table-column>
         <el-table-column type="index" label="序号" width="60" align="center">
         </el-table-column>
-        <el-table-column  label="状态" width="120"  align="center">
+        <el-table-column  label="状态" prop="status" width="120" filterable :filters="statusList"
+           :filter-method="filterStatus" filter-placement="bottom-end"  align="center">
           <template slot-scope="scope">
             {{scope.row.status | turnStatus }}
           </template>
@@ -43,7 +44,7 @@
             <img class="tabPic" :src="scope.row.src" />
           </template>
         </el-table-column>
-        <el-table-column  label="资产名称" prop="name"  align="center">
+        <el-table-column  label="资产名称" width="100" prop="name"  align="center">
         </el-table-column>
         <el-table-column  label="资产类别" prop="type"  align="center">
         </el-table-column>
@@ -51,13 +52,13 @@
         </el-table-column>
         <el-table-column  label="规格型号" prop="size"  align="center">
         </el-table-column>
-        <el-table-column  label="SN号" prop="SN"  align="center">
+        <el-table-column  label="SN号" width="130" prop="SN"  align="center">
         </el-table-column>
-        <el-table-column  label="购入时间" prop="purchaseDate"  align="center">
+        <el-table-column  label="购入时间" width="120" sortable prop="purchaseDate"  align="center">
         </el-table-column>
         <el-table-column  label="所属公司" prop="blong"  align="center">
         </el-table-column>
-        <el-table-column  label="发票号码" prop="bill"  align="center">
+        <el-table-column  label="发票号码" width="100" prop="bill"  align="center">
         </el-table-column>
         <el-table-column  label="实付金额" prop="money"  align="center">
         </el-table-column>
@@ -69,15 +70,15 @@
         </el-table-column>
         <el-table-column  label="供应商" prop="supplier"  align="center">
         </el-table-column>
-        <el-table-column  label="联系人(供应商)" prop="contacts"  align="center">
+        <el-table-column  label="联系人(供应商)" width="130" prop="contacts"  align="center">
         </el-table-column>
-        <el-table-column  label="联系电话(供应商)" prop="tel"  align="center">
+        <el-table-column  label="联系电话(供应商)" width="130" prop="tel"  align="center">
         </el-table-column>
         <el-table-column  label="存放地点" prop="site"  align="center">
         </el-table-column>
         <el-table-column  label="创建人" prop="creater"  align="center">
         </el-table-column>
-        <el-table-column  label="创建时间" prop="createDate"  align="center">
+        <el-table-column  label="创建时间" width="120" sortable prop="createDate"   align="center">
         </el-table-column>
         <el-table-column  label="备注" prop="remarks"  align="center">
         </el-table-column>
@@ -210,12 +211,13 @@
             {"value": "中恒信", "en": "ZHX"},
             {"value": "黄鱼儿", "en": "HYR"}
           ],
+          statusList:[],
           wareData: [
             {
               status: '1',
               src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
               name: '11010001',
-              type: '办工卓',
+              type: '办工卓01',
               code: '办公设备',
               size: '双人',
               SN: '002110C0D0034',
@@ -236,14 +238,14 @@
               remarks: ''
             },
             {
-              status: '1',
+              status: '2',
               src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
               name: '11010001',
-              type: '办工卓',
+              type: '办工卓02',
               code: '办公设备',
               size: '双人',
               SN: '002110C0D0034',
-              purchaseDate: '2018-3-1',
+              purchaseDate: '2018-3-2',
               blong: '测试机构',
               bill: '102110987',
               money: 200,
@@ -255,7 +257,7 @@
               tel: '114',
               site: '',
               creater: '李小二',
-              createDate: '2018-9-8',
+              createDate: '2018-10-8',
               remarks: ''
             }
           ],
@@ -321,6 +323,9 @@
         }
       },
       methods:{
+        init(){
+          this.statusList = [...this.$Store.data.statusList];
+        },
         handleCommand(command){
            if(command == 'upload'){
              this.uploadVisible = true;
@@ -397,19 +402,16 @@
         changeFormVal([key,val]){
           console.log(val);
           this.formData[key] = val;
-        }
-      },
-      filters:{
-        turnStatus:(val)=>{
-          let status;
-          if(val == 1){
-            status = '闲置'
-          }else if(val == 2){
-            status = '在用'
-          }else if(val == 3){
-            status = '调拨中'
-          }
-          return status
+        },
+        filterStatus(value,row){
+          console.log(value)
+          console.log(row);
+          return row.status === value
+        },
+        filterHandler(value, row, column) {
+          console.log(value);
+          const property = column['property'];
+          return row[property] === value;
         }
       },
       components:{
@@ -418,9 +420,11 @@
         UploadExcel
       },
       mounted(){
+         this.init();
          // let arr = new Array(5).fill(this.wareData[0]);
          // this.wareData = arr;
         this.$Store.NumberToChinese(101.31);
+        console.log(this.$Store.data.statusList)
 
       }
     }

@@ -20,6 +20,17 @@ Vue.use(ElementUI);
 
 Vue.config.productionTip = false
 
+Vue.filter('turnStatus',function(value){
+  let data = Store.data.statusList;
+  let st;
+  data.forEach(item=>{
+    if(item.value == value){
+      st = item.text;
+    }
+  })
+  return st;
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -27,3 +38,5 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+
+
