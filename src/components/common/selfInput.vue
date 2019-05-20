@@ -107,7 +107,13 @@
           this.modelVal = this.numMoney;
         }
       },
+      watch:{
+        val:(newVal,oldVal)=>{
+          this.modelVal = newVal;
+        }
+      },
       mounted(){
+        console.log(this.val);
         this.modelVal = this.val;
         if(this.labelName.length < 4){
           this.labelStyle = true;

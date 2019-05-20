@@ -2,7 +2,7 @@
   <div id="wareHousing">
     <!--查寻-->
     <el-form :inline="true"  :model="searchData" >
-      <el-form-item label="借用日期">
+      <el-form-item label="调出日期">
         <el-date-picker
           v-model="searchData.startDate"
           type="date"
@@ -20,7 +20,7 @@
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
         <el-button  style="margin-left: 10px;" @click="clickBtn" type="primary" icon="el-icon-edit">新增</el-button>
-        <el-button  style="margin-left: 10px;" @click="backBtn" icon="el-icon-edit" type="primary" >归还</el-button>
+        <el-button  style="margin-left: 10px;" @click="backBtn" icon="el-icon-edit" type="primary" >调入确认</el-button>
       </el-form-item>
     </el-form>
     <!--表格-->
@@ -29,27 +29,19 @@
       </el-table-column>
       <el-table-column type="index" label="序号" width="60" align="center">
       </el-table-column>
-      <el-table-column  label="状态" prop="status" width="120" filterable :filters="this.$Store.data.statusList"
+      <el-table-column  label="状态" prop="status" width="100" filterable :filters="this.$Store.data.statusList"
                         :filter-method="filterStatus" filter-placement="bottom-end"  align="center">
         <template slot-scope="scope">
           {{scope.row.status | turnStatus }}
         </template>
       </el-table-column>
-      <el-table-column  label="借用单号" prop="borrowCode"  align="center">
+      <el-table-column  label="调出公司" prop="outCompany"  align="center">
       </el-table-column>
-      <el-table-column  label="借用人"  prop="person"  align="center">
+      <el-table-column  label="调入公司"  prop="inCompany"  align="center">
       </el-table-column>
-      <el-table-column  label="借出时间" width="120" prop="borrowDate"  align="center">
+      <el-table-column  label="调入管理员" width="120" prop="admin"  align="center">
       </el-table-column>
-      <el-table-column  label="预计归还时间" width="120" prop="expectDate"  align="center">
-      </el-table-column>
-      <el-table-column  label="实际归还时间" width="120" prop="realDate"  align="center">
-      </el-table-column>
-      <el-table-column  label="借用处理人" width="120" prop="borrowDealer"  align="center">
-      </el-table-column>
-      <el-table-column  label="归还处理人" width="120" prop="backDealer"  align="center">
-      </el-table-column>
-      <el-table-column  label="备注" prop="borrowRemarks"  align="center">
+      <el-table-column  label="备注" prop="allotRemarks"  align="center">
       </el-table-column>
       <el-table-column  label="资产明细"  align="center" height="50">
         <el-table-column label="资产名称" width="100" prop="name" align="center"></el-table-column>
@@ -85,7 +77,7 @@
     <!--新增-->
     <el-dialog
       :close-on-click-modal="false" :close-on-press-escape="false"
-      title="借用单"
+      title="调拨确认单"
       :visible.sync="dialogFormVisible"
       width="960px"
       top="80px">
@@ -93,23 +85,20 @@
       <el-form :model="formData"  label-width="auto"  class="demo-form-inline self-input border">
         <el-row>
           <el-col :sm="12">
-              <SelfInput labelName="借用单号"   keyName="borrowCode" :val="formData.borrowCode" :disabled="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  type="2" :selectList="outCompanyList" labelName="调出公司"   keyName="outCompany" :val="formData.outCompany"  @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
           <el-col :sm="12">
-            <SelfInput  labelName="借用人"   keyName="borrowPerson" :val="formData.borrowPerson"  @changeFormVal="changeFormVal"></SelfInput>
+            <SelfInput type="2" :selectList="inCompanyList"  labelName="调入公司"   keyName="inCompany" :val="formData.borrowPerson"  @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
         </el-row>
         <el-row>
           <el-col :sm="12">
-            <SelfInput type="3"  labelName="借出时间"  keyName="borrowDate" :val="formData.borrowDate"  @changeFormVal="changeFormVal" ></SelfInput>
-          </el-col>
-          <el-col :sm="12">
-            <SelfInput type="3"  labelName="预计归还时间" keyName="expectDate" :val="formData.expectDate" @changeFormVal="changeFormVal"></SelfInput>
+            <SelfInput type="2" :selectList="adminList"  labelName="调入管理员"  keyName="admin" :val="formData.admin"  @changeFormVal="changeFormVal" ></SelfInput>
           </el-col>
         </el-row>
         <el-row>
           <el-col :sm="16">
-            <SelfInput type="4" labelName="备注"  keyName="borrowRemarks" :val="formData.borrowRemarks" @changeFormVal="changeFormVal"></SelfInput>
+            <SelfInput type="4" labelName="调入说明"  keyName="allotRemarks" :val="formData.allotRemarks" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
         </el-row>
       </el-form>
@@ -167,49 +156,70 @@
 
     <!--选择资产-->
     <AssetList :visible="allAssetVisible" @hideDialog="hideDialog"></AssetList>
-    <!--归还-->
+    <!--调拨确认单-->
     <el-dialog
       :close-on-click-modal="false" :close-on-press-escape="false"
-      title="归还单"
-      :visible.sync="backFormVisible"
+      title="调拨确认单"
+      :visible.sync="allotFormVisible"
       width="960px"
       top="80px">
-      <!--归还人信息-->
-      <el-form :model="backData"  label-width="auto"  class="demo-form-inline border" id="backForm">
-        <el-row class="header">归还人信息</el-row>
-        <el-row>
-          <el-col :sm="6">
-            <SelfInput labelName="姓名" type="2"  :selectList="nameList" keyName="name" :val="backData.name" @changeFormVal="changeBackVal"></SelfInput>
-          </el-col>
-          <el-col :sm="6">
-            <SelfInput labelName="所在机构"  type="2"  :selectList="companyList"   keyName="blongOrg" :val="backData.blongOrg" @changeFormVal="changeBackVal"></SelfInput>
-          </el-col>
-          <el-col :sm="6">
-            <SelfInput labelName="所在部门" type="2"  :selectList="departList"   keyName="blongDep" :val="backData.blongDep" @changeFormVal="changeBackVal"></SelfInput>
-          </el-col>
-          <el-col :sm="6">
-            <SelfInput labelName="申请时间" type="3"   keyName="backDate" :val="backData.backDate" @changeFormVal="changeBackVal"></SelfInput>
-          </el-col>
-        </el-row>
-      </el-form>
-
-      <el-form :model="backData"  label-width="auto"  class="demo-form-inline self-input border">
+      <EditorInfo v-if="allotFormVisible" :textObj="textObj" :edit-date="editDate" ></EditorInfo>
+      <el-form v-if="allotFormVisible" :model="allotData"  label-width="auto"  class="demo-form-inline self-input border">
         <el-row>
           <el-col :sm="12">
-            <SelfInput v-if="backFormVisible" labelName="借用单号"   keyName="borrowCode" :val="backData.borrowCode" :disabled="true" @changeFormVal="changeBackVal"></SelfInput>
+            <SelfInput v-if="allotFormVisible" type="2" labelName="调出公司"   keyName="outCompany" :val="allotData.outCompany" :disabled="true" @changeFormVal="changeAllotVal"></SelfInput>
           </el-col>
           <el-col :sm="12">
-            <SelfInput type="3" labelName="实际归还日期"   keyName="borrowDate" :val="backData.backDate"  @changeFormVal="changeBackVal"></SelfInput>
+            <SelfInput v-if="allotFormVisible" type="2" labelName="调入公司"   keyName="inCompany" :val="allotData.inCompany" :disabled="true"  @changeFormVal="changeAllotVal"></SelfInput>
           </el-col>
         </el-row>
         <el-row>
           <el-col :sm="16">
-            <SelfInput type="4" labelName="备注"  keyName="borrowRemarks" :val="backData.borrowRemarks" @changeFormVal="changeBackVal"></SelfInput>
+            <SelfInput type="4" labelName="调入说明"  keyName="allotRemarks" :val="allotData.allotRemarks" @changeFormVal="changeAllotVal"></SelfInput>
           </el-col>
         </el-row>
       </el-form>
+      <!--此次调拨的清单-->
+      <el-table :data="codeData" :max-height="400"  border stripe fit style="overflow-x: auto">
+        <!--<el-table-column type="selection" width="55">-->
+        <!--</el-table-column>-->
+        <el-table-column type="index" label="序号" width="60" align="center">
+        </el-table-column>
+        <el-table-column  label="状态" width="120"  align="center">
+          <template slot-scope="scope">
+            {{scope.row.status | turnStatus }}
+          </template>
+        </el-table-column>
+        <el-table-column  label="照片"  align="center">
+          <template slot-scope="scope">
+            <img class="tabPic" :src="scope.row.src" />
+          </template>
+        </el-table-column>
+        <el-table-column width="100" label="资产名称" prop="name"  align="center">
+        </el-table-column>
+        <el-table-column width="100" label="资产类别" prop="type"  align="center">
+        </el-table-column>
+        <el-table-column  label="资产编码" prop="code"  align="center">
+        </el-table-column>
+        <el-table-column  label="规格型号" prop="size"  align="center">
+        </el-table-column>
+        <el-table-column  label="SN号" prop="SN"  align="center">
+        </el-table-column>
+        <el-table-column  label="调入公司" prop="inCompany"  align="center">
+        </el-table-column>
+        <el-table-column  label="调入日期" prop="allotDate"  align="center">
+        </el-table-column>
+        <el-table-column  label="存放地点" prop="site"  align="center">
+        </el-table-column>
+        <el-table-column  label="创建人" prop="creater"  align="center">
+        </el-table-column>
+        <el-table-column  label="创建时间" prop="createDate"  align="center">
+        </el-table-column>
+        <el-table-column  label="备注" prop="remarks"  align="center">
+        </el-table-column>
+      </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="backFormVisible = false">取 消</el-button>
+        <el-button @click="allotFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="confirmBack">确 定</el-button>
       </div>
     </el-dialog>
@@ -230,15 +240,11 @@
         },
         tabData: [
           {
-            status:1,
-            borrowCode:'12345',
-            person:'',
-            borrowDate:'2018-09-09',
-            expectDate:'2018-09-09',
-            realDate:'2018-09-09',
-            borrowDealer:'cj',
-            backDealer:'cj',
-            borrowRemarks: '',
+            status:'1',
+            outCompany:'集团',
+            inCompany:'分公司',
+            admin:'cj',
+            allotRemarks: '',
 
             name: '11010001',
             type: '办工卓',
@@ -256,17 +262,13 @@
             remarks:''
           },
           {
-            status:2,
-            borrowCode:'54321',
-            person:'',
-            borrowDate:'2018-09-09',
-            expectDate:'2018-09-09',
-            realDate:'2018-09-09',
-            borrowDealer:'cj',
-            backDealer:'cj',
-            borrowRemarks: '',
+            status:'2',
+            outCompany:'集团02',
+            inCompany:'分公司02',
+            admin:'cj',
+            allotRemarks: '',
 
-            name: '11010001',
+            name: '11010002',
             type: '办工卓',
             code: '办公设备',
             size: '双人',
@@ -292,43 +294,24 @@
         },
         formData: {
           applyDate:'xxx',
-          borrowCode:'',
-          borrowPerson:'',
-          borrowDate:'',
-          expectDate:'',
-          borrowRemarks:''
+          outCompany:'',
+          inCompany:'',
+          admin:'',
+          allotRemarks:''
         },
         dialogLoading: false,
-        nameList:[
+        adminList:[
           {
-            value:1,
-            label:'张三'
+            value:'admin01'
           },
           {
-            value:2,
-            label:'李忠'
+            value:'admin02'
           },
           {
-            value:3,
-            label:'张三'
-          },
-          {
-            value:4,
-            label:'李忠'
+            value:'admin03'
           }
         ],
-        typeList:[
-          {
-            value:'类别一'
-          },
-          {
-            value:'类别二'
-          },
-          {
-            value:'类别三'
-          }
-        ],
-        companyList:[
+        outCompanyList:[
           {
             value:'公司一'
           },
@@ -336,7 +319,7 @@
             value:'公司二'
           }
         ],
-        departList:[
+        inCompanyList:[
           {
             value:'部门一'
           },
@@ -379,22 +362,51 @@
         choosedList:[],
         newCurrentPage:1,
         newTotal:20,
-        backFormVisible:false,
-        backData:{
-          name:'',
-          blongOrg:'',
-          blongDep:'',
+        allotFormVisible:false,
+        allotData:{
           applyDate:'',
-          borrowCode:'',
-          backDate:'',
-          remarks:''
-        }
+          outCompany:'',
+          inCompany:'',
+          allotRemarks:''
+        },
+        codeData:[
+          {
+            status:1,
+            src:'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
+            name:'10000000',
+            type:'办工桌',
+            code:'11111',
+            size:'双人',
+            SN:'0986544CH3',
+            inCompany:'xx',
+            allotDate:'2019-5-27',
+            site:'管理部',
+            creater:'liunian',
+            createDate:'2019-05-17',
+            remarks:''
+          },
+          {
+            status:3,
+            src:'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
+            name:'10000000',
+            type:'办工桌',
+            code:'11111',
+            size:'双人',
+            SN:'0986544CH3',
+            inCompany:'xx',
+            allotDate:'2019-5-27',
+            site:'管理部',
+            creater:'liunian',
+            createDate:'2019-05-17',
+            remarks:''
+          }
+        ]
 
       }
     },
     methods:{
       confirmBack(){
-        this.backFormVisible = false;
+        this.allotFormVisible = false;
       },
       chooseAsset(){
         this.allAssetVisible = true;
@@ -461,26 +473,29 @@
       fetchData(){
 
       },
-      // 新增,修改
+      // 新增
       clickBtn(type){
+        this.formData = this.$Store.resetForm(this.formData);
+        console.log(this.formData);
         this.editDate = this.$Store.formatDate();
         this.dialogFormVisible = true;
       },
       backBtn(){
-        if(this.multipleSelection.length == 0){
+        this.allotData = this.$Store.resetForm(this.allotData);
+
+        if(this.multipleSelection.length != 1){
           this.$message({
-            message:'请至少选择一个要归还的资产',
+            message:'请选择一个确认要调入的资产',
             type:'warning'
           })
         }else{
-          let allCodes = [];
-          this.multipleSelection.forEach(item=>{
-            allCodes.push(item.borrowCode);
-          })
-          console.log(allCodes);
-          this.backData.borrowCode = allCodes.join(' ');
-          console.log(this.backData.borrowCode);
-          this.backFormVisible = true;
+          this.editDate = this.$Store.formatDate();
+          let {outCompany,inCompany} = this.multipleSelection[0];
+          this.allotData.outCompany = outCompany;
+          this.allotData.inCompany = inCompany;
+          this.allotData.applyDate = this.editDate;
+
+          this.allotFormVisible = true;
         }
       },
       handleSelectionChange(val) {
@@ -513,8 +528,8 @@
         console.log(val);
         this.formData[key] = val;
       },
-      changeBackVal([key,val]){
-        this.backData[key] = val;
+      changeAllotVal([key,val]){
+        this.allotData[key] = val;
       },
       handleChoosed(val){
         this.choosedList = val;
@@ -526,6 +541,8 @@
 
       },
       filterStatus(value,row){
+        console.log(value);
+        console.log(row);
         return row.status === value
       }
 
@@ -544,7 +561,7 @@
       }
     },
     mounted(){
-
+      // this.codeData = new Array(10).fill(this.codeData[0]);
 
     }
   }

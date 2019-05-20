@@ -50,6 +50,18 @@ export default new Router({
           path:'/borrow',
           component:()=>import('@/page/asset/borrow')
         },
+        {
+          path:'/allot',
+          component:()=>import('@/page/asset/allot')
+        },
+        {
+          path:'/rent',
+          component:()=>import('@/page/asset/rent')
+        },
+        {
+          path:'/office',
+          component:()=>import('@/page/asset/office')
+        },
 
 
         {

@@ -87,6 +87,21 @@
                 url:'/borrow',
                 icon:''
               },
+              {
+                title:'资产调拨',
+                url:'/allot',
+                icon:''
+              },
+              {
+                title:'租赁管理',
+                url:'/rent',
+                icon:''
+              },
+              {
+                title:'办工职场',
+                url:'/office',
+                icon:''
+              },
 
               {
                 title:'汽车管理',

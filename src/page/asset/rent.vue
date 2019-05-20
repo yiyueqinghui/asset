@@ -2,12 +2,12 @@
     <div id="wareHousing">
       <!--查寻-->
       <el-form :inline="true"  :model="searchData" >
-         <el-form-item label="使用公司部门">
-           <el-select v-model="searchData.department" filterable placeholder="请选择">
+         <el-form-item label="状态">
+           <el-select v-model="searchData.status" filterable placeholder="请选择">
              <el-option
-               v-for="item in departmentList"
+               v-for="item in this.$Store.data.statusList"
                :key="item.value"
-               :value="item.value">
+               :value="item.text">
              </el-option>
            </el-select>
          </el-form-item>
@@ -15,6 +15,7 @@
            <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
+           <el-button  style="margin-left: 10px;" @click="deleteBtn" type="primary" icon="el-icon-edit">删除</el-button>
            <el-dropdown trigger="hover" style="margin-left: 10px;" @command="handleCommand">
               <el-button type="primary" icon="el-icon-document-add">
                 导入/导出
@@ -224,7 +225,6 @@
               blong: '测试机构',
               bill: '102110987',
               money: 200,
-              moneyChinese:'',
               useCompany: '网开',
               useDepart: '研发部',
               usePerson: 'xxx',
@@ -276,9 +276,9 @@
             blong: '',
             bill: '',
             money:0,
-            showMoney:0,
-            chineseMoney:'',
-            numMoney:'',
+            // showMoney:0,
+            // chineseMoney:'',
+            // numMoney:'',
             useCompany: '',
             useDepart: '',
             usePerson: '',
@@ -372,16 +372,33 @@
         clickBtn(type){
           this.formTitle = type == 1 ? '新增':'修改';
           this.editDate = type == 1 ? this.$Store.formatDate() : this.formData.editDate;
-          if(this.multipleSelection.length != 1 && type == 2){
-            this.$message({
-              message: '请选择一条要修改的数据',
-              type: 'warning'
-            });
-            return;
-          }else{
-            this.formData = Object.assign({},this.multipleSelection[0]);
+          if(type == 2){
+            if(this.multipleSelection.length != 1 ){
+              this.$message({
+                message: '请选择一条要修改的数据',
+                type: 'warning'
+              });
+              return;
+            }else{
+              this.formData = Object.assign({},this.multipleSelection[0]);
+            }
           }
+
           this.dialogFormVisible = true;
+        },
+        deleteBtn(){
+          let deleteItem = [];
+          this.multipleSelection.forEach(item=>{
+            deleteItem.push(item.code);
+          })
+          let newData = []
+          this.wareData.forEach((item)=>{
+            if(deleteItem.indexOf(item.code) === -1){
+              newData.push(item);
+            }
+          })
+          this.wareData = newData;
+
         },
         handleSelectionChange(val) {
           this.multipleSelection = val;

@@ -80,7 +80,15 @@ let Store = {
     result += result.charAt(result.length - 1) == '元' ? "整" : "";
 
     return result;
-  }
+  },
+   //重置清空数据
+   resetForm(data){
+     for(var i in data){
+       data[i] = '';
+     }
+     return data;
+   }
+
 
 
 }

@@ -187,6 +187,7 @@
       </el-dialog>
 
       <!--选择资产-->
+      <!--
       <el-dialog
         :close-on-click-modal="false" :close-on-press-escape="false"
         title="选择资产"
@@ -250,7 +251,6 @@
           <el-table-column  label="备注" prop="remarks"  align="center">
           </el-table-column>
         </el-table>
-        <!--分页-->
         <el-row>
           <el-pagination
             background
@@ -267,9 +267,12 @@
           <el-button @click="allAssetVisible = false">取 消</el-button>
           <el-button type="primary" @click="confirmChoosed">确 定</el-button>
         </div>
-      </el-dialog>
+      </el-dialog> -- >
 
       <!--导入资产-->
+      <!--选择资产-->
+      <AssetList :visible="allAssetVisible" @hideDialog="hideDialog"></AssetList>
+
       <UploadExcel v-if="uploadVisible" @close="closeUpload"></UploadExcel>
     </div>
 </template>
@@ -279,6 +282,7 @@
     import SelfInput from '../../components/common/selfInput'
     import UploadExcel from '../../components/common/uploadExcel'
     import downloadModule from '../../utils/download'
+    import AssetList from '../../components/assetList'
     export default {
       data: function () {
         return {
@@ -571,13 +575,19 @@
         },
         fetchAssetData(){
 
-        }
+        },
+        hideDialog(arr){
+          console.log(arr);
+          this.choosedData = arr;
+          this.allAssetVisible = false;
+        },
 
       },
       components:{
         EditorInfo,
         SelfInput,
-        UploadExcel
+        UploadExcel,
+        AssetList
       },
       watch:{
         formData:{
