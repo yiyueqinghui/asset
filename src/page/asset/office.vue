@@ -175,16 +175,17 @@
             <el-row>
               <el-col :sm="12">
                 <el-form-item label="合同附件上传">
-                  <el-upload
-                    class="upload-demo"
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    name="contract"
-                    :headers="headers"
-                    :on-success="uploadSuccess"
-                    :multiple="false"
-                    :limit="1">
-                    <el-button size="small" type="primary">上传附件</el-button>
-                  </el-upload>
+                  <!--<el-upload-->
+                    <!--class="upload-demo"-->
+                    <!--action="https://jsonplaceholder.typicode.com/posts/"-->
+                    <!--name="contract"-->
+                    <!--:headers="headers"-->
+                    <!--:on-success="uploadSuccess"-->
+                    <!--:multiple="false"-->
+                    <!--:limit="1">-->
+                    <!--<el-button size="small" type="primary">上传附件</el-button>-->
+                  <!--</el-upload>-->
+                  <UploadFile :upload-data="uploadData" @uploadSuccess="uploadSuccess"></UploadFile>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -209,6 +210,7 @@
     import EditorInfo from '../../components/common/editorInfo'
     import SelfInput from '../../components/common/selfInput'
     import UploadExcel from '../../components/common/uploadExcel'
+    import UploadFile from '../../components/common/uploadFile'
     import downloadModule from '../../utils/download'
     export default {
       data: function () {
@@ -349,7 +351,9 @@
             }
           ],
           uploadVisible:false,
-          headers:{}
+          uploadData:{
+            name:'contract'
+          }
         }
       },
       methods:{
@@ -461,7 +465,8 @@
       components:{
         EditorInfo,
         SelfInput,
-        UploadExcel
+        UploadExcel,
+        UploadFile
       },
       mounted(){
          this.init();

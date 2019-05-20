@@ -107,78 +107,87 @@
           <el-form :model="formData"  label-width="auto"  class="demo-form-inline self-input">
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput  labelName="资产名称" keyName="name" :val="formData.name" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput type="2"  labelName="车辆牌照" :selectList="typeList"  keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="8">
-              <SelfInput  labelName="投保人" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :sm="8">
+            <el-col :sm="12">
+              <SelfInput  labelName="投保人" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
               <SelfInput  labelName="被保人" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
               <SelfInput type="3" labelName="年检日期" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput  type="3" labelName="保险有效日期" keyName="purchaseDate" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput :disabled="true"  labelName="公里数" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput type="3" labelName="最新保养日期" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="8">
-              <SelfInput type="3" labelName="预计下次保养期" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :sm="8">
+            <el-col :sm="12">
+              <SelfInput type="3" labelName="预计下次保养期" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
               <SelfInput :disabled="true"  labelName="钥匙数量" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
               <SelfInput type="1" labelName="钥匙编号" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput type="1" labelName="使用人" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput :disabled="true"  labelName="现使用机构" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput type="1" labelName="管理人" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
               <SelfInput type="1" labelName="使用人联系电话" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput :disabled="true"  type="1" labelName="（附件）被保人" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="被保人">
+                <UploadFile :upload-data="uploadData" @uploadSuccess="uploadSuccess"></UploadFile>
+              </el-form-item>
             </el-col>
           </el-row>
-
-          <el-row>
-          <el-col :sm="12">
-            <SelfInput :disabled="true"  type="1" labelName="（附件）行驶本" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-          </el-col>
-        </el-row>
-
           <el-row>
             <el-col :sm="12">
-              <SelfInput :disabled="true"  type="1" labelName="（附件）车辆保养" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="行驶本">
+                <UploadFile :upload-data="drivingData" @uploadSuccess="uploadSuccess"></UploadFile>
+              </el-form-item>
             </el-col>
           </el-row>
-
+          <el-row>
+            <el-col :sm="12">
+              <el-form-item label="车辆保养信息">
+                <UploadFile :upload-data="carData" @uploadSuccess="uploadSuccess"></UploadFile>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-row>
             <el-col :sm="12">
               <SelfInput :disabled="true"  type="4" labelName="备注" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
@@ -200,6 +209,7 @@
     import EditorInfo from '../../components/common/editorInfo'
     import SelfInput from '../../components/common/selfInput'
     import UploadExcel from '../../components/common/uploadExcel'
+    import UploadFile from '../../components/common/uploadFile'
     import downloadModule from '../../utils/download'
     export default {
       data: function () {
@@ -243,24 +253,24 @@
           dialogFormVisible:false,
           formTitle: '新增',
           formData: {
-            name: '11010001',
-            type: '办工卓',
-            code: '办公设备',
-            size: '双人',
-            SN: '002110C0D0034',
-            purchaseDate: '2019-05-10',
-            blong: '测试机构',
-            bill: '102110987',
-            money: 200,
-            useCompany: '网开',
-            useDepart: '研发部',
-            usePerson: 'xxx',
-            supplier: '供应商1',
-            contacts: '张峰',
-            tel: '114',
+            name: '',
+            type: '',
+            code: '',
+            size: '',
+            SN: '',
+            purchaseDate: '',
+            blong: '',
+            bill: '',
+            money: 0,
+            useCompany: '',
+            useDepart: '',
+            usePerson: '',
+            supplier: '',
+            contacts: '',
+            tel: '',
             site: '',
-            creater: '李小二',
-            createDate: '2018-9-8',
+            creater: '',
+            createDate: '',
             remarks: ''
           },
           dialogLoading: false,
@@ -276,7 +286,16 @@
               value:'类别三'
             }
           ],
-          uploadVisible:false
+          uploadVisible:false,
+          uploadData:{
+            name:'person'
+          },
+          drivingData:{
+            name:'driving'
+          },
+          carData:{
+            name:'car'
+          },
 
         }
       },
@@ -304,6 +323,9 @@
           })
 
         },
+        uploadSuccess(arr){
+            console.log(arr);
+        },
         closeUpload(){
           this.uploadVisible = false;
         },
@@ -327,6 +349,17 @@
         // 新增,修改
         clickBtn(type){
           this.editDate = this.$Store.formatDate();
+          if(type == 2){
+            if(this.multipleSelection.length === 1){
+              this.formData = Object.assign({},this.multipleSelection[0]);
+            }else{
+              this.$message({
+                message: '请选择一条要修改的数据',
+                type: 'warning'
+              });
+              return;
+            }
+          }
           this.dialogFormVisible = true;
 
         },
@@ -365,9 +398,11 @@
       components:{
         EditorInfo,
         SelfInput,
-        UploadExcel
+        UploadExcel,
+        UploadFile
       },
       mounted(){
+
          this.init();
 
 
