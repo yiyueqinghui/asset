@@ -59,21 +59,52 @@
         </el-table-column>
         <el-table-column  label="存放地点" prop="site"  align="center">
         </el-table-column>
-        <el-table-column  label="（照片)被保人"  align="center">
-          <template slot-scope="scope">
-            <img class="tabPic" :src="scope.row.src" />
-          </template>
-        </el-table-column>
-        <el-table-column  label="（照片）行驶本"  align="center">
-          <template slot-scope="scope">
-            <img class="tabPic" :src="scope.row.src" />
-          </template>
-        </el-table-column>
-        <el-table-column  label="（照片）保养"  align="center">
-          <template slot-scope="scope">
-            <img class="tabPic" :src="scope.row.src" />
-          </template>
-        </el-table-column>
+
+        <el-row>
+          <el-col :sm="15">
+            <span>（照片)被保人 </span>
+            <el-upload
+              :label="发票金额"
+              class="upload-file"
+              drag
+              :action="doUpload"
+              :data="pppss">
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            </el-upload>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :sm="15">
+            <span>（照片）行驶本 </span>
+            <el-upload
+              :label="发票金额"
+              class="upload-file"
+              drag
+              :action="doUpload"
+              :data="pppss">
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            </el-upload>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :sm="15">
+            <span>（照片）保养 </span>
+            <el-upload
+              :label="发票金额"
+              class="upload-file"
+              drag
+              :action="doUpload"
+              :data="pppss">
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            </el-upload>
+          </el-col>
+        </el-row>
+
         <el-table-column  label="创建人" prop="creater"  align="center">
         </el-table-column>
         <el-table-column  label="创建时间" prop="createDate"  align="center">

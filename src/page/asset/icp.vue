@@ -113,10 +113,21 @@
           </el-row>
 
           <el-row>
-          <el-col :sm="12">
-            <SelfInput :disabled="true"  type="1" labelName="（附件）ICP" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-          </el-col>
-        </el-row>
+            <el-col :sm="15">
+              <span>（附件）ICP </span>
+              <el-upload
+                :label="发票金额"
+                class="upload-file"
+                drag
+                :action="doUpload"
+                :data="pppss">
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+              </el-upload>
+            </el-col>
+          </el-row>
+
+
 
           <el-row>
             <el-col :sm="12">
