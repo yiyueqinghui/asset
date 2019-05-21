@@ -15,6 +15,16 @@
            <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
+           <el-dropdown trigger="hover" style="margin-left: 10px;" @command="handleCommand">
+             <el-button type="primary" icon="el-icon-document-add">
+               导入/导出
+             </el-button>
+             <el-dropdown-menu slot="dropdown">
+               <el-dropdown-item icon="el-icon-download" command="module">下载导入模板</el-dropdown-item>
+               <el-dropdown-item icon="el-icon-upload" command="upload" >批量导入资产</el-dropdown-item>
+               <el-dropdown-item icon="el-icon-download" command="download">导出资产数据</el-dropdown-item>
+             </el-dropdown-menu>
+           </el-dropdown>
          </el-form-item>
       </el-form>
       <!--表格-->
