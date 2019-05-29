@@ -2,29 +2,24 @@
     <div id="icp">
       <!--查寻-->
       <el-form :inline="true"  :model="searchData" >
-         <el-form-item label="资产类型">
-           <el-select v-model="searchData.department" filterable placeholder="请选择">
-             <el-option
-               v-for="item in departmentList"
-               :key="item.value"
-               :value="item.value">
-             </el-option>
-           </el-select>
+         <el-form-item label="">
+           <el-input v-model="searchData.department" filterable placeholder="请填写搜索内容">
+           </el-input>
          </el-form-item>
          <el-form-item>
            <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
-           <el-dropdown trigger="hover" style="margin-left: 10px;" @command="handleCommand">
-             <el-button type="primary" icon="el-icon-document-add">
-               导入/导出
-             </el-button>
-             <el-dropdown-menu slot="dropdown">
-               <el-dropdown-item icon="el-icon-download" command="module">下载导入模板</el-dropdown-item>
-               <el-dropdown-item icon="el-icon-upload" command="upload" >批量导入资产</el-dropdown-item>
-               <el-dropdown-item icon="el-icon-download" command="download">导出资产数据</el-dropdown-item>
-             </el-dropdown-menu>
-           </el-dropdown>
+           <!--<el-dropdown trigger="hover" style="margin-left: 10px;" @command="handleCommand">-->
+             <!--<el-button type="primary" icon="el-icon-document-add">-->
+               <!--导入/导出-->
+             <!--</el-button>-->
+             <!--<el-dropdown-menu slot="dropdown">-->
+               <!--<el-dropdown-item icon="el-icon-download" command="module">下载导入模板</el-dropdown-item>-->
+               <!--<el-dropdown-item icon="el-icon-upload" command="upload" >批量导入资产</el-dropdown-item>-->
+               <!--<el-dropdown-item icon="el-icon-download" command="download">导出资产数据</el-dropdown-item>-->
+             <!--</el-dropdown-menu>-->
+           <!--</el-dropdown>-->
          </el-form-item>
       </el-form>
       <!--表格-->
@@ -43,15 +38,9 @@
         </el-table-column>
         <el-table-column  label="网址" prop="SN"  align="center">
         </el-table-column>
-        <el-table-column  label="有效期" prop="purchaseDate"  align="center">
+        <el-table-column  label="有效期" width="150" prop="purchaseDate"  align="center">
         </el-table-column>
         <el-table-column  label="车检时间记录" prop="purchaseDate"  align="center">
-        </el-table-column>
-
-        <el-table-column  label="（照片）附件"  align="center">
-          <template slot-scope="scope">
-            <img class="tabPic" :src="scope.row.src" />
-          </template>
         </el-table-column>
         <el-table-column  label="创建人" prop="creater"  align="center">
         </el-table-column>
@@ -109,29 +98,17 @@
             <el-col :sm="8">
               <SelfInput type="1" labelName="车检时间记录" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-
           </el-row>
-
-          <el-row>
-            <el-col :sm="15">
-              <span>（附件）ICP </span>
-              <el-upload
-                :label="发票金额"
-                class="upload-file"
-                drag
-                :action="doUpload"
-                :data="pppss">
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              </el-upload>
-            </el-col>
-          </el-row>
-
-
-
           <el-row>
             <el-col :sm="12">
-              <SelfInput :disabled="true"  type="4" labelName="备注" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="4" labelName="备注" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="15">
+              <el-form-item label="附件上传">
+                <UploadFile :upload-data="fileData" @uploadSuccess="uploadSuccess"></UploadFile>
+              </el-form-item>
             </el-col>
           </el-row>
         </el-form>
@@ -147,6 +124,7 @@
 <script>
     import EditorInfo from '../../components/common/editorInfo'
     import SelfInput from '../../components/common/selfInput'
+    import UploadFile from '../../components/common/uploadFile'
     export default {
       data: function () {
         return {
@@ -221,12 +199,16 @@
             {
               value:'类别三'
             }
-          ]
+          ],
+          fileData:{}
 
         }
       },
       methods:{
         init(){
+
+        },
+        uploadSuccess(){
 
         },
         querySearch(queryString, cb) {
@@ -286,7 +268,8 @@
       },
       components:{
         EditorInfo,
-        SelfInput
+        SelfInput,
+        UploadFile
       },
       mounted(){
          let arr = new Array(30).fill(this.wareData[0]);

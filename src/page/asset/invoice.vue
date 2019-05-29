@@ -2,14 +2,9 @@
     <div id="invoice">
       <!--查寻-->
       <el-form :inline="true"  :model="searchData" >
-         <el-form-item label="资产类型">
-           <el-select v-model="searchData.department" filterable placeholder="请选择">
-             <el-option
-               v-for="item in departmentList"
-               :key="item.value"
-               :value="item.value">
-             </el-option>
-           </el-select>
+         <el-form-item label="">
+           <el-input v-model="searchData.department" filterable placeholder="请选择">
+           </el-input>
          </el-form-item>
          <el-form-item>
            <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
@@ -33,6 +28,11 @@
         </el-table-column>
         <el-table-column type="index" label="序号" width="60" align="center">
         </el-table-column>
+        <el-table-column width="120px" label="（照片）发票"  align="center">
+          <template slot-scope="scope">
+            <img class="tabPic" :src="scope.row.src" />
+          </template>
+        </el-table-column>
         <el-table-column  label="资产类型" prop="name"  align="center">
         </el-table-column>
         <el-table-column  label="发票类型" prop="type"  align="center">
@@ -42,14 +42,6 @@
         <el-table-column  label="开票日期" prop="size"  align="center">
         </el-table-column>
         <el-table-column  label="发票金额" prop="SN"  align="center">
-        </el-table-column>
-        <el-table-column  label="备注" prop="purchaseDate"  align="center">
-        </el-table-column>
-
-        <el-table-column  label="（照片）发票"  align="center">
-          <template slot-scope="scope">
-            <img class="tabPic" :src="scope.row.src" />
-          </template>
         </el-table-column>
         <el-table-column  label="创建人" prop="creater"  align="center">
         </el-table-column>
@@ -83,7 +75,21 @@
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="8">
-              <SelfInput type="2" labelName="资产类型" keyName="name" :val="formData.name" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="资产类型" class="receivers">
+                <el-select
+                  v-model="formData.name"
+                  multiple
+                  collapse-tags
+                  style="margin-left:0px;"
+                  placeholder="请选择">
+                  <el-option
+                    v-for="item in assetTypeList"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
               <SelfInput type="2"  labelName="发票类型" :selectList="typeList"  keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
@@ -97,31 +103,27 @@
               <SelfInput type="3" labelName="开票日期" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="3" labelName="发票金额" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="8">
-              <SelfInput  type="1" labelName="" keyName="" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="5" labelName="发票金额" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
-
-          <el-row>
-          <el-col :sm="15">
-            <span>（附件）发票 </span>
-            <el-upload
-              :label="发票金额"
-              class="upload-file"
-              drag
-              :action="doUpload"
-              :data="pppss">
-              <i class="el-icon-upload"></i>
-              <div class="el-upload__text">将发票文件拖到此处，或<em>点击上传</em></div>
-            </el-upload>
-          </el-col>
-        </el-row>
-
           <el-row>
             <el-col :sm="12">
-              <SelfInput :disabled="true"  type="4" labelName="备注" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  type="4" labelName="开票备注" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <el-form-item label="（附件）发票">
+                <el-upload
+                  label="发票金额"
+                  class="upload-file"
+                  drag
+                  :action="uploadUrl"
+                  :data="invoiceData">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-upload__text">将发票文件拖到此处，或<em>点击上传</em></div>
+                </el-upload>
+              </el-form-item>
             </el-col>
           </el-row>
         </el-form>
@@ -137,16 +139,36 @@
 <script>
     import EditorInfo from '../../components/common/editorInfo'
     import SelfInput from '../../components/common/selfInput'
+    import downloadModule from '../../utils/download'
     export default {
       data: function () {
         return {
           searchData: {
             department: ''
           },
+          invoiceData:{},
           departmentList: [
             {"value": "佳禾集团", "en": "JHJT"},
             {"value": "中恒信", "en": "ZHX"},
             {"value": "黄鱼儿", "en": "HYR"}
+          ],
+          assetTypeList:[
+            {
+              value:1,
+              label:'张三'
+            },
+            {
+              value:2,
+              label:'李忠'
+            },
+            {
+              value:3,
+              label:'张三'
+            },
+            {
+              value:4,
+              label:'李忠'
+            }
           ],
           wareData: [
             {
@@ -211,12 +233,34 @@
             {
               value:'类别三'
             }
-          ]
+          ],
+          uploadUrl:''
+
 
         }
       },
       methods:{
         init(){
+
+        },
+        handleCommand(command){
+          if(command == 'upload'){
+            this.uploadVisible = true;
+          }else if(command == 'download'){
+            this.downLoadExcel()
+          }else if(command == 'module'){
+            downloadModule('','模板');
+          }
+        },
+        downLoadExcel(){
+          require.ensure([], () => {
+            const { export_json_to_excel } = require('@/vendor/Export2Excel')
+            const tHeader = ['状态','图片','资产名称', '资产类别', '资产编码','规格型号','SN','购入时间','所属公司','发票号码','实付金额','使用公司','使用部门','使用人','供应商','联系人(供应商)','联系电话(供应商)','存放地点','创建人','创建时间','备注'];
+            const filterVal = ['status','src','name', 'type', 'code','SN','size','purchaseDate','blong','bill','money','useCompany','useDepart','usePerson','supplier','contacts','tel','site','creater','createDate','remarks'];
+            const list = this.wareData;
+            const data = this.formatJson(filterVal, list)
+            export_json_to_excel(tHeader, data, '资产')
+          })
 
         },
         querySearch(queryString, cb) {
@@ -276,7 +320,8 @@
       },
       components:{
         EditorInfo,
-        SelfInput
+        SelfInput,
+        downloadModule
       },
       mounted(){
          let arr = new Array(30).fill(this.wareData[0]);

@@ -2,14 +2,9 @@
     <div id="invoice">
       <!--查寻-->
       <el-form :inline="true"  :model="searchData" >
-         <el-form-item label="资产类型">
-           <el-select v-model="searchData.department" filterable placeholder="请选择">
-             <el-option
-               v-for="item in departmentList"
-               :key="item.value"
-               :value="item.value">
-             </el-option>
-           </el-select>
+         <el-form-item label="">
+           <el-input v-model="searchData.department" filterable placeholder="请选择">
+           </el-input>
          </el-form-item>
          <el-form-item>
            <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
@@ -89,7 +84,7 @@
               <SelfInput type="1"  labelName="中文名称"  keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="英文名称" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
+              <SelfInput  labelName="英文名称" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
@@ -103,25 +98,16 @@
               <SelfInput  type="3" labelName="有效日期" keyName="" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
-
-          <el-row>
-            <el-col :sm="15">
-              <span>（附件）商标 </span>
-              <el-upload
-                :label="发票金额"
-                class="upload-file"
-                drag
-                :action="doUpload"
-                :data="pppss">
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              </el-upload>
-            </el-col>
-          </el-row>
-
           <el-row>
             <el-col :sm="12">
               <SelfInput :disabled="true"  type="4" labelName="备注" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <el-form-item label="附件上传">
+                <UploadFile :upload-data="fileData" @uploadSuccess="uploadSuccess"></UploadFile>
+              </el-form-item>
             </el-col>
           </el-row>
         </el-form>
@@ -137,6 +123,8 @@
 <script>
     import EditorInfo from '../../components/common/editorInfo'
     import SelfInput from '../../components/common/selfInput'
+    import downloadModule from '../../utils/download'
+    import UploadFile from '../../components/common/uploadFile'
     export default {
       data: function () {
         return {
@@ -211,12 +199,36 @@
             {
               value:'类别三'
             }
-          ]
+          ],
+          fileData:{}
 
         }
       },
       methods:{
         init(){
+
+        },
+        uploadSuccess(){
+
+        },
+        handleCommand(command){
+          if(command == 'upload'){
+            this.uploadVisible = true;
+          }else if(command == 'download'){
+            this.downLoadExcel()
+          }else if(command == 'module'){
+            downloadModule('','模板');
+          }
+        },
+        downLoadExcel(){
+          require.ensure([], () => {
+            const { export_json_to_excel } = require('@/vendor/Export2Excel')
+            const tHeader = ['状态','图片','资产名称', '资产类别', '资产编码','规格型号','SN','购入时间','所属公司','发票号码','实付金额','使用公司','使用部门','使用人','供应商','联系人(供应商)','联系电话(供应商)','存放地点','创建人','创建时间','备注'];
+            const filterVal = ['status','src','name', 'type', 'code','SN','size','purchaseDate','blong','bill','money','useCompany','useDepart','usePerson','supplier','contacts','tel','site','creater','createDate','remarks'];
+            const list = this.wareData;
+            const data = this.formatJson(filterVal, list)
+            export_json_to_excel(tHeader, data, '资产')
+          })
 
         },
         querySearch(queryString, cb) {
@@ -276,7 +288,9 @@
       },
       components:{
         EditorInfo,
-        SelfInput
+        SelfInput,
+        downloadModule,
+        UploadFile
       },
       mounted(){
          let arr = new Array(30).fill(this.wareData[0]);

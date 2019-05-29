@@ -2,29 +2,24 @@
     <div id="card">
       <!--查寻-->
       <el-form :inline="true"  :model="searchData" >
-         <el-form-item label="资产类型">
-           <el-select v-model="searchData.department" filterable placeholder="请选择">
-             <el-option
-               v-for="item in departmentList"
-               :key="item.value"
-               :value="item.value">
-             </el-option>
-           </el-select>
+         <el-form-item label="">
+           <el-input v-model="searchData.department" filterable placeholder="请输入搜索内容">
+           </el-input>
          </el-form-item>
          <el-form-item>
            <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
-           <el-dropdown trigger="hover" style="margin-left: 10px;" @command="handleCommand">
-             <el-button type="primary" icon="el-icon-document-add">
-               导入/导出
-             </el-button>
-             <el-dropdown-menu slot="dropdown">
-               <el-dropdown-item icon="el-icon-download" command="module">下载导入模板</el-dropdown-item>
-               <el-dropdown-item icon="el-icon-upload" command="upload" >批量导入资产</el-dropdown-item>
-               <el-dropdown-item icon="el-icon-download" command="download">导出资产数据</el-dropdown-item>
-             </el-dropdown-menu>
-           </el-dropdown>
+           <!--<el-dropdown trigger="hover" style="margin-left: 10px;" @command="handleCommand">-->
+             <!--<el-button type="primary" icon="el-icon-document-add">-->
+               <!--导入/导出-->
+             <!--</el-button>-->
+             <!--<el-dropdown-menu slot="dropdown">-->
+               <!--<el-dropdown-item icon="el-icon-download" command="module">下载导入模板</el-dropdown-item>-->
+               <!--<el-dropdown-item icon="el-icon-upload" command="upload" >批量导入资产</el-dropdown-item>-->
+               <!--<el-dropdown-item icon="el-icon-download" command="download">导出资产数据</el-dropdown-item>-->
+             <!--</el-dropdown-menu>-->
+           <!--</el-dropdown>-->
          </el-form-item>
       </el-form>
       <!--表格-->
@@ -43,8 +38,6 @@
         </el-table-column>
         <el-table-column  label="身份证号" prop="SN"  align="center">
         </el-table-column>
-
-
         <el-table-column  label="（照片）身份证"  align="center">
           <template slot-scope="scope">
             <img class="tabPic" :src="scope.row.src" />
@@ -54,9 +47,6 @@
         </el-table-column>
         <el-table-column  label="创建时间" prop="createDate"  align="center">
         </el-table-column>
-        <el-table-column  label="备注" prop="remarks"  align="center">
-        </el-table-column>
-
       </el-table>
       <!--分页-->
       <el-row>
@@ -88,37 +78,34 @@
               <SelfInput type="2"  labelName="所属机构" :selectList="typeList"  keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="卡号" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
+              <SelfInput  labelName="卡号" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" ></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="8">
-              <SelfInput type="1" labelName="手机号码" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="1" :disabled="true" labelName="手机号码" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="1" labelName="身份证号" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-
-          </el-row>
-
-          <el-row>
-            <el-col :sm="15">
-              <span>（附件）身份证 </span>
-              <el-upload
-                :label="发票金额"
-                class="upload-file"
-                drag
-                :action="doUpload"
-                :data="pppss">
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              </el-upload>
+              <SelfInput type="1" :disabled="true" labelName="身份证号" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
 
           <el-row>
             <el-col :sm="12">
-              <SelfInput :disabled="true"  type="4" labelName="备注" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="身份证复印件">
+                <el-upload
+                  label="file"
+                  class="upload-file"
+                  drag
+                  :action="uploadUrl"
+                  :data="doorData">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-upload__text">将发票文件拖到此处，或<em>点击上传</em></div>
+                </el-upload>
+              </el-form-item>
+            </el-col>
+            <el-col :sm="12" style="text-align: right">
+               <img :src="uploadSrc" style="width: auto;height:180px;"/>
             </el-col>
           </el-row>
         </el-form>
@@ -208,7 +195,10 @@
             {
               value:'类别三'
             }
-          ]
+          ],
+          doorData:{},
+          uploadUrl:'',
+          uploadSrc:require('../../assets/img/test.jpg')
 
         }
       },

@@ -27,33 +27,21 @@
         </el-table-column>
         <el-table-column type="index" label="序号" width="60" align="center">
         </el-table-column>
-        <el-table-column  label="公司名称" prop="name"  align="center">
+        <el-table-column  label="照片" prop="name"  align="center">
         </el-table-column>
-        <el-table-column  label="车辆牌照" prop="type"  align="center">
+        <el-table-column  label="资产编码" prop="type"  align="center">
         </el-table-column>
-        <el-table-column  label="投保人" prop="code"  align="center">
+        <el-table-column  label="资产名称" prop="code"  align="center">
         </el-table-column>
-        <el-table-column  label="被保人" prop="size"  align="center">
+        <el-table-column  label="资产类型" prop="size"  align="center">
         </el-table-column>
-        <el-table-column  label="年检日期" prop="SN"  align="center">
+        <el-table-column  label="供应商" prop="SN"  align="center">
         </el-table-column>
-        <el-table-column  label="保险有效期" width="120" prop="purchaseDate"  align="center">
+        <el-table-column  label="联系人" width="120" prop="purchaseDate"  align="center">
         </el-table-column>
-        <el-table-column  label="公里数"  prop="blong"  align="center">
+        <el-table-column  label="联系方式"  prop="blong"  align="center">
         </el-table-column>
-        <el-table-column  label="最新保养日期" width="130" prop="bill"  align="center">
-        </el-table-column>
-        <el-table-column  label="预计下次保养期" width="140" prop="money"  align="center">
-        </el-table-column>
-        <el-table-column  label="钥匙数量" prop="useCompany"  align="center">
-        </el-table-column>
-        <el-table-column  label="钥匙编号" prop="useDepart"  align="center">
-        </el-table-column>
-        <el-table-column  label="使用人" prop="usePerson"  align="center">
-        </el-table-column>
-        <el-table-column  label="现使用机构" width="130" prop="supplier"  align="center">
-        </el-table-column>
-        <el-table-column  label="管理人" prop="contacts"  align="center">
+        <el-table-column  label="维保日期" width="130" prop="bill"  align="center">
         </el-table-column>
         <el-table-column  label="创建人" prop="creater"  align="center">
         </el-table-column>
@@ -61,7 +49,6 @@
         </el-table-column>
         <el-table-column  label="备注" prop="remarks"  align="center">
         </el-table-column>
-
       </el-table>
       <!--分页-->
       <el-row>
@@ -84,97 +71,99 @@
         width="960px"
         top="80px">
         <el-scrollbar class="dialogZone">
-          <EditorInfo :edit-date="editDate"></EditorInfo>
           <el-form :model="formData"  label-width="auto"  class="demo-form-inline self-input">
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput type="2"  labelName="资产名称" :selectList="typeList" keyName="name" :val="formData.name" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput   labelName="资产编码"  keyName="name" :val="formData.name" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput labelName="车辆牌照"   keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput  labelName="投保人" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput  labelName="被保人" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput labelName="供应商"   keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput type="3" labelName="年检日期" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  labelName="联系人" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput  type="3" labelName="保险有效日期" keyName="purchaseDate" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput labelName="公里数" keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput type="3" labelName="最新保养日期" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  labelName="联系方式" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput type="3" labelName="预计下次保养期" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="3" labelName="维保日期" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput labelName="钥匙数量" keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput  labelName="钥匙编号" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput  labelName="使用人" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  type="3" labelName="下次维保日期" keyName="purchaseDate" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput labelName="现使用机构" :selectList="typeList"  keyName="blong" :val="formData.blong"  @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput type="1" labelName="管理人" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput type="1" labelName="使用人联系电话" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <el-form-item label="被保人">
-                <UploadFile :upload-data="uploadData" @uploadSuccess="uploadSuccess"></UploadFile>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <el-form-item label="行驶本">
-                <UploadFile :upload-data="drivingData" @uploadSuccess="uploadSuccess"></UploadFile>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <el-form-item label="车辆保养信息">
+              <el-form-item label="单据上传">
                 <UploadFile :upload-data="carData" @uploadSuccess="uploadSuccess"></UploadFile>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput :disabled="true"  type="4" labelName="备注" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="4" labelName="维保说明" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
         </el-form>
+          <!--资产编码对应的资产详情表格-->
+          <el-row class="dialog_subtitle">资产详情列表</el-row>
+          <el-table v-show="codeData.length > 0"  :data="codeData" :max-height="400"  border stripe fit style="overflow-x: auto">
+            <el-table-column type="index" label="序号" width="60" align="center">
+            </el-table-column>
+            <el-table-column  label="状态" prop="status" width="120" filterable  align="center">
+              <template slot-scope="scope">
+                {{scope.row.status | turnStatus }}
+              </template>
+            </el-table-column>
+            <el-table-column  label="照片"  align="center">
+              <template slot-scope="scope">
+                <img class="tabPic" :src="scope.row.src" />
+              </template>
+            </el-table-column>
+            <el-table-column  label="资产名称" width="100" prop="name"  align="center">
+            </el-table-column>
+            <el-table-column  label="资产类别" prop="type"  align="center">
+            </el-table-column>
+            <el-table-column  label="资产编码" prop="code"  align="center">
+            </el-table-column>
+            <el-table-column  label="规格型号" prop="size"  align="center">
+            </el-table-column>
+            <el-table-column  label="SN号" width="130" prop="SN"  align="center">
+            </el-table-column>
+            <el-table-column  label="购入时间" width="120" sortable prop="purchaseDate"  align="center">
+            </el-table-column>
+            <el-table-column  label="所属公司" prop="blong"  align="center">
+            </el-table-column>
+            <el-table-column  label="发票号码" width="100" prop="bill"  align="center">
+            </el-table-column>
+            <el-table-column  label="实付金额" prop="money"  align="center">
+            </el-table-column>
+            <el-table-column  label="使用公司" prop="useCompany"  align="center">
+            </el-table-column>
+            <el-table-column  label="使用部门" prop="useDepart"  align="center">
+            </el-table-column>
+            <el-table-column  label="使用人" prop="usePerson"  align="center">
+            </el-table-column>
+            <el-table-column  label="供应商" prop="supplier"  align="center">
+            </el-table-column>
+            <el-table-column  label="联系人(供应商)" width="130" prop="contacts"  align="center">
+            </el-table-column>
+            <el-table-column  label="联系电话(供应商)" width="130" prop="tel"  align="center">
+            </el-table-column>
+            <el-table-column  label="存放地点" prop="site"  align="center">
+            </el-table-column>
+            <el-table-column  label="创建人" prop="creater"  align="center">
+            </el-table-column>
+            <el-table-column  label="创建时间" width="120" sortable prop="createDate"   align="center">
+            </el-table-column>
+            <el-table-column  label="备注" prop="remarks"  align="center">
+            </el-table-column>
+          </el-table>
         </el-scrollbar>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -277,6 +266,32 @@
           carData:{
             name:'car'
           },
+          codeData:[
+            {
+              status: '1',
+              src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
+              name: '11010001',
+              type: '办工卓01',
+              code: '办公设备',
+              size: '双人',
+              SN: '002110C0D0034',
+              purchaseDate: '2018-3-1',
+              blong: '测试机构',
+              bill: '102110987',
+              money: 200,
+              moneyChinese:'',
+              useCompany: '网开',
+              useDepart: '研发部',
+              usePerson: 'xxx',
+              supplier: '供应商1',
+              contacts: '张峰',
+              tel: '114',
+              site: '',
+              creater: '李小二',
+              createDate: '2018-9-8',
+              remarks: ''
+            }
+          ]
 
         }
       },

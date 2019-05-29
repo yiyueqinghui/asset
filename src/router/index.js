@@ -8,70 +8,109 @@ export default new Router({
     {
       path:'/',
       redirect:'/staff',
+      component:()=>import('@/page/index'),
+      children:[
+        {
+          path:'staff',
+          component:()=>import('@/page/staff')
+        }
+      ]
+    },
+    {
+      path:'/asset',
+      redirect:'/asset/staff',
       component:()=> import('@/page/index'),     //按需加载组件
       children:[
         {
-          path:'/staff',
+          path:'staff',
           component:()=>import('@/page/staff')
         },
         {
-          path:'/car',
+          path:'car',
           component:()=>import('@/page/asset/car')
         },
         {
-          path:'/invoice',
+          path:'invoice',
           component:()=>import('@/page/asset/invoice')
         },
         {
-          path:'/card',
+          path:'card',
           component:()=>import('@/page/asset/card')
         },
         {
-          path:'/icp',
+          path:'icp',
           component:()=>import('@/page/asset/icp')
         },
         {
-          path:'/brand',
+          path:'brand',
           component:()=>import('@/page/asset/brand')
         },
         {
-          path:'/workplace',
+          path:'workplace',
           component:()=>import('@/page/asset/workplace')
         },
         {
-          path:'/wareHousing',
-          component:()=>import('@/page/asset/asset')
+          path:'storage',
+          component:()=>import('@/page/asset/storage')
         },
         {
-          path:'/receive',
+          path:'receive',
           component:()=>import('@/page/asset/receive')
         },
         {
-          path:'/borrow',
+          path:'borrow',
           component:()=>import('@/page/asset/borrow')
         },
         {
-          path:'/allot',
+          path:'allot',
           component:()=>import('@/page/asset/allot')
         },
         {
-          path:'/rent',
+          path:'rent',
           component:()=>import('@/page/asset/rent')
         },
         {
-          path:'/office',
+          path:'office',
           component:()=>import('@/page/asset/office')
         },
-
-
         {
-          path:'/tab',
+          path:'changeInfo',
+          component:()=>import('@/page/asset/changeInfo')
+        },
+        {
+          path:'tab',
           component:()=>import('@/page/first/tab')
         },
         {
-          path:'/chart',
+          path:'chart',
           component:()=>import('@/page/first/chart')
         }
+      ]
+    },
+    {
+      path:'/system',
+      redirect:'',
+      component:()=> import('@/page/index'),     //按需加载组件
+      children:[
+        {
+          path:'/system',
+          component:()=>import('@/page/system/index')
+        },
+        {
+          path:'organization',
+          component:()=>import('@/page/system/organization')
+        },
+        {
+          path:'roles',
+          component:()=>import('@/page/system/roles')
+        },
+        {
+          path:'user',
+          component:()=>import('@/page/system/user')
+        }
+
+
+
       ]
     },
     {

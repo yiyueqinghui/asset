@@ -74,64 +74,91 @@
             nav:[
               {
                 title:'资产入库',
-                url:'/wareHousing',
+                url:'/asset/storage',
                 icon:''
               },
               {
                 title:'资产领用',
-                url:'/receive',
+                url:'/asset/receive',
                 icon:''
               },
               {
                 title:'资产借用&归还',
-                url:'/borrow',
+                url:'/asset/borrow',
                 icon:''
               },
               {
                 title:'资产调拨',
-                url:'/allot',
+                url:'/asset/allot',
                 icon:''
               },
               {
                 title:'租赁管理',
-                url:'/rent',
+                url:'/asset/rent',
                 icon:''
               },
               {
                 title:'办工职场',
-                url:'/office',
+                url:'/asset/office',
                 icon:''
               },
 
               {
                 title:'汽车管理',
-                url:'/car',
+                url:'/asset/car',
                 icon:''
               },
               {
                 title:'票据管理',
-                url:'/invoice',
+                url:'/asset/invoice',
                 icon:''
               },
               {
                 title:'门禁卡管理',
-                url:'/card',
+                url:'/asset/card',
                 icon:''
               },
               {
                 title:'ICP管理',
-                url:'/icp',
+                url:'/asset/icp',
                 icon:''
               },
               {
                 title:'商标管理',
-                url:'/brand',
+                url:'/asset/brand',
                 icon:''
               },
               {
                 title:'办公职场管理',
-                url:'/workplace',
+                url:'/asset/workplace',
                 icon:''
+              },
+              {
+                title:'维保信息变更',
+                url:'/asset/changeInfo',
+                icon:''
+              },
+            ]
+          },
+          {
+            title:'系统管理',
+            icon:'',
+            nav:[
+              {
+                title:'系统首页',
+                url:'/system'
+              },
+              {
+                title:'组织结构',
+                url:'/system/organization'
+              },
+              {
+                title:'角色管理',
+                url:'/system/roles'
+              },
+              {
+                title:'用户管理',
+                url:'/system/user'
               }
             ]
           },
