@@ -8,7 +8,7 @@
         <el-button  type="primary" icon="el-icon-s-custom" @click="assignUser" >分配用户</el-button>
       </el-row>
       <el-row>
-        <el-table :data="roleData" class="roleTab"  @selection-change="handleSelectionChange" ref="multipleTable"  border stripe fit stripe style="overflow-x: auto">
+        <el-table :data="roleData" class="roleTab"  @selection-change="handleSelectionChange" ref="multipleTable"  border stripe fit style="overflow-x: auto">
           <el-table-column type="selection" width="55">
           </el-table-column>
           <el-table-column type="index" label="序号" width="60" align="center">
@@ -19,6 +19,7 @@
           </el-table-column>
         </el-table>
       </el-row>
+
       <!--新建角色-->
       <el-dialog
         :close-on-click-modal="false" :close-on-press-escape="false"
@@ -26,7 +27,7 @@
         :visible.sync="createVisible"
         width="560px"
         top="80px">
-        <el-form :model="createForm"  label-width="auto"  class="demo-form-inline self-input">
+        <el-form  :inline="true" :model="createForm"  label-width="auto"  class="demo-form-inline self-input">
           <el-form-item label="角色名称">
             <el-input v-model="createForm.roleName"></el-input>
           </el-form-item>
@@ -54,7 +55,7 @@
           <el-menu-item index="3">成员列表</el-menu-item>
         </el-menu>
         <!--角色信息-->
-        <el-form v-if="currentIndex === 1" :model="createForm"  label-width="auto"  class="demo-form-inline self-input">
+        <el-form  :inline="true" v-if="currentIndex === 1" :model="createForm"  label-width="auto"  class="demo-form-inline self-input">
           <el-form-item label="角色名称">
             <el-input v-model="createForm.roleName"></el-input>
           </el-form-item>
@@ -84,7 +85,7 @@
             <el-input v-model="searchVal"  suffix-icon="el-icon-search" @blur="searchPerson" class="search"  placeholder="请输入内容进行查寻"/>
           </el-row>
           <el-scrollbar class="dialogZone">
-            <el-table :data="personData" class="personTab"  @selection-change="handleSelection"  border stripe fit stripe style="overflow-x: auto">
+            <el-table :data="personData" class="personTab"  @selection-change="handleSelection"  border stripe fit style="overflow-x: auto">
               <el-table-column type="selection" width="55">
               </el-table-column>
               <el-table-column type="index" label="序号" width="60" align="center">
@@ -111,23 +112,29 @@
         :visible.sync="authVisible"
         width="560px"
         top="80px">
-        <el-form :model="authForm"  label-width="auto"  class="demo-form-inline self-input">
-          <el-form-item label="角色名称">
-            <el-input disabled="disabled" v-model="authForm.roleName"></el-input>
-          </el-form-item>
-          <el-form-item label="授权">
-            <el-tree
-              highlight-current
-              :data="roleAuth"
-              show-checkbox
-              node-key="id"
-              :default-expanded-keys="expandedKeys"
-              :default-checked-keys="checkedKeys"
-              :current-node-key="currentKey"
-              @check="checkedChange"
-              :props="defaultProps">
-            </el-tree>
-          </el-form-item>
+        <el-form  :inline="true" :model="authForm"  label-width="auto"  class="demo-form-inline self-input">
+          <el-row>
+            <el-form-item label="角色名称">
+              <el-input disabled="disabled" v-model="authForm.roleName"></el-input>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="授权">
+              <el-tree
+                highlight-current
+                :data="roleAuth"
+                show-checkbox
+                node-key="id"
+                :default-expanded-keys="expandedKeys"
+                :default-checked-keys="checkedKeys"
+                :current-node-key="currentKey"
+                @check="checkedChange"
+                :props="defaultProps">
+              </el-tree>
+            </el-form-item>
+          </el-row>
+
+
         </el-form>
 
         <div slot="footer" class="dialog-footer">
@@ -142,7 +149,7 @@
         :visible.sync="userVisible"
         width="560px"
         top="80px">
-        <el-form :model="userForm"  label-width="auto"  class="demo-form-inline assign">
+        <el-form  :inline="true" :model="userForm"  label-width="auto"  class="demo-form-inline assign">
           <el-form-item label="角色名称">
             <el-input disabled="disabled" v-model="userForm.roleName"></el-input>
           </el-form-item>
@@ -167,6 +174,7 @@
           <el-button type="primary" @click="confirmAssign">确 定</el-button>
         </div>
       </el-dialog>
+
 
 
     </div>
@@ -269,7 +277,7 @@
           },
           userForm:{
             roleName:'',
-            userList:[[1,2,3],[1,7,8]]
+            userList:[]
           },
           userVisible:false,
           options: [

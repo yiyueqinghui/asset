@@ -70,32 +70,34 @@
         :visible.sync="dialogFormVisible"
         width="960px">
         <EditorInfo :edit-date="editDate"></EditorInfo>
-        <el-form :model="formData"  label-width="auto"  class="demo-form-inline self-input">
+        <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input">
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput type="2" labelName="公司名称" keyName="name" :val="formData.name" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput type="1"  labelName="初次申请时间" :selectList="typeList"  keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="8">
-              <SelfInput  labelName="经营许可证编号" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :sm="8">
+            <el-col :sm="12">
+              <SelfInput  labelName="经营许可证编号" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
               <SelfInput type="3" labelName="网站名称" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
               <SelfInput type="3" labelName="网址" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput  type="3" labelName="有效期" keyName="" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput type="1" labelName="车检时间记录" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>

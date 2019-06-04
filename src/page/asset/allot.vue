@@ -82,7 +82,7 @@
       width="960px"
       top="80px">
       <EditorInfo v-if="dialogFormVisible" :textObj="textObj" :edit-date="editDate" ></EditorInfo>
-      <el-form :model="formData"  label-width="auto"  class="demo-form-inline self-input border">
+      <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input border">
         <el-row>
           <el-col :sm="12">
               <SelfInput  type="2" :selectList="outCompanyList" labelName="调出公司"   keyName="outCompany" :val="formData.outCompany"  @changeFormVal="changeFormVal"></SelfInput>
@@ -97,7 +97,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :sm="16">
+          <el-col :sm="12">
             <SelfInput type="4" labelName="调入说明"  keyName="allotRemarks" :val="formData.allotRemarks" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
         </el-row>
@@ -164,7 +164,7 @@
       width="960px"
       top="80px">
       <EditorInfo v-if="allotFormVisible" :textObj="textObj" :edit-date="editDate" ></EditorInfo>
-      <el-form v-if="allotFormVisible" :model="allotData"  label-width="auto"  class="demo-form-inline self-input border">
+      <el-form :inline="true" v-if="allotFormVisible" :model="allotData"  label-width="auto"  class="demo-form-inline self-input border">
         <el-row>
           <el-col :sm="12">
             <SelfInput v-if="allotFormVisible" type="2" labelName="调出公司"   keyName="outCompany" :val="allotData.outCompany" :disabled="true" @changeFormVal="changeAllotVal"></SelfInput>
@@ -174,7 +174,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :sm="16">
+          <el-col :sm="12">
             <SelfInput type="4" labelName="调入说明"  keyName="allotRemarks" :val="allotData.allotRemarks" @changeFormVal="changeAllotVal"></SelfInput>
           </el-col>
         </el-row>

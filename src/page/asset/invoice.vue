@@ -71,7 +71,7 @@
         :visible.sync="dialogFormVisible"
         width="960px">
         <EditorInfo :edit-date="editDate"></EditorInfo>
-        <el-form :model="formData"  label-width="auto"  class="demo-form-inline self-input">
+        <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input">
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="8">
@@ -112,7 +112,7 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :sm="12">
+            <el-col :sm="16">
               <el-form-item label="（附件）发票">
                 <el-upload
                   label="发票金额"

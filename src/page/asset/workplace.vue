@@ -95,79 +95,85 @@
         :visible.sync="dialogFormVisible"
         width="960px">
         <EditorInfo v-if="dialogFormVisible" :edit-date="editDate"></EditorInfo>
-        <el-form :model="formData"  label-width="auto"  class="demo-form-inline self-input">
+        <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input">
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput  labelName="公司名称" keyName="name" :val="formData.name" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput type="2"  labelName="职场类型" :selectList="typeList"  keyName="type" :required="true" :val="formData.type"  @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="8">
-              <SelfInput  labelName="职场地址" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :sm="8">
+            <el-col :sm="12">
+              <SelfInput  labelName="职场地址" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
               <SelfInput  labelName="租赁面积" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
               <SelfInput  labelName="金额/平米" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput  labelName="工位数" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput  type="1" labelName="会议室数量" keyName="purchaseDate" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput type="1" labelName="可注册公司数" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="8">
-              <SelfInput labelName="已注册公司名称" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :sm="8">
+            <el-col :sm="12">
+              <SelfInput labelName="已注册公司名称" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
               <SelfInput type="3"  labelName="合同起始日期" :selectList="companyList"  keyName="useCompany" :val="formData.useCompany" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
               <SelfInput type="3" labelName="合同终止日期" :selectList="departList" keyName="useDepart" :val="formData.useDepart" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput labelName="合同总金额" keyName="usePerson" :val="formData.usePerson" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput  type="2" labelName="支付方式"  :selectList="companyList" keyName="site" :val="formData.site" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput  type="2" labelName="支付类型"  :selectList="companyList" keyName="site" :val="formData.site" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="8">
-              <SelfInput  type="1" labelName="租金金额"  :selectList="companyList" keyName="site" :val="formData.site" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :sm="8">
+            <el-col :sm="12">
+              <SelfInput  type="1" labelName="租金金额"  :selectList="companyList" keyName="site" :val="formData.site" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
               <SelfInput  type="1" labelName="保证金"  :selectList="companyList" keyName="site" :val="formData.site" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
               <SelfInput  type="1" labelName="物业费/月"  :selectList="companyList" keyName="site" :val="formData.site" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput  type="1" labelName="水费/立方米"  :selectList="companyList" keyName="site" :val="formData.site" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput  type="1" labelName="电费/度"  :selectList="companyList" keyName="site" :val="formData.site" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput  type="1" labelName="网费/月"  :selectList="companyList" keyName="site" :val="formData.site" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>

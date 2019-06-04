@@ -68,7 +68,7 @@
         :visible.sync="dialogFormVisible"
         width="960px">
         <EditorInfo :edit-date="editDate"></EditorInfo>
-        <el-form :model="formData"  label-width="auto"  class="demo-form-inline self-input">
+        <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input">
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="8">
@@ -91,7 +91,7 @@
           </el-row>
 
           <el-row>
-            <el-col :sm="12">
+            <el-col :sm="16">
               <el-form-item label="身份证复印件">
                 <el-upload
                   label="file"
@@ -104,7 +104,7 @@
                 </el-upload>
               </el-form-item>
             </el-col>
-            <el-col :sm="12" style="text-align: right">
+            <el-col :sm="8" style="text-align: right">
                <img :src="uploadSrc" style="width: auto;height:180px;"/>
             </el-col>
           </el-row>

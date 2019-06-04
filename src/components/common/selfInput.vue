@@ -16,7 +16,7 @@
       </el-form-item>
       <!--日期-->
       <el-form-item  v-else-if="this.type==3" :class="{labelStyle:labelStyle}" :label="labelName" :rules="{required:required}">
-        <el-date-picker @input="changeVal"
+        <el-date-picker @input="changeVal" style="width: 180px;"
           v-model="modelVal"
           type="date"
           format="yyyy-MM-dd"

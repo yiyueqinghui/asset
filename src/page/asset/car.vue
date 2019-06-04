@@ -85,7 +85,7 @@
         top="80px">
         <el-scrollbar class="dialogZone">
           <EditorInfo :edit-date="editDate"></EditorInfo>
-          <el-form :model="formData"  label-width="auto"  class="demo-form-inline self-input">
+          <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input">
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="12">

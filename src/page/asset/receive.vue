@@ -92,7 +92,7 @@
         width="960px"
         top="80px">
 
-        <el-form :model="formData"  label-width="auto"  class="demo-form-inline self-input receivedForm">
+        <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input receivedForm">
           <el-row>
             <el-col :sm="12">
               <el-form-item label="领用人" class="receivers">

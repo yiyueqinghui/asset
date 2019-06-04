@@ -2,7 +2,7 @@
     <div id="organization">
        <el-row style="height: 100%;">
          <el-col :span="4" :sm="4">
-           <el-tree
+           <el-tree v-if="treeShow"
              ref="tree"
              :data="data"
              node-key="id"
@@ -47,7 +47,7 @@
        </el-row>
 
       <el-dialog :title="dialogTitle" width="960px" :visible.sync="dialogFormVisible">
-        <el-form :model="formData" label-width="auto" v-if="dialogFormVisible"  class="demo-form-inline self-input border">
+        <el-form :inline="true" :model="formData" label-width="auto" v-if="dialogFormVisible"  class="demo-form-inline self-input border">
           <el-row>
               <el-col :sm="12">
                 <SelfInput  :labelName="this.typeName+'编码'"   keyName="code" :val="formData.code"  @changeFormVal="changeFormVal"></SelfInput>
@@ -78,7 +78,7 @@
 
       <!--修改-->
       <el-dialog title="修改" width="960px" :visible.sync="visible">
-        <el-form :model="form" label-width="auto" v-if="visible"  class="demo-form-inline self-input border">
+        <el-form :inline="true" :model="form" label-width="auto" v-if="visible"  class="demo-form-inline self-input border">
           <el-row>
             <el-col :sm="12">
               <SelfInput  :labelName="this.changeName+'编码'"   keyName="code" :val="form.code"  @changeFormVal="changeFormVal"></SelfInput>
@@ -105,6 +105,7 @@
       data(){
          return {
            // type 1 公司   2 部门
+           treeShow:false,
            data: [
              {
                id: 1,
@@ -135,7 +136,7 @@
            treeDetail:{
 
            },
-           currentKey:0,
+           currentKey:'',
            firstLevelId:[],
            basicInfo:{
              code:'001',
@@ -163,6 +164,12 @@
          }
       },
       methods:{
+        init(){
+          this.currentKey = this.data[0].id;
+          this.treeNav = this.data[0].label;
+          console.log(this.treeNav);
+          this.treeShow = true;
+        },
         addBtn(type){
           this.resetData();
           let firstLevelId = [];
@@ -310,19 +317,7 @@
           }
         },
         checkedNode(data){
-          this.treeNav = '';
-          let firstLev = [];
-          this.data.forEach(item=>{
-            firstLev.push(item.id)
-          })
-          let arr = [];
-          while (data){
-            arr.unshift(data.label);
-            if(firstLev.indexOf(data.id)>=0)  break;
-            data = this.$refs.tree.getNode(data.id).parent.data;
-          }
-          this.treeNav = arr.join('/');
-
+          this.currentKey = data.id;
         }
       },
       computed:{
@@ -355,8 +350,33 @@
           }
         }
       },
+      watch:{
+        currentKey(val,oldVal){
+          console.log(val,oldVal);
+          if(oldVal === '') return;
+          console.log(val);
+          this.treeNav = '';
+          let firstLev = [];
+          this.data.forEach(item=>{
+            firstLev.push(item.id)
+          })
+          let arr = [];
+          let data = this.$refs.tree.getCurrentNode();
+          while (data){
+            arr.unshift(data.label);
+            if(firstLev.indexOf(data.id)>=0)  break;
+            data = this.$refs.tree.getNode(data.id).parent.data;
+          }
+          this.treeNav = arr.join('/');
+        }
+      },
       components:{
         SelfInput
+      },
+      mounted(){
+        this.$nextTick(()=>{
+          this.init();
+        })
       }
     }
 </script>

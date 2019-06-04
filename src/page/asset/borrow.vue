@@ -90,7 +90,7 @@
       width="960px"
       top="80px">
       <EditorInfo v-if="dialogFormVisible" :textObj="textObj" :edit-date="editDate" ></EditorInfo>
-      <el-form :model="formData"  label-width="auto"  class="demo-form-inline self-input border">
+      <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input border">
         <el-row>
           <el-col :sm="12">
               <SelfInput labelName="借用单号"   keyName="borrowCode" :val="formData.borrowCode" :disabled="true" @changeFormVal="changeFormVal"></SelfInput>
@@ -175,7 +175,7 @@
       width="960px"
       top="80px">
       <!--归还人信息-->
-      <el-form :model="backData"  label-width="auto"  class="demo-form-inline border" id="backForm">
+      <el-form :inline="true" :model="backData"  label-width="auto"  class="demo-form-inline border" id="backForm">
         <el-row class="header">归还人信息</el-row>
         <el-row>
           <el-col :sm="6">

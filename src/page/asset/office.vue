@@ -23,7 +23,7 @@
          </el-form-item>
       </el-form>
       <!--表格-->
-      <el-table :data="wareData"  @selection-change="handleSelectionChange" ref="multipleTable"  border stripe fit stripe style="overflow-x: auto">
+      <el-table :data="wareData"  @selection-change="handleSelectionChange" ref="multipleTable"  border stripe fit style="overflow-x: auto">
         <el-table-column type="selection" width="55">
         </el-table-column>
         <el-table-column type="index" label="序号" width="60" align="center">
@@ -96,7 +96,7 @@
         top="80px">
         <el-scrollbar class="dialogZone">
           <EditorInfo v-if="dialogFormVisible" :edit-date="editDate"></EditorInfo>
-          <el-form :model="formData"  label-width="auto"  class="demo-form-inline self-input">
+          <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input">
             <el-row class="dialog_subtitle">基本信息</el-row>
             <el-row>
               <el-col :sm="8">
