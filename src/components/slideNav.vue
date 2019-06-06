@@ -73,6 +73,11 @@
             icon:'',
             nav:[
               {
+                title:'资产首页',
+                url:'/',
+                icon:''
+              },
+              {
                 title:'资产入库',
                 url:'/asset/storage',
                 icon:''

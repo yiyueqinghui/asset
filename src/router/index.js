@@ -7,9 +7,13 @@ export default new Router({
   routes: [
     {
       path:'/',
-      redirect:'/staff',
+      redirect:'/',
       component:()=>import('@/page/index'),
       children:[
+        {
+          path:'',
+          component:()=>import('@/page/asset/index')
+        },
         {
           path:'staff',
           component:()=>import('@/page/staff')
