@@ -41,7 +41,7 @@
         <el-row style="overflow: hidden;">
           <el-col :span="12">
             <el-button type="primary">当前面板展示</el-button>
-            <el-button type="primary">添加分类</el-button>
+            <el-button type="primary" @click="addCategory">添加分类</el-button>
           </el-col>
           <el-col :span="12" style="width: 200px;float: right;">
             <el-input v-model="searchVal"  suffix-icon="el-icon-search" @blur="search"  placeholder="请输入内容进行查寻"/>
@@ -73,11 +73,45 @@
             </el-tag>
           </el-row>
         </el-row>
-
-
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="confirm">确 定</el-button>
+        </div>
+      </el-dialog>
+
+
+      <el-dialog
+        :close-on-click-modal="false" :close-on-press-escape="false"
+        title="添加分类"
+        :visible.sync="categoryVisible"
+        width="960px"
+        top="80px">
+        <el-form :inline="true" v-if="categoryVisible" :model="cateData"  label-width="auto"  class="demo-form-inline self-input border">
+          <el-row>
+            <el-col :sm="8">
+              <SelfInput v-if="categoryVisible" :selectList="cateList" type="2" labelName="大类"   keyName="cate" :val="cateData.cate" @changeFormVal="changeForm"></SelfInput>
+            </el-col>
+            <el-col :sm="8">
+              <SelfInput v-if="categoryVisible" labelName="详情"   keyName="miniCate" :val="cateData.miniCate" @changeFormVal="changeForm"></SelfInput>
+            </el-col>
+            <el-col :sm="8">
+              <el-button type="primary" @click="addBigCate">新增大类</el-button>
+            </el-col>
+          </el-row>
+          <el-row v-if="bigCateVisible">
+            <el-col :sm="8">
+              <SelfInput labelName="大类"   keyName="cate" :val="cateData.cate" @changeFormVal="changeForm"></SelfInput>
+            </el-col>
+            <el-col :sm="8">
+              <el-button type="primary" @click="addCateBtn">新增</el-button>
+            </el-col>
+          </el-row>
+        </el-form>
+
+
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="categoryVisible = false">取 消</el-button>
+          <el-button type="primary" @click="categoryConfirm">确 定</el-button>
         </div>
       </el-dialog>
 
@@ -85,6 +119,7 @@
 </template>
 
 <script>
+    import SelfInput from '../../components/common/selfInput'
     export default {
       data(){
         return {
@@ -125,7 +160,7 @@
               allot:9
             }
           ],
-          dialogVisible:true,
+          dialogVisible:false,
           searchVal:'',
           currentTags: [],
           currentTagsId:[],
@@ -148,8 +183,24 @@
                 { label: '家具五' ,id:8,type:'success'}
               ]
             }
-          ]
-
+          ],
+          categoryVisible:false,
+          cateData:{
+            cate:'',
+            miniCate:''
+          },
+          cateList:[
+            {
+              value:'电子类一'
+            },
+            {
+              value:'电子类二'
+            },
+            {
+              value:'电子类三'
+            }
+          ],
+          bigCateVisible:false
         }
       },
       methods:{
@@ -181,6 +232,21 @@
             label:tag.label,
             id:tag.id
           });
+        },
+        addCategory(){
+          this.categoryVisible = true;
+        },
+        categoryConfirm(){
+          this.categoryVisible = false;
+        },
+        changeForm([key,val]){
+          this.cateData[key] = val;
+        },
+        addBigCate(){
+          this.bigCateVisible = true;
+        },
+        addCateBtn(){
+          this.bigCateVisible = false;
         }
       },
       watch:{
@@ -195,6 +261,9 @@
           deep:true
         }
 
+      },
+      components:{
+        SelfInput
       },
       mounted(){
 

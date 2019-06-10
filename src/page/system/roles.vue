@@ -80,8 +80,8 @@
         <!--成员列表-->
         <el-row v-if="currentIndex === 3">
           <el-row class="personZone">
-            <el-button class="btns"  type="primary" icon="el-icon-plus" @click="addPerson">添加人员</el-button>
-            <el-button class="btns" type="primary" icon="el-icon-edit"  @click="deletePerson">删除</el-button>
+            <el-button   type="primary" icon="el-icon-plus" @click="addPerson">添加人员</el-button>
+            <el-button  type="primary" icon="el-icon-edit"  @click="deletePerson">删除</el-button>
             <el-input v-model="searchVal"  suffix-icon="el-icon-search" @blur="searchPerson" class="search"  placeholder="请输入内容进行查寻"/>
           </el-row>
           <el-scrollbar class="dialogZone">

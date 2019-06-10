@@ -10,14 +10,11 @@
        <el-form-item >
          <el-input v-model="login.password" show-password placeholder="请输入密码"></el-input>
        </el-form-item>
-       <el-form-item class="forgetPas">
-           <router-link to="/" >忘记密码?</router-link>
-       </el-form-item>
+       <!--<el-form-item class="forgetPas">-->
+           <!--<router-link to="/" >忘记密码?</router-link>-->
+       <!--</el-form-item>-->
        <el-form-item>
          <el-button type="primary" style="width: 100%;" @click="submitForm">登录</el-button>
-       </el-form-item>
-       <el-form-item class="register">
-         <span>还没有账号?  <router-link to="/">注册账号</router-link></span>
        </el-form-item>
      </el-form>
    </div>
