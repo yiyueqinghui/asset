@@ -1,7 +1,8 @@
 <template>
   <section class="asideNav" :style="{width:animateWidth+'px',height:screenHeight+'px'}">
     <el-scrollbar style="height: 100%;padding-top:60px;">
-      <img class="logo" :src="collapse?'../../static/img/logo-2.png':'../../static/img/logo-1.png'" />
+      <img class="logo" v-if="collapse" src="../../static/img/logo-2.png" />
+      <img class="logo" v-else   src="../../static/img/logo-1.png" />
       <el-menu class="el-menu-vertical-demo" :collapse="collapse" default-active="0-0" background-color="#2b3647" text-color="#a0abbf" active-text-color="#ffffff">
         <template v-for="(item,oneId) in tab">
           <router-link :to="item.url"  v-if="!item.nav">
