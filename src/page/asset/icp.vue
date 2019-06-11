@@ -10,6 +10,7 @@
            <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
+           <el-button  style="margin-left: 10px;" @click="deleteData" type="primary" icon="el-icon-edit">删除</el-button>
            <!--<el-dropdown trigger="hover" style="margin-left: 10px;" @command="handleCommand">-->
              <!--<el-button type="primary" icon="el-icon-document-add">-->
                <!--导入/导出-->
@@ -28,25 +29,25 @@
         </el-table-column>
         <el-table-column type="index" label="序号" width="60" align="center">
         </el-table-column>
-        <el-table-column  label="公司名称" prop="name"  align="center">
+        <el-table-column  label="公司名称" prop="company"  align="center">
         </el-table-column>
-        <el-table-column  label="初次申请时间" prop="type"  align="center">
+        <el-table-column  label="初次申请时间" prop="initialRegDate"  align="center">
         </el-table-column>
-        <el-table-column  label="经营许可证编号" prop="code"  align="center">
+        <el-table-column  label="经营许可证编号" width="140" prop="managementLicenseNo"  align="center">
         </el-table-column>
-        <el-table-column  label="网站名称" prop="size"  align="center">
+        <el-table-column  label="网站名称" prop="websiteName"  align="center">
         </el-table-column>
-        <el-table-column  label="网址" prop="SN"  align="center">
+        <el-table-column  label="网址" prop="url"  align="center">
         </el-table-column>
-        <el-table-column  label="有效期" width="150" prop="purchaseDate"  align="center">
+        <el-table-column  label="有效期" width="150" prop="validDate"  align="center">
         </el-table-column>
-        <el-table-column  label="车检时间记录" prop="purchaseDate"  align="center">
+        <el-table-column  label="年检时间记录" prop="annualInspection"  align="center">
         </el-table-column>
         <el-table-column  label="创建人" prop="creater"  align="center">
         </el-table-column>
         <el-table-column  label="创建时间" prop="createDate"  align="center">
         </el-table-column>
-        <el-table-column  label="备注" prop="remarks"  align="center">
+        <el-table-column  label="备注" prop="icpMemo"  align="center">
         </el-table-column>
 
       </el-table>
@@ -64,9 +65,9 @@
         </el-pagination>
       </el-row>
       <!--新增/修改-->
-      <el-dialog
+      <el-dialog v-if="dialogFormVisible"
         :close-on-click-modal="false" :close-on-press-escape="false"
-        :title="formTitle"
+        :title="formTitle=='1'?'新增':'修改'"
         :visible.sync="dialogFormVisible"
         width="960px">
         <EditorInfo :edit-date="editDate"></EditorInfo>
@@ -74,36 +75,36 @@
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput type="2" labelName="公司名称" keyName="name" :val="formData.name" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="2" :selectList="companyList" labelName="公司名称" keyName="company" :val="formData.company" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput type="1"  labelName="初次申请时间" :selectList="typeList"  keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput  labelName="经营许可证编号" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput type="3" labelName="网站名称" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="3"  labelName="初次申请时间"  keyName="initialRegDate" :val="formData.initialRegDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput type="3" labelName="网址" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  labelName="经营许可证编号" keyName="managementLicenseNo" :val="formData.managementLicenseNo" :required="true" @changeFormVal="changeFormVal" ></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput  type="3" labelName="有效期" keyName="" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput type="1" labelName="车检时间记录" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput labelName="网站名称" keyName="websiteName" :val="formData.websiteName" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput type="4" labelName="备注" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput labelName="网址" keyName="url" :val="formData.url" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
+              <SelfInput type="3" labelName="有效期" keyName="validDate" :val="formData.validDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <SelfInput type="3" labelName="年检时间记录" keyName="annualInspection" :val="formData.annualInspection" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <SelfInput type="4" labelName="备注"   keyName="icpMemo" :val="formData.icpMemo" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
@@ -138,56 +139,22 @@
             {"value": "中恒信", "en": "ZHX"},
             {"value": "黄鱼儿", "en": "HYR"}
           ],
-          wareData: [
-            {
-              status: '1',
-              src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
-              name: '11010001',
-              type: '办工卓',
-              code: '办公设备',
-              size: '双人',
-              SN: '002110C0D0034',
-              purchaseDate: '2018-3-1',
-              blong: '测试机构',
-              bill: '102110987',
-              money: 200,
-              useCompany: '网开',
-              useDepart: '研发部',
-              usePerson: 'xxx',
-              supplier: '供应商1',
-              contacts: '张峰',
-              tel: '114',
-              site: '',
-              creater: '李小二',
-              createDate: '2018-9-8',
-              remarks: ''
-            }
-          ],
+          wareData: [],
           multipleSelection: [],    //当前选中的行数据
           currentPage: 1,
           total: 20,
           dialogFormVisible:false,
-          formTitle: '新增',
+          formTitle: '1',
           formData: {
-            name: '11010001',
-            type: '办工卓',
-            code: '办公设备',
-            size: '双人',
-            SN: '002110C0D0034',
-            purchaseDate: '2019-05-10',
-            blong: '测试机构',
-            bill: '102110987',
-            money: 200,
-            useCompany: '网开',
-            useDepart: '研发部',
-            usePerson: 'xxx',
-            supplier: '供应商1',
-            contacts: '张峰',
-            tel: '114',
-            site: '',
-            creater: '李小二',
-            createDate: '2018-9-8',
-            remarks: ''
+            "icpMemo": "备注",
+            "initialRegDate": "2019-04-09",
+            "url": "http://www.baidu.com",
+            "icpAttachment": "附件",
+            "company": "公司一",
+            "validDate": "2018-09-12",
+            "websiteName": "官网",
+            "managementLicenseNo":"12345",
+            "annualInspection": "2019-01-02"
           },
           dialogLoading: false,
           editDate: '2019-5-14',
@@ -202,12 +169,24 @@
               value:'类别三'
             }
           ],
+          companyList:[
+            {
+              value:'公司一'
+            },
+            {
+              value:'公司二'
+            },
+            {
+              value:'公司三'
+            }
+          ],
           fileData:{}
 
         }
       },
       methods:{
         init(){
+           this.fetchData();
 
         },
         uploadSuccess(){
@@ -228,13 +207,53 @@
           this.formData.department = item.value;
         },
         fetchData(){
-
+          this.$axios.Asset.icp('GET',{}).then(res=>{
+             console.log(res);
+             this.wareData = res;
+             this.total = res.length;
+          })
         },
         // 新增,修改
         clickBtn(type){
+          this.formTitle = type;
           this.editDate = this.$Store.formatDate();
-          this.dialogFormVisible = true;
+          this.formData = this.$Store.resetForm(this.formData);
+          if(type === 2){
+            if(this.multipleSelection.length === 1){
+              this.formData = Object.assign({},this.multipleSelection[0]);
+            }else{
+              this.$message({
+                message:'请选择一条要修改的数据',
+                type:'warning'
+              })
+              return;
+            }
+          }else if(type === 3){
 
+
+          }
+          this.dialogFormVisible = true;
+        },
+        deleteData(){
+          if(this.multipleSelection.length === 0){
+            this.$message({
+              message:'请选择一条要删除的数据',
+              type:'warning'
+            })
+            return;
+          }else{
+            let data = this.multipleSelection;
+            let deleteNum = 0;
+            data.forEach(item=>{
+              this.$axios.Asset.icp('DELETE',item).then(res=>{
+                deleteNum+=1;
+                if(data.length === deleteNum){
+                  this.tipMessage('删除成功！');
+                  this.fetchData();
+                }
+              })
+            })
+          }
         },
         handleSelectionChange(val) {
           this.multipleSelection = val;
@@ -248,7 +267,31 @@
           this.currentPage = val;
         },
         confirmBtn(){
-          this.dialogFormVisible = false;
+          let id = this.formData.id;
+          let data = this.formData;
+          if(this.formTitle == '1'){
+            this.$axios.Asset.icp('POST',data).then(res=>{
+              this.tipMessage('新增成功！');
+              this.fetchData();
+              this.dialogFormVisible = false;
+            })
+          }else{
+            this.$axios.Asset.icp('PUT',data).then(res=>{
+              console.log(res);
+              this.tipMessage('修改成功！');
+              this.fetchData();
+              this.dialogFormVisible = false;
+            })
+          }
+
+        },
+        tipMessage(msg,type){
+          type = type ? type : 'success';
+          this.$message({
+            message:msg,
+            type:type,
+            duration:1500
+          })
         },
         changeFormVal([key,val]){
           this.formData[key] = val;
@@ -274,8 +317,6 @@
         UploadFile
       },
       mounted(){
-         let arr = new Array(30).fill(this.wareData[0]);
-         this.wareData = arr;
          this.init();
 
 

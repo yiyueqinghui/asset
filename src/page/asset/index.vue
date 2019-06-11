@@ -4,7 +4,7 @@
          <el-button type="primary" @click="setting">自定义设置</el-button>
        </el-row>
       <el-row class="cardList">
-        <el-col class="card" v-for="item in data">
+        <el-col class="card" v-for="(item,index) in data" :key="index">
           <el-card class="box-card" shadow="hover">
             <p class="title">{{item.title}}</p>
             <table>

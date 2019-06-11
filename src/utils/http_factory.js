@@ -1,4 +1,6 @@
 import axios from 'axios';
+import qs from 'qs';
+import { Message } from 'element-ui';
 
 //axios  https://www.npmjs.com/package/axios
 let http = axios.create({
@@ -6,12 +8,15 @@ let http = axios.create({
   timeout:1000*6,
   withCredentials: false,
   transformRequest: [],     //请求之前,修改request数据
-  transformResponse:[]      //响应之后,修改response数据
+  transformResponse:[],      //响应之后,修改response数据
+  headers:{
+    "Authorization":"Bearer "+localStorage.getItem('token')
+  }
 });
 
 //请求拦截器
 http.interceptors.request.use(function (config) {
-  console.log(config);
+  // console.log(config);
   return config;
 }, function (error) {
   return Promise.reject(error);
@@ -19,10 +24,9 @@ http.interceptors.request.use(function (config) {
 
 //响应拦截器
 http.interceptors.response.use(function (response) {
-  response = response.data;
-  return response;
+    return response;
 }, function (error) {
-  return Promise.reject(error);
+    return error;
 });
 
 
@@ -35,30 +39,67 @@ function deepObjectMerge(FirstOBJ, SecondOBJ) {
     return FirstOBJ;
 }
 
-function apiAxios(method, url, params,config){
+function ApiAxios(method, url, params,config){
+  if(config){
+    if(config.headers['Content-Type'] === 'application/x-www-form-urlencoded'){
+      params = qs.stringify(params);
+      console.log('urlencoded');
+    }
+  }
+
 	let default_config = {
     method: method,
     url: url,
     data: method === 'POST' || method === 'PUT' ? params : null,
     params: method === 'GET' || method === 'DELETE' ? params : null,
+    headers:{
+      "Content-Type":"application/json;charset=UTF-8"
+    }
   };
   if(typeof config == 'undefined') config = {};
   config = deepObjectMerge(default_config,config);
-  return http(config).catch(function (err){
-    console.log(err);
+
+  return new Promise((resolve,reject)=>{
+    http(config).then(res=>{
+      if(res.status < 300 && res.status >= 200){
+        return resolve(res.data);
+      }else{
+        Message({
+          message:res.err,
+          type:'warning'
+        })
+        return;
+      }
+    }).catch(err=>{
+      Message({
+        message:'请求失败',
+        type:'warning'
+      })
+      return reject(res);
+    })
   })
 }
 
 
 
 function Get(url, params,config){
-  return apiAxios('GET', url, params,config)
+  return ApiAxios('GET', url, params,config)
 }
 function Post(url, params,config){
-  return apiAxios('POST', url, params,config)
+  return ApiAxios('POST', url, params,config)
+}
+function Put(url, params,config){
+  return ApiAxios('PUT', url, params,config)
+}
+function Delete(url, params,config){
+  return ApiAxios('Delete', url, params,config)
 }
 
 export{
   Get,
-  Post
+  Post,
+  Put,
+  Delete,
+  ApiAxios
+
 }
