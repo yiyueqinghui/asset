@@ -103,7 +103,7 @@
         :title="formTitle"
         :visible.sync="dialogFormVisible"
         width="960px"
-        top="80px">
+        top="20px">
         <el-scrollbar class="dialogZone">
           <EditorInfo v-if="dialogFormVisible" :edit-date="editDate"></EditorInfo>
           <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input">

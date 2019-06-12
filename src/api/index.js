@@ -24,8 +24,6 @@ const Asset = {
     data = initData(data,method,ICP_URL);
     return ApiAxios(method,url,data)
   }
-
-
 }
 
 

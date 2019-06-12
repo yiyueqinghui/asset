@@ -31,9 +31,9 @@
         </el-table-column>
         <el-table-column  label="公司名称" prop="company"  align="center">
         </el-table-column>
-        <el-table-column  label="初次申请时间" prop="initialRegDate"  align="center">
+        <el-table-column width="140"  label="初次申请时间" prop="initialRegDate"  align="center">
         </el-table-column>
-        <el-table-column  label="经营许可证编号" width="140" prop="managementLicenseNo"  align="center">
+        <el-table-column width="140" label="经营许可证编号"  prop="managementLicenseNo"  align="center">
         </el-table-column>
         <el-table-column  label="网站名称" prop="websiteName"  align="center">
         </el-table-column>
@@ -41,7 +41,7 @@
         </el-table-column>
         <el-table-column  label="有效期" width="150" prop="validDate"  align="center">
         </el-table-column>
-        <el-table-column  label="年检时间记录" prop="annualInspection"  align="center">
+        <el-table-column width="140"  label="年检时间记录" prop="annualInspection"  align="center">
         </el-table-column>
         <el-table-column  label="创建人" prop="creater"  align="center">
         </el-table-column>
@@ -70,56 +70,57 @@
         :title="formTitle=='1'?'新增':'修改'"
         :visible.sync="dialogFormVisible"
         width="960px">
-        <EditorInfo :edit-date="editDate"></EditorInfo>
-        <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input">
-          <el-row class="dialog_subtitle">基本信息</el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput type="2" :selectList="companyList" labelName="公司名称" keyName="company" :val="formData.company" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput type="3"  labelName="初次申请时间"  keyName="initialRegDate" :val="formData.initialRegDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput  labelName="经营许可证编号" keyName="managementLicenseNo" :val="formData.managementLicenseNo" :required="true" @changeFormVal="changeFormVal" ></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput labelName="网站名称" keyName="websiteName" :val="formData.websiteName" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput labelName="网址" keyName="url" :val="formData.url" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput type="3" labelName="有效期" keyName="validDate" :val="formData.validDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput type="3" labelName="年检时间记录" keyName="annualInspection" :val="formData.annualInspection" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput type="4" labelName="备注"   keyName="icpMemo" :val="formData.icpMemo" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="15">
-              <el-form-item label="附件上传">
-                <UploadFile :upload-data="fileData" @uploadSuccess="uploadSuccess"></UploadFile>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="confirmBtn">确 定</el-button>
-        </div>
+        <el-scrollbar class="dialogZone">
+          <EditorInfo :edit-date="editDate"></EditorInfo>
+          <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input">
+            <el-row class="dialog_subtitle">基本信息</el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput type="2" :selectList="companyList" labelName="公司名称" keyName="company" :val="formData.company" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput type="3"  labelName="初次申请时间"  keyName="initialRegDate" :val="formData.initialRegDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput  labelName="经营许可证编号" keyName="managementLicenseNo" :val="formData.managementLicenseNo" :required="true" @changeFormVal="changeFormVal" ></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput labelName="网站名称" keyName="websiteName" :val="formData.websiteName" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput labelName="网址" keyName="url" :val="formData.url" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput type="3" labelName="有效期" keyName="validDate" :val="formData.validDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput type="3" labelName="年检时间记录" keyName="annualInspection" :val="formData.annualInspection" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput type="4" labelName="备注"   keyName="icpMemo" :val="formData.icpMemo" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="15">
+                <el-form-item label="附件上传">
+                  <UploadFile :upload-data="fileData" @uploadSuccess="uploadSuccess"></UploadFile>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+        </el-scrollbar>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="confirmBtn">确 定</el-button>
+          </div>
       </el-dialog>
     </div>
 </template>

@@ -78,7 +78,7 @@ html,body{
 /*弹窗滚动*/
 .dialogZone{
   width:100%;
-  height:600px;
+  height:400px;
 }
 .dialogZone .el-scrollbar__wrap{
   overflow-x:hidden;
