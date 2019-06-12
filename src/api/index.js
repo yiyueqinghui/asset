@@ -9,21 +9,42 @@ function initUrl(data,method,url){
   if(method.toUpperCase() == 'PUT' || method.toUpperCase() == 'DELETE') url += data.id;
   return url;
 }
-const ICP_URL = '/api/vera/icp/';
+const URLS = {
+  ICP:'/api/vera/icp/',
+  CAR:'/api/vera/car/',
+  ASSET:'/api/vera/item/',
+  INVOICE:'/api/vera/invoice/'
+
+}
 
 
 
 const Home = {
 	detail:(data)=>{ return	Get('/api/1.0/page/flight',data) },
-  getToken:(data)=>{ return Post('/Token',data,{headers:{"Content-Type":"application/x-www-form-urlencoded"}})},
-  icp:(data)=>{return Post('/api/vera/icp/',data)}
+  getToken:(data)=>{ return Post('/Token',data,{headers:{"Content-Type":"application/x-www-form-urlencoded"}})}
 }
 const Asset = {
   icp:(method,data)=>{
-    let url = initUrl(data,method,ICP_URL);
-    data = initData(data,method,ICP_URL);
+    let url = initUrl(data,method,URLS.ICP);
+    data = initData(data,method,URLS.ICP);
+    return ApiAxios(method,url,data)
+  },
+  car:(method,data)=>{
+    let url = initUrl(data,method,URLS.CAR);
+    data = initData(data,method,URLS.CAR);
+    return ApiAxios(method,url,data)
+  },
+  storage:(method,data)=>{
+    let url = initUrl(data,method,URLS.ASSET);
+    data = initData(data,method,URLS.ASSET);
+    return ApiAxios(method,url,data)
+  },
+  invoice:(method,data)=>{
+    let url = initUrl(data,method,URLS.INVOICE);
+    data = initData(data,method,URLS.INVOICE);
     return ApiAxios(method,url,data)
   }
+
 }
 
 

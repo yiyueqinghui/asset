@@ -72,7 +72,7 @@
         width="960px">
         <el-scrollbar class="dialogZone">
           <EditorInfo :edit-date="editDate"></EditorInfo>
-          <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input">
+          <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline date-range-input">
             <el-row class="dialog_subtitle">基本信息</el-row>
             <el-row>
               <el-col :sm="12">
@@ -95,7 +95,16 @@
                 <SelfInput labelName="网址" keyName="url" :val="formData.url" @changeFormVal="changeFormVal"></SelfInput>
               </el-col>
               <el-col :sm="12">
-                <SelfInput type="3" labelName="有效期" keyName="validDate" :val="formData.validDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+                <!--<SelfInput type="3" labelName="有效期" keyName="validDate" :val="formData.validDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>-->
+                <el-form-item label="有效期">
+                  <el-date-picker
+                    v-model="validDate"
+                    type="daterange"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    value-format="yyyyMMdd">
+                  </el-date-picker>
+                </el-form-item>
               </el-col>
             </el-row>
             <el-row>
@@ -181,8 +190,8 @@
               value:'公司三'
             }
           ],
-          fileData:{}
-
+          fileData:{},
+          validDate:[]   //有效期
         }
       },
       methods:{
@@ -222,6 +231,7 @@
           if(type === 2){
             if(this.multipleSelection.length === 1){
               this.formData = Object.assign({},this.multipleSelection[0]);
+              this.validDate = this.formData.validDate.split('-');
             }else{
               this.$message({
                 message:'请选择一条要修改的数据',
@@ -229,9 +239,6 @@
               })
               return;
             }
-          }else if(type === 3){
-
-
           }
           this.dialogFormVisible = true;
         },
@@ -272,14 +279,21 @@
           let data = this.formData;
           if(this.formTitle == '1'){
             this.$axios.Asset.icp('POST',data).then(res=>{
-              this.tipMessage('新增成功！');
+              // this.tipMessage('新增成功！');
+              this.$message({
+                message:'新增成功！',
+                type:'success'
+              })
               this.fetchData();
               this.dialogFormVisible = false;
             })
           }else{
             this.$axios.Asset.icp('PUT',data).then(res=>{
               console.log(res);
-              this.tipMessage('修改成功！');
+              this.$message({
+                message:'修改成功！',
+                type:'success'
+              })
               this.fetchData();
               this.dialogFormVisible = false;
             })
@@ -310,6 +324,15 @@
             status = '调拨中'
           }
           return status
+        }
+      },
+      watch:{
+        validDate:{
+          handler(val,oldval){
+            console.log(val);
+            this.formData.validDate = val.join('-');
+          },
+          deep:true
         }
       },
       components:{

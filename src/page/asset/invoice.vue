@@ -241,6 +241,7 @@
       },
       methods:{
         init(){
+          this.fetchData();
 
         },
         handleCommand(command){
@@ -278,7 +279,11 @@
           this.formData.department = item.value;
         },
         fetchData(){
-
+          this.$axios.Asset.invoice('GET',{}).then(res=>{
+            console.log(res);
+            this.wareData = res;
+            this.total = res.length;
+          })
         },
         // 新增,修改
         clickBtn(type){
@@ -298,7 +303,30 @@
           this.currentPage = val;
         },
         confirmBtn(){
-          this.dialogFormVisible = false;
+          let id = this.formData.id;
+          let data = this.formData;
+          if(this.formTitle == '1'){
+            this.$axios.Asset.icp('POST',data).then(res=>{
+              // this.tipMessage('新增成功！');
+              this.$message({
+                message:'新增成功！',
+                type:'success'
+              })
+              this.fetchData();
+              this.dialogFormVisible = false;
+            })
+          }else{
+            this.$axios.Asset.icp('PUT',data).then(res=>{
+              console.log(res);
+              this.$message({
+                message:'修改成功！',
+                type:'success'
+              })
+              this.fetchData();
+              this.dialogFormVisible = false;
+            })
+          }
+
         },
         changeFormVal([key,val]){
           this.formData[key] = val;
@@ -324,11 +352,7 @@
         downloadModule
       },
       mounted(){
-         let arr = new Array(30).fill(this.wareData[0]);
-         this.wareData = arr;
          this.init();
-
-
       }
     }
 </script>

@@ -111,6 +111,14 @@ export default new Router({
         {
           path:'user',
           component:()=>import('@/page/system/user')
+        },
+        {
+          path:'new-user',
+          component:()=>import('@/page/system/newUser')
+        },
+        {
+          path:'new-role',
+          component:()=>import('@/page/system/newRoles')
         }
 
 

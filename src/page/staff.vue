@@ -50,11 +50,49 @@
           :total="total">
         </el-pagination>
       </el-row>
+      <el-dialog
+        :close-on-click-modal="false" :close-on-press-escape="false"
+        title="盘点"
+        :visible.sync="visible"
+        width="960px"
+        top="80px">
+        <el-scrollbar class="dialogZone">
+          <el-form :model="formData"  label-width="auto"  class="demo-form-inline self-input">
+            <el-row class="dialog_subtitle">基本信息</el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput type="2" labelName="资产盘点状态" :selectList="statusList" keyName="status" :val="formData.status" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput labelName="资产编码"  keyName="code" :val="formData.code" :disabled="true"  @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput labelName="资产编码"  keyName="code" :val="formData.code" :disabled="true"  @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput labelName="资产编码"  keyName="code" :val="formData.code" :disabled="true"  @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput labelName="资产编码"  keyName="code" :val="formData.code" :disabled="true"  @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+          </el-form>
+        </el-scrollbar>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="visible = false">取 消</el-button>
+          <el-button type="primary" @click="confirmBtn">确 定</el-button>
+        </div>
+      </el-dialog>
 
     </div>
 </template>
 
 <script>
+    import SelfInput from '../components/common/selfInput'
     export default {
       data(){
         return {
@@ -84,13 +122,31 @@
           ],
           multipleSelection:[],    //当前选中的行数据
           currentPage:1,
-          total:20
+          total:20,
+          visible:false,
+          formData:{
+            status:1,
+            code:'111',
+            name:'电脑',
+            type:'办公设备',
+            size:'xxx',
+            sn:'12345',
+            purchaseDate:'2019-09-09',
+            remark:''
+          },
+          statusList:[
+            {
+              value:'存在'
+            },
+            {
+              value:'报废'
+            }
+          ],
         }
       },
       methods:{
         checkAsset(){
-
-
+          this.visible = true;
         },
         cancleAsset(){
 
@@ -105,7 +161,17 @@
         handleCurrentPage(val) {
           console.log(`当前页: ${val}`);
           this.currentPage = val;
-        }
+        },
+        confirmBtn(){
+
+        },
+        changeFormVal([key,val]){
+          console.log(val);
+          this.formData[key] = val;
+        },
+      },
+      components:{
+        SelfInput
       }
     }
 </script>
