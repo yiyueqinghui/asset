@@ -1,16 +1,21 @@
 <template>
   <div class="container">
     <!--侧边导航 -->
-    <slide-nav :screenHeight="screenHeight" :animateWidth="animateWidth" :collapse="collapse">1111</slide-nav>
+    <slide-nav :screenHeight="screenHeight" :animateWidth="animateWidth" :collapse="collapse"></slide-nav>
     <!--右侧主体 -->
     <section class="rightContainer" :style="{paddingLeft:animateWidth+'px'}">
       <!--头部-->
       <header class="header" :style="{height:headerHeight+'px',lineHeight:headerHeight+'px'}">
         <el-row>
-          <el-col :span="4" :sm="4" style="text-align: left;">
+          <div style="display: inline-block;float: left;">
             <i :class="[collapse?'el-icon-s-unfold':'el-icon-s-fold','fold-icon']" @click="foldSlider"></i>
-          </el-col>
-          <el-col :span="20" :sm="20">
+          </div>
+          <div style="display: inline-block;float: left;">
+            <el-breadcrumb separator="/">
+              <el-breadcrumb-item v-for="(item,index) in titleNav" :key="index">{{item}}</el-breadcrumb-item>
+            </el-breadcrumb>
+          </div>
+          <div style="display: inline-block;float:right;">
             <el-dropdown >
               <i class="el-icon-setting" style="margin-right: 15px"></i>
               <el-dropdown-menu slot="dropdown">
@@ -20,7 +25,7 @@
               </el-dropdown-menu>
             </el-dropdown>
             <span>流年</span>
-          </el-col>
+          </div>
         </el-row>
       </header>
       <!--主体内容-->
@@ -44,7 +49,8 @@
         wrapClass:{
           wrapClass:true
         },
-        collapse:false
+        collapse:false,
+        titleNav:['首页']
       }
     },
     methods:{
@@ -70,6 +76,18 @@
       collapse(newValue){
         let slideWidth = newValue?64:200;
         TweenLite.to(this.$data, .5, { slideWidth:slideWidth });
+      },
+      $route: {
+        handler:function(val, oldVal){
+          let arr = [];
+          val.matched.forEach(item=>{
+            if(item.meta && typeof item.meta == 'string'){
+              arr.push(item.meta);
+            }
+          })
+          this.titleNav = arr;
+        },
+        deep: true
       }
     },
     computed:{
@@ -109,6 +127,15 @@
         box-sizing: border-box;
         .fold-icon{
           font-size: 20px;
+          padding-right: 20px;
+        }
+        .el-breadcrumb{
+          line-height: 50px;
+          font-size: 15px;
+          .el-breadcrumb__separator{
+            margin: 0 5px;
+            color: #606266;
+          }
         }
       }
       .content{

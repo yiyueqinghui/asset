@@ -70,7 +70,7 @@
             url:'/'
           },
           {
-            title:'员工个人显示页面',
+            title:'员工个人',
             icon:'',
             url:'/staff'
           },
@@ -142,11 +142,6 @@
               {
                 title:'商标管理',
                 url:'/asset/brand',
-                icon:''
-              },
-              {
-                title:'办公职场管理',
-                url:'/asset/workplace',
                 icon:''
               },
               {
