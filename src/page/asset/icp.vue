@@ -120,7 +120,7 @@
             <el-row>
               <el-col :sm="15">
                 <el-form-item label="附件上传">
-                  <UploadFile :upload-data="fileData" @uploadSuccess="uploadSuccess"></UploadFile>
+                  <UploadFile :upload-data="icpFile" @uploadSuccess="uploadSuccess"></UploadFile>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -190,7 +190,9 @@
               value:'公司三'
             }
           ],
-          fileData:{},
+          icpFile:{
+            name:'icpFile'
+          },
           validDate:[]   //有效期
         }
       },
@@ -199,8 +201,10 @@
            this.fetchData();
 
         },
-        uploadSuccess(){
-
+        uploadSuccess(res){
+          let key = res[1],
+            val = res[0].message;
+          this.formData[key] = val;
         },
         querySearch(queryString, cb) {
           var departmentList = this.departmentList;

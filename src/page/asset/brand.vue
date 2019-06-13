@@ -74,28 +74,38 @@
         :visible.sync="dialogFormVisible"
         width="960px">
         <EditorInfo :edit-date="editDate"></EditorInfo>
-        <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input">
+        <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline date-range-input">
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput type="2" labelName="公司名称" keyName="name" :val="formData.name" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+            <el-col :sm="12">
               <SelfInput type="1"  labelName="中文名称"  keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="8">
-              <SelfInput  labelName="英文名称" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :sm="8">
+            <el-col :sm="12">
+              <SelfInput  labelName="英文名称" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
               <SelfInput type="2" labelName="商标分类" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
-              <SelfInput type="3" labelName="注册日期" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <SelfInput type="3" labelName="注册日期" keyName="registerDate" :val="formData.registerDate" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
-              <SelfInput  type="3" labelName="有效日期" keyName="" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-col :sm="12">
+              <el-form-item label="有效期">
+                <el-date-picker
+                  v-model="validDate"
+                  type="daterange"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  value-format="yyyyMMdd">
+                </el-date-picker>
+              </el-form-item>
             </el-col>
           </el-row>
           <el-row>
@@ -171,7 +181,7 @@
             type: '办工卓',
             code: '办公设备',
             size: '双人',
-            SN: '002110C0D0034',
+            registerDate:'2019-05-10',
             purchaseDate: '2019-05-10',
             blong: '测试机构',
             bill: '102110987',
@@ -185,6 +195,7 @@
             site: '',
             creater: '李小二',
             createDate: '2018-9-8',
+            validate:'',
             remarks: ''
           },
           dialogLoading: false,
@@ -200,7 +211,10 @@
               value:'类别三'
             }
           ],
-          fileData:{}
+          fileData:{
+            name:'brandFile'
+          },
+          validDate:[]   //有效期
 
         }
       },
@@ -208,8 +222,10 @@
         init(){
 
         },
-        uploadSuccess(){
-
+        uploadSuccess(res){
+          let key = res[1],
+            val = res[0].message;
+          this.formData[key] = val;
         },
         handleCommand(command){
           if(command == 'upload'){
@@ -291,6 +307,15 @@
         SelfInput,
         downloadModule,
         UploadFile
+      },
+      watch:{
+        validDate:{
+          handler(val,oldval){
+            console.log(val);
+            this.formData.validDate = val.join('-');
+          },
+          deep:true
+        }
       },
       mounted(){
          let arr = new Array(30).fill(this.wareData[0]);

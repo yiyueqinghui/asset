@@ -2,8 +2,9 @@
     <div class="uploadfile">
       <el-upload
         class="upload-demo"
-        action="https://jsonplaceholder.typicode.com/posts/"
-        :name="uploadData.name"
+        action='/upload-api/api/file/upload'
+        :data="{module:uploadData.name}"
+         name="fileName"
         :headers="headers"
         :on-success="uploadSuccess"
         :multiple="false"
@@ -28,19 +29,42 @@
       },
       data(){
         return {
-          headers:{}
-
+          headers:{},
+          uploadStatus:'default'
         }
       },
       methods:{
-        uploadSuccess(){
-           this.$emit('uploadSuccess',[]);
+        uploadSuccess(res){
+           console.log(res);
+           if(res.code == '0'){
+             this.uploadStatus = '0';
+             this.$emit('uploadSuccess',[res,this.uploadData.name]);
+           }else{
+             this.uploadStatus = '1';
+             this.$message({
+               message:'上传失败！',
+               type:'warning'
+             })
+           }
         }
       }
 
     }
 </script>
 
-<style scoped>
+<style lang="less">
+  .uploadfile{
+     width:300px;
+    .upload-demo{
+      display: inline-block;
+      .el-upload{
+        margin-right: 100px;
+      }
+    }
+    .el-upload-list{
+      display: inline-block;
+      vertical-align: top;
+    }
+  }
 
 </style>

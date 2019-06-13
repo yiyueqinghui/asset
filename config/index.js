@@ -19,6 +19,14 @@ module.exports = {
         pathRewrite: {
           '^/fake-api': ''
         }
+      },
+      '/upload-api':{
+        target: 'http://10.12.204.23:8888',     //设置你调用的接口域名和端口号 别忘了加http
+        changeOrigin: true,           //开启跨域
+        secure:false,                // 如果是https接口，需要配置这个参数
+        pathRewrite: {
+          '^/upload-api': ''
+        }
       }
     },
 

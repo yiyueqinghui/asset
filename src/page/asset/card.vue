@@ -93,19 +93,8 @@
           <el-row>
             <el-col :sm="16">
               <el-form-item label="身份证复印件">
-                <el-upload
-                  label="file"
-                  class="upload-file"
-                  drag
-                  :action="uploadUrl"
-                  :data="doorData">
-                  <i class="el-icon-upload"></i>
-                  <div class="el-upload__text">将发票文件拖到此处，或<em>点击上传</em></div>
-                </el-upload>
+                <UploadFile :upload-data="identifyFile" @uploadSuccess="uploadSuccess"></UploadFile>
               </el-form-item>
-            </el-col>
-            <el-col :sm="8" style="text-align: right">
-               <img :src="uploadSrc" style="width: auto;height:180px;"/>
             </el-col>
           </el-row>
         </el-form>
@@ -121,6 +110,7 @@
 <script>
     import EditorInfo from '../../components/common/editorInfo'
     import SelfInput from '../../components/common/selfInput'
+    import UploadFile from '../../components/common/uploadFile'
     export default {
       data: function () {
         return {
@@ -196,15 +186,22 @@
               value:'类别三'
             }
           ],
-          doorData:{},
           uploadUrl:'',
-          uploadSrc:require('../../assets/img/test.jpg')
+          uploadSrc:require('../../assets/img/test.jpg'),
+          identifyFile:{
+            name:'identifyFile'
+          }
 
         }
       },
       methods:{
         init(){
 
+        },
+        uploadSuccess(res){
+          let key = res[1],
+            val = res[0].message;
+          this.formData[key] = val;
         },
         querySearch(queryString, cb) {
           var departmentList = this.departmentList;
@@ -263,7 +260,8 @@
       },
       components:{
         EditorInfo,
-        SelfInput
+        SelfInput,
+        UploadFile
       },
       mounted(){
          let arr = new Array(30).fill(this.wareData[0]);

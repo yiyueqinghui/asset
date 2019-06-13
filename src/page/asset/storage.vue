@@ -57,30 +57,30 @@
         </el-table-column>
         <el-table-column  label="购入时间" width="120" sortable prop="purchaseDate"  align="center">
         </el-table-column>
-        <!--<el-table-column  label="所属公司" prop="blong"  align="center">-->
-        <!--</el-table-column>-->
+        <el-table-column  label="所属公司" prop=""  align="center">
+        </el-table-column>
         <el-table-column  label="发票号码" width="100" prop="invoice"  align="center">
         </el-table-column>
         <el-table-column  label="实付金额" prop="amount"  align="center">
         </el-table-column>
-        <!--<el-table-column  label="使用公司" prop="useCompany"  align="center">-->
-        <!--</el-table-column>-->
-        <!--<el-table-column  label="使用部门" prop="useDepart"  align="center">-->
-        <!--</el-table-column>-->
-        <!--<el-table-column  label="使用人" prop="usePerson"  align="center">-->
-        <!--</el-table-column>-->
-        <!--<el-table-column  label="供应商" prop="supplier"  align="center">-->
-        <!--</el-table-column>-->
-        <!--<el-table-column  label="联系人(供应商)" width="130" prop="contacts"  align="center">-->
-        <!--</el-table-column>-->
-        <!--<el-table-column  label="联系电话(供应商)" width="130" prop="tel"  align="center">-->
-        <!--</el-table-column>-->
+        <el-table-column  label="使用公司" prop="useCompany"  align="center">
+        </el-table-column>
+        <el-table-column  label="使用部门" prop="useDepart"  align="center">
+        </el-table-column>
+        <el-table-column  label="使用人" prop="usePerson"  align="center">
+        </el-table-column>
+        <el-table-column  label="供应商" prop="supplier"  align="center">
+        </el-table-column>
+        <el-table-column  label="联系人(供应商)" width="130" prop="contacts"  align="center">
+        </el-table-column>
+        <el-table-column  label="联系电话(供应商)" width="130" prop="tel"  align="center">
+        </el-table-column>
         <el-table-column  label="存放地点" prop="storedPosition"  align="center">
         </el-table-column>
-        <!--<el-table-column  label="创建人" prop="creater"  align="center">-->
-        <!--</el-table-column>-->
-        <!--<el-table-column  label="创建时间" width="120" sortable prop="createDate"   align="center">-->
-        <!--</el-table-column>-->
+        <el-table-column  label="创建人" prop="creater"  align="center">
+        </el-table-column>
+        <el-table-column  label="创建时间" width="120" sortable prop="createDate"   align="center">
+        </el-table-column>
         <el-table-column  label="备注" prop="memo"  align="center">
         </el-table-column>
 
@@ -132,9 +132,9 @@
               </el-col>
             </el-row>
             <el-row>
-              <!--<el-col :sm="8">-->
-                <!--<SelfInput type="2" labelName="所属机构" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>-->
-              <!--</el-col>-->
+              <el-col :sm="8">
+                <SelfInput type="2" labelName="所属机构" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
               <el-col :sm="8">
                 <SelfInput labelName="发票号码" keyName="invoice" :val="formData.invoice" :required="true" @changeFormVal="changeFormVal"></SelfInput>
               </el-col>
@@ -145,22 +145,22 @@
                 <!--</el-form-item>-->
               </el-col>
             </el-row>
-            <!--<el-row>-->
-              <!--<el-col :sm="8">-->
-                <!--<SelfInput type="2"  labelName="使用公司" :selectList="companyList"  keyName="useCompany" :val="formData.useCompany" :required="true" @changeFormVal="changeFormVal"></SelfInput>-->
-              <!--</el-col>-->
-              <!--<el-col :sm="8">-->
-                <!--<SelfInput type="2" labelName="使用部门" :selectList="departList" keyName="useDepart" :val="formData.useDepart" :required="true" @changeFormVal="changeFormVal"></SelfInput>-->
-              <!--</el-col>-->
-              <!--<el-col :sm="8">-->
-                <!--<SelfInput labelName="使用人" keyName="usePerson" :val="formData.usePerson" :required="true" @changeFormVal="changeFormVal"></SelfInput>-->
-              <!--</el-col>-->
-            <!--</el-row>-->
-            <!--<el-row>-->
-              <!--<el-col :sm="8">-->
-                <!--<SelfInput  labelName="存放地点"  keyName="storedPosition" :val="formData.storedPosition" :required="true" @changeFormVal="changeFormVal"></SelfInput>-->
-              <!--</el-col>-->
-            <!--</el-row>-->
+            <el-row>
+              <el-col :sm="8">
+                <SelfInput type="2"  labelName="使用公司" :selectList="companyList"  keyName="useCompany" :val="formData.useCompany" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="8">
+                <SelfInput type="2" labelName="使用部门" :selectList="departList" keyName="useDepart" :val="formData.useDepart" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="8">
+                <SelfInput labelName="使用人" keyName="usePerson" :val="formData.usePerson" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="8">
+                <SelfInput  labelName="存放地点"  keyName="storedPosition" :val="formData.storedPosition" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
             <el-row>
               <el-col :span="12">
                 <SelfInput type="4" labelName="备注"  keyName="memo" :val="formData.memo" @changeFormVal="changeFormVal"></SelfInput>
@@ -168,22 +168,22 @@
             </el-row>
             <!--维保信息-->
             <el-row class="dialog_subtitle">维保信息</el-row>
-            <!--<el-row>-->
-              <!--<el-col :sm="8">-->
-                <!--<SelfInput  labelName="供应商"  keyName="supplier" :val="formData.supplier" @changeFormVal="changeFormVal"></SelfInput>-->
-              <!--</el-col>-->
-              <!--<el-col :sm="8">-->
-                <!--<SelfInput  labelName="联系人"  keyName="contacts" :val="formData.contacts" @changeFormVal="changeFormVal"></SelfInput>-->
-              <!--</el-col>-->
-              <!--<el-col :sm="8">-->
-                <!--<SelfInput  labelName="联系方式"  keyName="tel" :val="formData.tel" @changeFormVal="changeFormVal"></SelfInput>-->
-              <!--</el-col>-->
-            <!--</el-row>-->
-            <!--<el-row>-->
-              <!--<el-col :sm="12">-->
-                <!--<SelfInput type="4" labelName="维保说明"  keyName="explain" :val="formData.explain" @changeFormVal="changeFormVal"></SelfInput>-->
-              <!--</el-col>-->
-            <!--</el-row>-->
+            <el-row>
+              <el-col :sm="8">
+                <SelfInput  labelName="供应商"  keyName="supplier" :val="formData.supplier" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="8">
+                <SelfInput  labelName="联系人"  keyName="contacts" :val="formData.contacts" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="8">
+                <SelfInput  labelName="联系方式"  keyName="tel" :val="formData.tel" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput type="4" labelName="维保说明"  keyName="explain" :val="formData.explain" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
           </el-form>
         </el-scrollbar>
         <div slot="footer" class="dialog-footer">

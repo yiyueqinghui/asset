@@ -308,6 +308,7 @@
             waterMoney:0,
             creater:'',
             createDate:'',
+            contactFile:'',
             remarks:''
           },
           dialogLoading: false,
@@ -360,8 +361,10 @@
         init(){
 
         },
-        uploadSuccess(){
-
+        uploadSuccess(res){
+          let key = res[1],
+              val = res[0].message;
+          this.formData[key] = val;
         },
         handleCommand(command){
            if(command == 'upload'){
@@ -454,8 +457,8 @@
           this.dialogFormVisible = false;
         },
         changeFormVal([key,val]){
-          console.log(val);
           this.formData[key] = val;
+          console.log(this.formData);
         },
         filterStatus(value,row){
           console.log(value);

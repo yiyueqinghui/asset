@@ -65,7 +65,7 @@
         </el-pagination>
       </el-row>
       <!--新增/修改-->
-      <el-dialog
+      <el-dialog v-if="dialogFormVisible"
         :close-on-click-modal="false" :close-on-press-escape="false"
         :title="formTitle"
         :visible.sync="dialogFormVisible"
@@ -113,16 +113,8 @@
           </el-row>
           <el-row>
             <el-col :sm="16">
-              <el-form-item label="（附件）发票">
-                <el-upload
-                  label="发票金额"
-                  class="upload-file"
-                  drag
-                  :action="uploadUrl"
-                  :data="invoiceData">
-                  <i class="el-icon-upload"></i>
-                  <div class="el-upload__text">将发票文件拖到此处，或<em>点击上传</em></div>
-                </el-upload>
+              <el-form-item label="发票附件">
+                <UploadFile :upload-data="invoiceFile" @uploadSuccess="uploadSuccess"></UploadFile>
               </el-form-item>
             </el-col>
           </el-row>
@@ -140,6 +132,7 @@
     import EditorInfo from '../../components/common/editorInfo'
     import SelfInput from '../../components/common/selfInput'
     import downloadModule from '../../utils/download'
+    import UploadFile from '../../components/common/uploadFile'
     export default {
       data: function () {
         return {
@@ -201,24 +194,24 @@
           dialogFormVisible:false,
           formTitle: '新增',
           formData: {
-            name: '11010001',
-            type: '办工卓',
-            code: '办公设备',
-            size: '双人',
-            SN: '002110C0D0034',
-            purchaseDate: '2019-05-10',
-            blong: '测试机构',
-            bill: '102110987',
-            money: 200,
-            useCompany: '网开',
-            useDepart: '研发部',
-            usePerson: 'xxx',
-            supplier: '供应商1',
-            contacts: '张峰',
-            tel: '114',
+            name: '',
+            type: '',
+            code: '',
+            size: '',
+            SN: '',
+            purchaseDate: '',
+            blong: '',
+            bill: '',
+            money: 0,
+            useCompany: '',
+            useDepart: '',
+            usePerson: '',
+            supplier: '',
+            contacts: '',
+            tel: '',
             site: '',
-            creater: '李小二',
-            createDate: '2018-9-8',
+            creater: '',
+            createDate: '',
             remarks: ''
           },
           dialogLoading: false,
@@ -234,7 +227,9 @@
               value:'类别三'
             }
           ],
-          uploadUrl:''
+          invoiceFile:{
+            name:'invoiceFile'
+          }
 
 
         }
@@ -243,6 +238,11 @@
         init(){
           this.fetchData();
 
+        },
+        uploadSuccess(res){
+          let key = res[1],
+            val = res[0].message;
+          this.formData[key] = val;
         },
         handleCommand(command){
           if(command == 'upload'){
@@ -289,7 +289,6 @@
         clickBtn(type){
           this.editDate = this.$Store.formatDate();
           this.dialogFormVisible = true;
-
         },
         handleSelectionChange(val) {
           this.multipleSelection = val;
@@ -349,7 +348,8 @@
       components:{
         EditorInfo,
         SelfInput,
-        downloadModule
+        downloadModule,
+        UploadFile
       },
       mounted(){
          this.init();

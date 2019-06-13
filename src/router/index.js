@@ -96,12 +96,12 @@ export default new Router({
           meta:'维保信息变更',
           path:'changeInfo',
           component:()=>import('@/page/asset/changeInfo')
+        },
+        {
+          meta:'办公职场管理',
+          path:'office',
+          component:()=>import('@/page/asset/office')
         }
-        // ,{
-        //   meta:'办公职场管理',
-        //   path:'office',
-        //   component:()=>import('@/page/asset/office')
-        // },
         // ,{
         //   meta:'资产调拨',
         //   path:'',

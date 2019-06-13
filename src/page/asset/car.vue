@@ -161,21 +161,21 @@
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <el-form-item label="被保人">
+              <el-form-item label="被保人附件">
                 <UploadFile :upload-data="uploadData" @uploadSuccess="uploadSuccess"></UploadFile>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <el-form-item label="行驶本">
+              <el-form-item label="行驶本附件">
                 <UploadFile :upload-data="drivingData" @uploadSuccess="uploadSuccess"></UploadFile>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <el-form-item label="车辆保养信息">
+              <el-form-item label="车辆保养附件">
                 <UploadFile :upload-data="carData" @uploadSuccess="uploadSuccess"></UploadFile>
               </el-form-item>
             </el-col>
@@ -239,7 +239,8 @@
             "administrator": "管理人",
             "noOfKeys": "10",
             "userPhone": "使用人联系电话",
-            "keySerials": "钥匙编号"
+            "keySerials": "钥匙编号",
+
           },
           dialogLoading: false,
           editDate: '2019-5-14',
@@ -256,13 +257,13 @@
           ],
           uploadVisible:false,
           uploadData:{
-            name:'person'
+            name:'personFile'
           },
           drivingData:{
-            name:'driving'
+            name:'drivingFile'
           },
           carData:{
-            name:'car'
+            name:'carFile'
           },
           validDate:[]
         }
@@ -292,8 +293,10 @@
           })
 
         },
-        uploadSuccess(arr){
-            console.log(arr);
+        uploadSuccess(res){
+          let key = res[1],
+              val = res[0].message;
+          this.formData[key] = val;
         },
         closeUpload(){
           this.uploadVisible = false;
