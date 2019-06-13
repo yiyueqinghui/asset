@@ -12,7 +12,7 @@ export default new Router({
       children:[
         {
           path:'',
-          component:()=>import('@/page/asset/index')
+          component:()=>import('@/page/home')
         },
         {
           path:'staff',
@@ -22,12 +22,15 @@ export default new Router({
     },
     {
       path:'/asset',
-      redirect:'/asset/staff',
       component:()=> import('@/page/index'),     //按需加载组件
       children:[
         {
-          path:'staff',
-          component:()=>import('@/page/staff')
+          path:'',
+          component:()=>import('@/page/asset/index')
+        },
+        {
+          path:'back',
+          component:()=>import('@/page/asset/back')
         },
         {
           path:'car',

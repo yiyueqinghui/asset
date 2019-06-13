@@ -65,6 +65,11 @@
         slideWidth:200,
         tab:[
           {
+            title:'首页',
+            icon:'',
+            url:'/'
+          },
+          {
             title:'员工个人显示页面',
             icon:'',
             url:'/staff'
@@ -75,7 +80,7 @@
             nav:[
               {
                 title:'资产首页',
-                url:'/',
+                url:'/asset',
                 icon:''
               },
               {
@@ -86,6 +91,11 @@
               {
                 title:'资产领用',
                 url:'/asset/receive',
+                icon:''
+              },
+              {
+                title:'退库确认',
+                url:'/asset/back',
                 icon:''
               },
               {

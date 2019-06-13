@@ -25,7 +25,7 @@
             <span>联系方式</span>{{userData.tel}}
           </div>
         </el-card>
-        <el-row style="margin-top: 20px;">
+        <el-row style="margin:20px 0;">
           <h4 class="title">配置角色</h4>
           <el-transfer
             v-model="authed"
@@ -36,6 +36,10 @@
                 label: 'label'
               }">
           </el-transfer>
+        </el-row>
+        <el-row style="text-align:center">
+          <el-button type="primary" @click="confirmBtn">确定</el-button>
+          <el-button type="primary" @click="cancel">取消</el-button>
         </el-row>
       </el-row>
     </div>
@@ -85,11 +89,13 @@
       },
       methods:{
         confirmBtn(){
-          this.dialogFormVisible = false;
+          this.visible = false;
+        },
+        cancel(){
+          this.visible = false;
         },
         search(){
           this.visible = true;
-
         }
       },
       watch:{

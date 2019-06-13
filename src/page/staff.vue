@@ -6,14 +6,12 @@
         <el-button type="primary" @click="cancleAsset">退库</el-button>
       </el-row>
       <!--表格-->
-      <el-table :data="personAsset"  @selection-change="handleSelectionChange" ref="multipleTable"  border stripe fit style="overflow-x: auto">
-        <el-table-column type="selection" width="55">
-        </el-table-column>
+      <el-table :data="personAsset"  border stripe fit style="overflow-x: auto">
         <el-table-column type="index" label="序列" width="60" align="center">
         </el-table-column>
         <el-table-column  label="资产盘点状态" width="120"  align="center">
           <template slot-scope="scope">
-             {{scope.row.status == '1'?'在':'不在'}}
+             {{scope.row.status}}
           </template>
         </el-table-column>
         <el-table-column  label="照片"  align="center">
@@ -51,36 +49,53 @@
         </el-pagination>
       </el-row>
       <el-dialog
+        v-if="this.visible"
         :close-on-click-modal="false" :close-on-press-escape="false"
-        title="盘点"
+        :title="this.optStatus===1?'盘点':'退库'"
         :visible.sync="visible"
         width="960px"
         top="80px">
         <el-scrollbar class="dialogZone">
-          <el-form :model="formData"  label-width="auto"  class="demo-form-inline self-input">
-            <el-row class="dialog_subtitle">基本信息</el-row>
-            <el-row>
-              <el-col :sm="12">
-                <SelfInput type="2" labelName="资产盘点状态" :selectList="statusList" keyName="status" :val="formData.status" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
-              </el-col>
-              <el-col :sm="12">
-                <SelfInput labelName="资产编码"  keyName="code" :val="formData.code" :disabled="true"  @changeFormVal="changeFormVal"></SelfInput>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :sm="12">
-                <SelfInput labelName="资产编码"  keyName="code" :val="formData.code" :disabled="true"  @changeFormVal="changeFormVal"></SelfInput>
-              </el-col>
-              <el-col :sm="12">
-                <SelfInput labelName="资产编码"  keyName="code" :val="formData.code" :disabled="true"  @changeFormVal="changeFormVal"></SelfInput>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :sm="12">
-                <SelfInput labelName="资产编码"  keyName="code" :val="formData.code" :disabled="true"  @changeFormVal="changeFormVal"></SelfInput>
-              </el-col>
-            </el-row>
-          </el-form>
+          <el-table :data="personAsset"  @selection-change="handleSelectionChange" ref="multipleTable"  border stripe fit style="overflow-x: auto">
+            <el-table-column type="selection" width="55" v-if="optStatus === 2">
+            </el-table-column>
+            <el-table-column type="index" label="序列" width="60" align="center">
+            </el-table-column>
+            <el-table-column  label="资产盘点状态" width="120"  align="center">
+              <template slot-scope="scope">
+                <el-select  v-model="scope.row.status" placeholder="请选择" v-if="optStatus === 1" >
+                  <el-option
+                    v-for="item in statusList"
+                    :key="item.value"
+                    :label="item.value"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+                <span v-else>{{scope.row.status}}</span>
+              </template>
+
+            </el-table-column>
+            <el-table-column  label="照片"  align="center">
+              <template slot-scope="scope">
+                <img class="tabPic" :src="scope.row.src" />
+              </template>
+            </el-table-column>
+            <el-table-column  label="资产编码" prop="code"  align="center">
+            </el-table-column>
+            <el-table-column  label="资产名称" prop="name"  align="center">
+            </el-table-column>
+            <el-table-column  label="资产类别" prop="type"  align="center">
+            </el-table-column>
+            <el-table-column  label="规格型号" prop="size"  align="center">
+            </el-table-column>
+            <el-table-column  label="SN号" prop="SN"  align="center">
+            </el-table-column>
+            <el-table-column  label="购入时间" prop="purchaseDate"  align="center">
+            </el-table-column>
+            <el-table-column  label="备注" prop="remarks"  align="center">
+            </el-table-column>
+
+          </el-table>
         </el-scrollbar>
         <div slot="footer" class="dialog-footer">
           <el-button @click="visible = false">取 消</el-button>
@@ -96,9 +111,10 @@
     export default {
       data(){
         return {
+          optStatus:1,        // 1 盘点   2 退库
           personAsset:[
             {
-              status:1,
+              status:'存在',
               src:'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
               code:'0000',
               name:'电脑',
@@ -109,7 +125,7 @@
               remarks:''
             },
             {
-              status:1,
+              status:'存在',
               src:'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
               code:'0000',
               name:'电脑',
@@ -146,10 +162,12 @@
       },
       methods:{
         checkAsset(){
+          this.optStatus = 1;
           this.visible = true;
         },
         cancleAsset(){
-
+          this.optStatus = 2;
+          this.visible = true;
         },
         handleSelectionChange(val) {
           this.multipleSelection = val;
@@ -163,6 +181,18 @@
           this.currentPage = val;
         },
         confirmBtn(){
+          if(this.optStatus === 1){
+            this.$message({
+              message:'更新盘点状态',
+              type:'success'
+            })
+          }else if(this.optStatus === 2){
+            this.$message({
+              message:'退库成功！',
+              type:'success'
+            })
+          }
+          this.visible = false;
 
         },
         changeFormVal([key,val]){
