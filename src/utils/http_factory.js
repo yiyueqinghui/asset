@@ -1,6 +1,6 @@
 import axios from 'axios';
 import qs from 'qs';
-import { Message } from 'element-ui';
+import { Message,Loading} from 'element-ui';
 
 //axios  https://www.npmjs.com/package/axios
 let http = axios.create({
@@ -60,6 +60,7 @@ function ApiAxios(method, url, params,config){
   config = deepObjectMerge(default_config,config);
 
   return new Promise((resolve,reject)=>{
+    let loadingInstance = Loading.service({ fullscreen: true });
     http(config).then(res=>{
       if(res.status < 300 && res.status >= 200){
         return resolve(res.data);
@@ -76,6 +77,8 @@ function ApiAxios(method, url, params,config){
         type:'warning'
       })
       return reject(res);
+    }).finally(()=>{
+      loadingInstance.close();
     })
   })
 }
