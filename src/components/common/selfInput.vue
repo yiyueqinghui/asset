@@ -9,8 +9,9 @@
         <el-select v-model="modelVal" filterable placeholder="请选择" @input="changeVal" :disabled="disabled">
           <el-option
             v-for="item in selectList"
-            :key="item.value"
-            :value="item.value">
+            :key="item.id"
+            :label="item.data"
+            :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>

@@ -3,6 +3,16 @@ import qs from 'qs';
 import { Message,Loading} from 'element-ui';
 
 //axios  https://www.npmjs.com/package/axios
+function getToken(){
+  let token = localStorage.getItem('token');
+  console.log(token);
+  while(token==null){
+    token = localStorage.getItem('token');
+  }
+  console.log(token);
+  return token;
+}
+// getToken();
 let http = axios.create({
   baseURL: process.env.API_ROOT,
   timeout:1000*6,
@@ -10,14 +20,23 @@ let http = axios.create({
   transformRequest: [],     //请求之前,修改request数据
   transformResponse:[],      //响应之后,修改response数据
   headers:{
-    "Authorization":"Bearer "+localStorage.getItem('token')
+    // "Authorization":"Bearer "+localStorage.getItem('token')
   }
 });
 
 //请求拦截器
 http.interceptors.request.use(function (config) {
-  // console.log(config);
-  return config;
+  let url = config.url.replace(config.baseURL,'');
+  if(url === '/Token'){
+    return config;
+  }else{
+    let token = localStorage.getItem('token');
+    while(token==='null'){
+      token = localStorage.getItem('token');
+    }
+    config.headers['Authorization'] = "Bearer "+token;
+    return config;
+  }
 }, function (error) {
   return Promise.reject(error);
 });

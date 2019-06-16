@@ -13,15 +13,28 @@ const URLS = {
   ICP:'/api/vera/icp/',
   CAR:'/api/vera/car/',
   ASSET:'/api/vera/item/',
-  INVOICE:'/api/vera/invoice/'
+  INVOICE:'/api/vera/invoice/',
+
+  TOKEN:'/Token',
+  SELECTLIST:'/api/vera/lookups'
 
 }
 
 
 
 const Home = {
-	detail:(data)=>{ return	Get('/api/1.0/page/flight',data) },
-  getToken:(data)=>{ return Post('/Token',data,{headers:{"Content-Type":"application/x-www-form-urlencoded"}})}
+  // getToken:(data)=>{ return Post('/Token',data,{headers:{"Content-Type":"application/x-www-form-urlencoded"}})},
+  getToken:(method,data)=>{
+    let headers = {headers:{"Content-Type":"application/x-www-form-urlencoded"}};
+    let url = initUrl(data,method,URLS.TOKEN);
+    return ApiAxios(method,url,data,headers)
+  },
+
+  selectList:(method,data)=>{
+    let url = initUrl(data,method,URLS.SELECTLIST);
+    data = initData(data,method,URLS.SELECTLIST);
+    return ApiAxios(method,url,data)
+  }
 }
 const Asset = {
   icp:(method,data)=>{
