@@ -111,6 +111,7 @@
       },
       watch:{
         val:(newVal,oldVal)=>{
+          console.log(newVal);
           this.modelVal = newVal;
         }
       },

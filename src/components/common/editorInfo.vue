@@ -18,9 +18,9 @@
               <el-input v-model="formData.blongDep" :disabled="true"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="6" :sm="6">
+          <el-col :span="6" :sm="6" >
             <el-form-item :label="textObj.label" style="padding-right: 20px;">
-              <el-input v-model="formData.editDate" :disabled="true"></el-input>
+              <el-input v-if="visible" v-model="formData.editDate" :disabled="true"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -52,7 +52,15 @@
             blongOrg:'',
             blongDep:'',
             editDate:''
-          }
+          },
+          visible:true
+        }
+      },
+      methods:{
+        updateDate(date){
+          this.formData.editDate = date;
+          this.visible = false;
+          this.visible = true;
         }
       },
       mounted(){

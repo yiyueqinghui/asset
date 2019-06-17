@@ -37,24 +37,9 @@ const Home = {
   }
 }
 const Asset = {
-  icp:(method,data)=>{
-    let url = initUrl(data,method,URLS.ICP);
-    data = initData(data,method,URLS.ICP);
-    return ApiAxios(method,url,data)
-  },
-  car:(method,data)=>{
-    let url = initUrl(data,method,URLS.CAR);
-    data = initData(data,method,URLS.CAR);
-    return ApiAxios(method,url,data)
-  },
   storage:(method,data)=>{
     let url = initUrl(data,method,URLS.ASSET);
     data = initData(data,method,URLS.ASSET);
-    return ApiAxios(method,url,data)
-  },
-  invoice:(method,data)=>{
-    let url = initUrl(data,method,URLS.INVOICE);
-    data = initData(data,method,URLS.INVOICE);
     return ApiAxios(method,url,data)
   }
 

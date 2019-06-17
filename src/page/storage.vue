@@ -1,9 +1,23 @@
 <template>
     <div id="storage">
-      <EditorInfo :edit-date="formData.editDate"></EditorInfo>
-      <el-form :inline="true" :model="formData"  label-width="auto"   class="demo-form-inline self-input">
+      <EditorInfo  ref="editorInfo" :edit-date="formData.editDate"></EditorInfo>
+      <el-form v-if="this.formVisible" :inline="true" ref="storageInfo" :model="formData"  label-width="auto"   class="demo-form-inline self-input" id="storageId" >
         <el-row class="dialog_subtitle">基本信息</el-row>
-        <el-row>
+        <!--<el-row>-->
+          <!--<el-col :sm="8" class="category">-->
+            <!--<el-form-item label="资产类型">-->
+              <!--<treeselect-->
+                <!--v-model="value"-->
+                <!--@select="selectVal"-->
+                <!--:multiple="false"-->
+                <!--placeholder="请选择"-->
+                <!--:show-count="true"-->
+                <!--:options="assetSelect" />-->
+            <!--</el-form-item>-->
+          <!--</el-col>-->
+        <!--</el-row>-->
+         <!--发票-->
+        <el-row v-show="this.type===2">
           <el-col :sm="8" class="category">
             <el-form-item label="资产类型">
               <treeselect
@@ -15,10 +29,6 @@
                 :options="assetSelect" />
             </el-form-item>
           </el-col>
-        </el-row>
-
-          <!--发票-->
-        <el-row v-if="this.type===2">
           <el-col :sm="8">
             <SelfInput type="2" :selectList="invoiceCategoryList"   labelName="发票类型" keyName="invoiceCategory" :val="formData.invoiceCategory" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
@@ -31,20 +41,28 @@
           <el-col :sm="8">
             <SelfInput type="5" labelName="发票金额" keyName="invoiceAmount" :val="formData.invoiceAmount" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
-
-            <el-col :sm="24">
-              <SelfInput  type="4" labelName="开票备注"   keyName="invoiceMemo" :val="formData.invoiceMemo" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          <el-row>
-            <el-col :sm="12">
-              <el-form-item label="发票附件">
-                <UploadFile :upload-data="{name:'invoicePic'}" @uploadSuccess="uploadSuccess"></UploadFile>
-              </el-form-item>
-            </el-col>
-          </el-row>
+          <el-col :sm="24">
+            <SelfInput  type="4" labelName="发票备注"   keyName="invoiceMemo" :val="formData.invoiceMemo" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+          </el-col>
+          <el-col :sm="24">
+            <el-form-item label="发票附件">
+              <UploadFile :upload-data="{name:'invoicePic'}" @uploadSuccess="uploadSuccess"></UploadFile>
+            </el-form-item>
+          </el-col>
         </el-row>
         <!--门禁卡-->
-        <el-row v-else-if="this.type===5">
+        <el-row v-show="this.type===5">
+          <el-col :sm="8" class="category">
+            <el-form-item label="资产类型">
+              <treeselect
+                v-model="value"
+                @select="selectVal"
+                :multiple="false"
+                placeholder="请选择"
+                :show-count="true"
+                :options="assetSelect" />
+            </el-form-item>
+          </el-col>
           <el-col :sm="8">
             <SelfInput type="1" labelName="姓名" keyName="Name" :val="formData.Name" :required="true" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
@@ -60,17 +78,25 @@
           <el-col :sm="8">
             <SelfInput type="1"  labelName="身份证号" keyName="idCardNo" :val="formData.idCardNo" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
-          <el-row>
-            <el-col :sm="12">
-              <el-form-item label="身份证复印件">
-                <UploadFile :upload-data="{name:'idPhotoCopy'}" @uploadSuccess="uploadSuccess"></UploadFile>
+          <el-col :sm="24">
+            <el-form-item label="身份证复印件">
+              <UploadFile :upload-data="{name:'idPhotoCopy'}" @uploadSuccess="uploadSuccess"></UploadFile>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <!--商标注册-->
+        <el-row v-show="this.type===6">
+            <el-col :sm="8" class="category">
+              <el-form-item label="资产类型">
+                <treeselect
+                  v-model="value"
+                  @select="selectVal"
+                  :multiple="false"
+                  placeholder="请选择"
+                  :show-count="true"
+                  :options="assetSelect" />
               </el-form-item>
             </el-col>
-          </el-row>
-        </el-row>
-
-          <!--商标注册-->
-        <el-row v-else-if="this.type===6">
             <el-col :sm="8">
               <SelfInput type="2" labelName="公司名称" keyName="company" :val="formData.company" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
@@ -98,19 +124,27 @@
               </el-form-item>
             </el-col>
             <el-col :sm="24">
-              <SelfInput  type="4" labelName="备注" keyName="trademarkMemo" :val="formData.trademarkMemo" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  type="4" labelName="商标备注" keyName="trademarkMemo" :val="formData.trademarkMemo" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-row>
-              <el-col :sm="12">
-                <el-form-item label="商标附件">
-                  <UploadFile :upload-data="{name:'trademarkAttachment'}" @uploadSuccess="uploadSuccess"></UploadFile>
-                </el-form-item>
-              </el-col>
-            </el-row>
+            <el-col :sm="12">
+              <el-form-item label="商标附件">
+                <UploadFile :upload-data="{name:'trademarkAttachment'}" @uploadSuccess="uploadSuccess"></UploadFile>
+              </el-form-item>
+            </el-col>
         </el-row>
-
-            <!--icp-->
-        <el-row v-else-if="this.type===7">
+        <!--icp-->
+        <el-row v-show="this.type===7">
+           <el-col :sm="8" class="category">
+            <el-form-item label="资产类型">
+              <treeselect
+                v-model="value"
+                @select="selectVal"
+                :multiple="false"
+                placeholder="请选择"
+                :show-count="true"
+                :options="assetSelect" />
+            </el-form-item>
+          </el-col>
             <el-col :sm="8">
               <SelfInput type="2" :selectList="typeList" labelName="公司名称" keyName="company" :val="formData.company" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
@@ -140,20 +174,28 @@
             <el-col :sm="8">
               <SelfInput type="3" labelName="年检时间记录" keyName="annualInspection" :val="formData.annualInspection" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-              <el-col :sm="24">
-                <SelfInput type="4" labelName="ICP备注"   keyName="icpMemo" :val="formData.icpMemo" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-              </el-col>
-            <el-row>
-              <el-col :sm="15">
-                <el-form-item label="ICP附件上传">
-                  <UploadFile :upload-data="{name:'icpAttachment'}" @uploadSuccess="uploadSuccess"></UploadFile>
-                </el-form-item>
-              </el-col>
-            </el-row>
+            <el-col :sm="24">
+              <SelfInput type="4" labelName="ICP备注"   keyName="icpMemo" :val="formData.icpMemo" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="24">
+              <el-form-item label="ICP附件上传">
+                <UploadFile :upload-data="{name:'icpAttachment'}" @uploadSuccess="uploadSuccess"></UploadFile>
+              </el-form-item>
+            </el-col>
         </el-row>
-
-          <!--办公职场-->
-        <el-row v-else-if="this.type===8">
+        <!--办公职场-->
+        <el-row v-show="this.type===8">
+          <el-col :sm="8" class="category">
+            <el-form-item label="资产类型">
+              <treeselect
+                v-model="value"
+                @select="selectVal"
+                :multiple="false"
+                placeholder="请选择"
+                :show-count="true"
+                :options="assetSelect" />
+            </el-form-item>
+          </el-col>
             <el-col :sm="8">
               <SelfInput  labelName="公司名称" :selectList="typeList" keyName="company" :val="formData.company"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
@@ -214,20 +256,28 @@
             <el-col :sm="8">
               <SelfInput labelName="网费/月"  keyName="InternetCharge" :val="formData.InternetCharge" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-              <el-col :span="24">
-                <SelfInput type="4" labelName="职场备注"  keyName="branchMemo" :val="formData.branchMemo" @changeFormVal="changeFormVal"></SelfInput>
-              </el-col>
-            <el-row>
-              <el-col :sm="12">
-                <el-form-item label="合同附件上传">
-                  <UploadFile :upload-data="{name:'contractAttachment'}" @uploadSuccess="uploadSuccess"></UploadFile>
-                </el-form-item>
-              </el-col>
-            </el-row>
+            <el-col :span="24">
+              <SelfInput type="4" labelName="职场备注"  keyName="branchMemo" :val="formData.branchMemo" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
+              <el-form-item label="合同附件上传">
+                <UploadFile :upload-data="{name:'contractAttachment'}" @uploadSuccess="uploadSuccess"></UploadFile>
+              </el-form-item>
+            </el-col>
         </el-row>
-
-          <!--车辆-->
-        <el-row v-else-if="this.type===9">
+        <!--车辆-->
+        <el-row v-show="this.type===9">
+          <el-col :sm="8" class="category">
+            <el-form-item label="资产类型">
+              <treeselect
+                v-model="value"
+                @select="selectVal"
+                :multiple="false"
+                placeholder="请选择"
+                :show-count="true"
+                :options="assetSelect" />
+            </el-form-item>
+          </el-col>
             <el-col :sm="8">
               <SelfInput labelName="资产名称" keyName="vehicleCompany" :val="formData.vehicleCompany" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
@@ -262,7 +312,9 @@
               <SelfInput type="3" labelName="最新保养日期" keyName="lastMaintenance" :val="formData.lastMaintenance" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="3" labelName="预计下次保养期" keyName="nextMaintenance" :val="formData.nextMaintenance" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="预计下次保养期">
+                <el-input v-show="visible" v-model="formData.nextMaintenance" disabled="disabled"></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
               <SelfInput labelName="钥匙数量" keyName="noOfKeys" :val="formData.noOfKeys" :required="true" @changeFormVal="changeFormVal"></SelfInput>
@@ -277,57 +329,69 @@
               <SelfInput labelName="现使用机构" :selectList="typeList"  keyName="currentlyOwnedOrg" :val="formData.currentlyOwnedOrg"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="1" labelName="管理人" keyName="administrator" :val="formData.administrator" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="1" labelName="使用人联系电话" keyName="userPhone" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="1" labelName="使用人联系电话" keyName="userPhone" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="1" labelName="管理人" keyName="administrator" :val="formData.administrator" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="24">
+              <el-form-item label="被保人附件">
+                <UploadFile :upload-data="{name:'insuredAttachment'}" @uploadSuccess="uploadSuccess"></UploadFile>
+              </el-form-item>
+            </el-col>
+            <el-col :sm="24">
+              <el-form-item label="行驶本附件">
+                <UploadFile :upload-data="{name:'vehicleLicenseAttachment'}" @uploadSuccess="uploadSuccess"></UploadFile>
+              </el-form-item>
+            </el-col>
+            <el-col :sm="24">
+              <el-form-item label="车辆保养附件">
+                <UploadFile :upload-data="{name:'maintenanceAttachment'}" @uploadSuccess="uploadSuccess"></UploadFile>
+              </el-form-item>
             </el-col>
             <el-col :sm="24">
               <SelfInput type="4" labelName="备注" keyName="vehicleMemo" :val="formData.vehicleMemo"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-row>
-              <el-col :sm="12">
-                <el-form-item label="被保人附件">
-                  <UploadFile :upload-data="{name:'insuredAttachment'}" @uploadSuccess="uploadSuccess"></UploadFile>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :sm="12">
-                <el-form-item label="行驶本附件">
-                  <UploadFile :upload-data="{name:'vehicleLicenseAttachment'}" @uploadSuccess="uploadSuccess"></UploadFile>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :sm="12">
-                <el-form-item label="车辆保养附件">
-                  <UploadFile :upload-data="{name:'maintenanceAttachment'}" @uploadSuccess="uploadSuccess"></UploadFile>
-                </el-form-item>
-              </el-col>
-            </el-row>
         </el-row>
-
-
-          <!--默认-->
-        <el-row v-else-if="[0,1,3,4].indexOf(this.type) >= 0 ">
-        <el-col :sm="8">
-          <SelfInput  labelName="资产名称" keyName="name" :val="formData.name" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
-        </el-col>
+        <!--默认-->
+        <el-row v-show="[0,1,3,4].indexOf(this.type) >= 0 ">
+          <el-col :sm="8" class="category">
+            <el-form-item label="资产类型">
+              <treeselect
+                v-model="value"
+                @select="selectVal"
+                :multiple="false"
+                placeholder="请选择"
+                :show-count="true"
+                :options="assetSelect" />
+            </el-form-item>
+          </el-col>
           <el-col :sm="8">
-            <SelfInput  labelName="资产编码" keyName="assetNo" :val="formData.assetNo" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <SelfInput  labelName="资产名称" keyName="name" :val="formData.name" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
+          </el-col>
+          <el-col :sm="8">
+            <SelfInput  labelName="资产编码" keyName="assetNo" :val="formData.assetNo" :required="true" :disabled="true" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
           <el-col :sm="8">
             <SelfInput  labelName="规格型号" keyName="model" :val="formData.model" :required="true" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
-          <el-col :sm="8">
+          <el-col :sm="8" v-if="[3,4].indexOf(this.type)>=0">
             <SelfInput  labelName="SN号" keyName="serialNo" :val="formData.serialNo" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
           <el-col :sm="8">
-            <SelfInput  type="3" labelName="购入时间" keyName="purchaseDate" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <SelfInput type="2" :selectList="sourceList"  labelName="资产来源" keyName="source" :val="formData.source" :required="true" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
           <el-col :sm="8">
-            <SelfInput type="2" labelName="所属机构" :selectList="orgList"  keyName="blongOrg" :val="formData.blongOrg" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <SelfInput  type="3" labelName="购入/租用时间" keyName="purchaseDate" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+          </el-col>
+          <el-col :sm="8">
+            <SelfInput labelName="数量" keyName="number" :val="formData.number" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+          </el-col>
+          <el-col :sm="8" v-show="this.type === 3">
+            <SelfInput labelName="品牌"  keyName="brand" :val="formData.brand" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+          </el-col>
+          <el-col :sm="8" v-show="this.type === 3">
+            <SelfInput labelName="配置" keyName="config" :val="formData.config" :required="true" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
           <el-col :sm="8">
             <SelfInput labelName="发票号码" keyName="invoice" :val="formData.invoice" :required="true" @changeFormVal="changeFormVal"></SelfInput>
@@ -336,7 +400,10 @@
             <SelfInput type="5" labelName="实付金额" keyName="amount" :val="formData.amount" :required="true" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
           <el-col :sm="8">
-            <SelfInput type="2" labelName="使用机构" :selectList="orgList" keyName="useOrg" :val="formData.useOrg" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <SelfInput type="2" labelName="所属部门" :selectList="orgList"  keyName="blongOrg" :val="formData.blongOrg" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+          </el-col>
+          <el-col :sm="8">
+            <SelfInput type="2" labelName="使用部门" :selectList="orgList" keyName="useOrg" :val="formData.useOrg" :required="true" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
           <el-col :sm="8">
             <SelfInput labelName="使用人" keyName="usePerson" :val="formData.usePerson" :required="true" @changeFormVal="changeFormVal"></SelfInput>
@@ -348,10 +415,9 @@
             <SelfInput type="4" labelName="备注"  keyName="memo" :val="formData.memo" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
         </el-row>
-
-        <el-row style="text-align:left">
-            <el-button @click="reset">重置</el-button>
-            <el-button type="primary" @click="confirmBtn" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
+        <el-row style="text-align:center">
+           <!--<el-button type="primary">重置</el-button>-->
+           <el-button type="primary" @click="confirmBtn" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
         </el-row>
       </el-form>
     </div>
@@ -369,26 +435,7 @@
           validDate:[],
           formData: {
             "editDate": '',
-            "validDate":"",
-            "allocation": "调拨记录",
-            "status": "资产状态",
-            "usageId": "使用记录",
-            "serialNo": "SN号",
-            "model": "规格型号",
-            "category": "资产类别",
-            "name": "资产名称",
-            "storedPosition": "存放地点",
-            "assetNo": "资产编码",
-            "amount": "实付金额",
-            "purchaseDate": "",
-            "memo": "资产备注",
-            "source": "资产来源",
-            "invoice": "发票号码",
-            "invoiceCategory":"发票类型",
-            "invoiceNo":"发票号码",
-
-            "blongOrg": "",
-            "useOrg": ""
+            "category":''
           },
           categoryList: [],
           orgList: [],
@@ -467,6 +514,7 @@
           workCategoryList:[],
           payCategoryList:[],
           payWayList:[],
+          sourceList:[],
           typeList:[
             {
               id:1,
@@ -477,9 +525,9 @@
               data:'佳禾集团'
             }
           ],
-
-
-          type:1   //0默认 1 家具类 2 发票 3 电子产品 4 其他类 5 门禁卡 6 商标  7 ICP 8 办公职场 9 车辆
+          type:1,   //0默认 1 家具类 2 发票 3 电子产品 4 其他类 5 门禁卡 6 商标  7 ICP 8 办公职场 9 车辆
+          visible:true,
+          formVisible:true
         }
       },
       methods:{
@@ -492,18 +540,32 @@
           this.formData[key] = val;
         },
         changeFormVal([key,val]){
-          console.log(key,val);
           this.formData[key] = val;
           console.log(this.formData);
-        },
-        reset(){
+          if(key === 'lastMaintenance'){
+            let date = new Date(val).getTime(),
+                dateStamp = date + (180*24*3600*1000);
+            let afterDate = new Date(dateStamp);
+            let formatDate = afterDate.getFullYear()+'-'+(afterDate.getMonth()+1)+'-'+afterDate.getDate();
+            this.formData['nextMaintenance'] = formatDate;
+            this.visible = false;
+            this.visible = true;
+          }
 
         },
         confirmBtn(){
-
+          let data = Object.assign({},this.formData);
+          this.$axios.Asset.storage('POST',data).then(res=>{
+            this.$message({
+              message:'新增成功！',
+              type:'success'
+            })
+            this.fetchData();
+            this.dialogFormVisible = false;
+          })
         },
         selectVal(node){
-          console.log(node)
+          // console.log(node)
           let val = node.label;
           this.originSelect.forEach(item=>{
             let str = item.data;
@@ -521,8 +583,16 @@
               else if(label==='ICP') this.type=7;
               else if(label==='办公职场') this.type=8;
               else if(label==='车辆') this.type=9;
+
+
             }
           })
+          for(let i in this.formData){
+            delete this.formData[i];
+          }
+          this.formData.editDate = this.$Store.formatDate();
+          this.$refs.editorInfo.updateDate(this.formData.editDate);
+          console.log(this.formData);
           console.log(this.type);
         },
         standardData(data){
@@ -565,7 +635,7 @@
               arr.push(obj);
             }
           })
-          console.log(arr);
+          // console.log(arr);
           let reg = /[\u4e00-\u9fa5]/;
           this.value =reg.test(arr[0].id)?arr[0].children[0].id:arr[0].id;
           return arr;
@@ -578,8 +648,8 @@
         UploadFile
       },
       created(){
-        // this.formData.editDate = this.$Store.formatDate();
-        // console.log(this.formData.editDate);
+        this.formData.editDate = this.$Store.formatDate();
+        console.log(this.formData.editDate);
         let loginData = {
           grant_type:'password',
           username:'od59Ov8r8pVOZpNc0ggk_Zceek5E',
@@ -594,6 +664,8 @@
               if(response[i].name === '资产::资产类别'){
                 this.originSelect = response[i].values
                 this.assetSelect = this.standardData(response[i].values);
+              }else if(response[i].name === '资产::资产来源'){
+                this.sourceList = response[i].values;
               }else if(response[i].name === '发票::发票类型'){
                 this.invoiceCategoryList = response[i].values;
               }else if(response[i].name === '办公职场::职场类型'){
@@ -620,6 +692,12 @@
             this.formData.validDate = val.join('-');
           },
           deep:true
+        },
+        value:{
+          handler(val,oldval){
+            this.formData.category = val;
+          }
+
         }
       },
       mounted(){
@@ -637,10 +715,13 @@
     line-height: 40px;
   }
   .category{
-    height: 62px;
+    height: 64px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+  }
+  #storageId .el-col-sm-8{
+    height: 64px;
   }
 
 </style>
