@@ -420,6 +420,23 @@
            <el-button type="primary" @click="confirmBtn" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
         </el-row>
       </el-form>
+      <el-dialog
+        v-if="dialogFormVisible"
+        :close-on-click-modal="false" :close-on-press-escape="false"
+        title="确认信息"
+        :visible.sync="dialogFormVisible"
+        width="960px"
+        top="20px">
+        <el-scrollbar class="dialogZone">
+
+        </el-scrollbar>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="confirmDialog">确 定</el-button>
+        </div>
+      </el-dialog>
+
+
     </div>
 </template>
 
@@ -527,7 +544,8 @@
           ],
           type:1,   //0默认 1 家具类 2 发票 3 电子产品 4 其他类 5 门禁卡 6 商标  7 ICP 8 办公职场 9 车辆
           visible:true,
-          formVisible:true
+          formVisible:true,
+          dialogFormVisible:false
         }
       },
       methods:{
@@ -554,13 +572,15 @@
 
         },
         confirmBtn(){
+          this.dialogFormVisible = true;
+        },
+        confirmDialog(){
           let data = Object.assign({},this.formData);
           this.$axios.Asset.storage('POST',data).then(res=>{
             this.$message({
               message:'新增成功！',
               type:'success'
             })
-            this.fetchData();
             this.dialogFormVisible = false;
           })
         },
