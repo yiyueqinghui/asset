@@ -300,6 +300,8 @@
               })
               this.fetchData();
               this.dialogFormVisible = false;
+            }).catch(error=>{
+              // TODO error result
             })
           }
 

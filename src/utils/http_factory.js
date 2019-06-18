@@ -10,7 +10,9 @@ let http = axios.create({
   transformRequest: [],     //请求之前,修改request数据
   transformResponse:[],      //响应之后,修改response数据
   headers:{
-    "Authorization":"Bearer "+localStorage.getItem('token')
+    // "Authorization":"Bearer "+localStorage.getItem('token')
+    "Authorization":"Bearer api_token_admin"
+
   }
 });
 
