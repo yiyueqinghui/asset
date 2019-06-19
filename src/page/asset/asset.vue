@@ -1,5 +1,5 @@
 <template>
-    <div id="wareHousing">
+    <div id="asset">
       <!--查寻-->
       <el-form :inline="true"  :model="searchData" >
          <el-form-item label="使用公司部门">

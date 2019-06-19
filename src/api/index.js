@@ -6,13 +6,41 @@ function initData(data,method,url){
   return JSON.stringify(JSON.stringify(data));
 }
 function initUrl(data,method,url){
-  if(method.toUpperCase() == 'PUT' || method.toUpperCase() == 'DELETE') url += data.id;
+  // if(method.toUpperCase() == 'PUT' || method.toUpperCase() == 'DELETE') url += data.id;
+  // return url;
+  if(method.toUpperCase() == 'PUT' || method.toUpperCase() == 'DELETE'){
+    if(method.toUpperCase() == 'PUT'){
+      data._method="PUT"
+      method = "POST"
+    }
+    if(method.toUpperCase() == 'DELETE'){
+      data._method="DELETE"
+      method = "POST"
+    }
+  }
   return url;
 }
+
+function initStorage(data,method,url){
+  // if(method.toUpperCase() == 'PUT' || method.toUpperCase() == 'DELETE') url += data.id;
+  // return url;
+  if(method.toUpperCase() == 'PUT' || method.toUpperCase() == 'DELETE'){
+    if(method.toUpperCase() == 'PUT'){
+      data._method="PUT"
+      method = "POST"
+    }
+    if(method.toUpperCase() == 'DELETE'){
+      data._method="DELETE"
+      method = "POST"
+    }
+  }
+  return {method, data, url};
+}
+
 const URLS = {
   ICP:'/api/vera/icp/',
   CAR:'/api/vera/car/',
-  ASSET:'/api/vera/item/',
+  ASSET:'/api-1.0/asset/',
   INVOICE:'/api/vera/invoice/'
 
 }
@@ -35,9 +63,10 @@ const Asset = {
     return ApiAxios(method,url,data)
   },
   storage:(method,data)=>{
-    let url = initUrl(data,method,URLS.ASSET);
-    data = initData(data,method,URLS.ASSET);
-    return ApiAxios(method,url,data)
+    // console.log('method===' + method)
+    let res = initStorage(data,method,URLS.ASSET);
+    // data = initData(data,method,URLS.ASSET);
+    return ApiAxios(res.method,res.url,res.data)
   },
   invoice:(method,data)=>{
     let url = initUrl(data,method,URLS.INVOICE);

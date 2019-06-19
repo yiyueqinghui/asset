@@ -67,7 +67,7 @@ function ApiAxios(method, url, params,config){
         return resolve(res.data);
       }else{
         Message({
-          message:res.err,
+          message:res.message,
           type:'warning'
         })
         return;
