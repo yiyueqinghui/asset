@@ -21,10 +21,15 @@ function initUrl(data,method,url){
   return url;
 }
 
-function initStorage(data,method,url){
+function initPhpApi(data,method,url){
   // if(method.toUpperCase() == 'PUT' || method.toUpperCase() == 'DELETE') url += data.id;
   // return url;
-  if(method.toUpperCase() == 'PUT' || method.toUpperCase() == 'DELETE'){
+  console.log(method + "======" + JSON.stringify(data));
+  if(method.toUpperCase() == 'PUT' || method.toUpperCase() == 'DELETE' || method.toUpperCase() == 'POST'){
+    if(method.toUpperCase() == 'POST'){
+      data._method=""
+      method = "POST"
+    }
     if(method.toUpperCase() == 'PUT'){
       data._method="PUT"
       method = "POST"
@@ -34,15 +39,18 @@ function initStorage(data,method,url){
       method = "POST"
     }
   }
+  console.log(method);
   return {method, data, url};
 }
 
 const URLS = {
   ICP:'/api/vera/icp/',
-  CAR:'/api/vera/car/',
+  CAR:'/api-1.0/vehicle/',
   ASSET:'/api-1.0/asset/',
-  INVOICE:'/api/vera/invoice/'
-
+  INVOICE:'/api-1.0/invoice/',
+  BRAND:'/api-1.0/trademark/',
+  WORKPLACE:'/api-1.0/workplace/',
+  ALLOT:'/api-1.0/allot/'
 }
 
 
@@ -58,20 +66,29 @@ const Asset = {
     return ApiAxios(method,url,data)
   },
   car:(method,data)=>{
-    let url = initUrl(data,method,URLS.CAR);
-    data = initData(data,method,URLS.CAR);
-    return ApiAxios(method,url,data)
+    let res = initPhpApi(data,method,URLS.CAR);
+    return ApiAxios(res.method,res.url,res.data)
   },
   storage:(method,data)=>{
     // console.log('method===' + method)
-    let res = initStorage(data,method,URLS.ASSET);
-    // data = initData(data,method,URLS.ASSET);
+    let res = initPhpApi(data,method,URLS.ASSET);
     return ApiAxios(res.method,res.url,res.data)
   },
   invoice:(method,data)=>{
-    let url = initUrl(data,method,URLS.INVOICE);
-    data = initData(data,method,URLS.INVOICE);
-    return ApiAxios(method,url,data)
+    let res = initPhpApi(data,method,URLS.INVOICE);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+  brand:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.BRAND);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+  workplace:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.WORKPLACE);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+  allot:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.ALLOT);
+    return ApiAxios(res.method,res.url,res.data)
   }
 
 }

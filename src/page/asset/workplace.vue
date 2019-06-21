@@ -1,5 +1,5 @@
 <template>
-    <div id="wareHousing">
+    <div id="workplace">
       <!--查寻-->
       <el-form :inline="true"  :model="searchData" >
          <el-form-item label="使用公司部门">
@@ -33,45 +33,47 @@
             <img class="tabPic" :src="scope.row.src" />
           </template>
         </el-table-column>
-        <el-table-column  label="公司名称" prop="name"  align="center">
+        <el-table-column  label="公司名称" prop="company"  align="center">
         </el-table-column>
-        <el-table-column  label="职场类型" prop="type"  align="center">
+        <el-table-column  label="职场类型" prop="use_type"  align="center">
         </el-table-column>
-        <el-table-column  label="职场地址" prop="code"  align="center">
+        <el-table-column  label="职场地址" prop="address"  align="center">
         </el-table-column>
-        <el-table-column  label="租赁面积" prop="size"  align="center">
+        <el-table-column  label="租赁面积" prop="area_num"  align="center">
         </el-table-column>
-        <el-table-column  label="金额/平米" prop="SN"  align="center">
+        <el-table-column  label="金额/平米" prop="area_charge_unit"  align="center">
         </el-table-column>
-        <el-table-column  label="工位数" prop="purchaseDate"  align="center">
+        <el-table-column  label="工位数" prop="station_num"  align="center">
         </el-table-column>
-        <el-table-column  label="会议室数" prop="blong"  align="center">
+        <el-table-column  label="会议室数" prop="meeting_room_num"  align="center">
         </el-table-column>
-        <el-table-column  label="可注册公司数" prop="bill"  align="center">
+        <el-table-column  label="可注册公司数" prop="registerable_company_num"  align="center">
         </el-table-column>
-        <el-table-column  label="已注册公司名称" prop="money"  align="center">
+        <el-table-column  label="已注册公司名称" prop="registered_companies"  align="center">
         </el-table-column>
-        <el-table-column  label="合同起始日期" prop="useCompany"  align="center">
+        <el-table-column  label="合同起始日期" prop="contract_start"  align="center">
         </el-table-column>
-        <el-table-column  label="合同终止日期" prop="useDepart"  align="center">
+        <el-table-column  label="合同终止日期" prop="contract_end"  align="center">
         </el-table-column>
-        <el-table-column  label="合同总金额" prop="usePerson"  align="center">
+        <el-table-column  label="合同总金额" prop="contract_money"  align="center">
         </el-table-column>
-        <el-table-column  label="支付方式" prop="supplier"  align="center">
+        <el-table-column  label="支付方式" prop="pay_mode"  align="center">
         </el-table-column>
-        <el-table-column  label="支付类型" prop="contacts"  align="center">
+        <el-table-column  label="支付类型" prop="pay_interval"  align="center">
         </el-table-column>
-        <el-table-column  label="租金金额" prop="tel"  align="center">
+        <el-table-column  label="租金金额" prop="rent_money"  align="center">
         </el-table-column>
-        <el-table-column  label="保证金金额" prop="site"  align="center">
+        <el-table-column  label="保证金金额" prop="deposit_money"  align="center">
         </el-table-column>
-        <el-table-column  label="物业费/月" prop="creater"  align="center">
+        <el-table-column  label="物业费/月" prop="property_charge"  align="center">
         </el-table-column>
-        <el-table-column  label="水费/立方米" prop="createDate"  align="center">
+        <el-table-column  label="水费/立方米" prop="water_charge"  align="center">
         </el-table-column>
-        <el-table-column  label="电费/度" prop="remarks"  align="center">
+        <el-table-column  label="电费/度" prop="energy_charge"  align="center">
         </el-table-column>
-        <el-table-column  label="网费/月" prop="remarks"  align="center">
+        <el-table-column  label="网费/月" prop="internet_charge"  align="center">
+        </el-table-column>
+        <el-table-column  label="备注" prop="comment"  align="center">
         </el-table-column>
 
       </el-table>
@@ -99,93 +101,93 @@
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput  labelName="公司名称" keyName="name" :val="formData.name" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  labelName="公司名称" keyName="company" :val="formData.company" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput type="2"  labelName="职场类型" :selectList="typeList"  keyName="type" :required="true" :val="formData.type"  @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput  labelName="职场地址" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput  labelName="租赁面积" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="1"  labelName="职场类型" :selectList="typeList"  keyName="use_type" :required="true" :val="formData.tuse_type"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput  labelName="金额/平米" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  labelName="职场地址" keyName="address" :val="formData.address" :required="true" @changeFormVal="changeFormVal" :disabled="false"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput  labelName="工位数" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput  type="1" labelName="会议室数量" keyName="purchaseDate" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput type="1" labelName="可注册公司数" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  labelName="租赁面积" keyName="area_num" :val="formData.area_num" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput labelName="已注册公司名称" keyName="bill" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  labelName="金额/平米" keyName="area_charge_unit" :val="formData.area_charge_unit" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput type="3"  labelName="合同起始日期" :selectList="companyList"  keyName="useCompany" :val="formData.useCompany" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput type="3" labelName="合同终止日期" :selectList="departList" keyName="useDepart" :val="formData.useDepart" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput labelName="合同总金额" keyName="usePerson" :val="formData.usePerson" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  labelName="工位数" keyName="station_num" :val="formData.station_num" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput  type="2" labelName="支付方式"  :selectList="companyList" keyName="site" :val="formData.site" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  type="1" labelName="会议室数量" keyName="meeting_room_num" :val="formData.meeting_room_num" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput  type="2" labelName="支付类型"  :selectList="companyList" keyName="site" :val="formData.site" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput  type="1" labelName="租金金额"  :selectList="companyList" keyName="site" :val="formData.site" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput  type="1" labelName="保证金"  :selectList="companyList" keyName="site" :val="formData.site" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="1" labelName="可注册公司数" :selectList="typeList"  keyName="registerable_company_num" :val="formData.registerable_company_num" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput  type="1" labelName="物业费/月"  :selectList="companyList" keyName="site" :val="formData.site" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput labelName="已注册公司名称" keyName="registered_companies" :val="formData.registered_companies" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput  type="1" labelName="水费/立方米"  :selectList="companyList" keyName="site" :val="formData.site" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="3"  labelName="合同起始日期" :selectList="companyList"  keyName="contract_start" :val="formData.contract_start" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput  type="1" labelName="电费/度"  :selectList="companyList" keyName="site" :val="formData.site" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="3" labelName="合同终止日期" :selectList="departList" keyName="contract_end" :val="formData.contract_end" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput  type="1" labelName="网费/月"  :selectList="companyList" keyName="site" :val="formData.site" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput labelName="合同总金额" keyName="contract_money" :val="formData.contract_money" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <SelfInput  type="1" labelName="支付方式"  :selectList="companyList" keyName="pay_mode" :val="formData.pay_mode" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
+              <SelfInput  type="1" labelName="支付类型"  :selectList="companyList" keyName="pay_interval" :val="formData.pay_interval" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <SelfInput  type="1" labelName="租金金额"  :selectList="companyList" keyName="rent_money" :val="formData.rent_money" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
+              <SelfInput  type="1" labelName="保证金"  :selectList="companyList" keyName="deposit_money" :val="formData.deposit_money" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <SelfInput  type="1" labelName="物业费/月"  :selectList="companyList" keyName="property_charge" :val="formData.property_charge" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
+              <SelfInput  type="1" labelName="水费/立方米"  :selectList="companyList" keyName="water_charge" :val="formData.water_charge" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <SelfInput  type="1" labelName="电费/度"  :selectList="companyList" keyName="energy_charge" :val="formData.energy_charge" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
+              <SelfInput  type="1" labelName="网费/月"  :selectList="companyList" keyName="internet_charge" :val="formData.internet_charge" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
-              <SelfInput type="4" labelName="备注"  keyName="remarks" :val="formData.remarks" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="4" labelName="备注"  keyName="comment" :val="formData.remarks" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
 
           <el-row>
             <el-col :sm="12">
-              <SelfInput :disabled="true"  type="1" labelName="（附件）合同" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  type="1" labelName="（附件）合同"  keyName="contract_attachment" :val="formData.contract_attachment" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
 
@@ -213,55 +215,7 @@
             {"value": "中恒信", "en": "ZHX"},
             {"value": "黄鱼儿", "en": "HYR"}
           ],
-          wareData: [
-            {
-              status: '1',
-              src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
-              name: '11010001',
-              type: '办工卓',
-              code: '办公设备',
-              size: '双人',
-              SN: '002110C0D0034',
-              purchaseDate: '2018-3-1',
-              blong: '测试机构',
-              bill: '102110987',
-              money: 200,
-              moneyChinese:'',
-              useCompany: '网开',
-              useDepart: '研发部',
-              usePerson: 'xxx',
-              supplier: '供应商1',
-              contacts: '张峰',
-              tel: '114',
-              site: '',
-              creater: '李小二',
-              createDate: '2018-9-8',
-              remarks: ''
-            },
-            {
-              status: '1',
-              src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
-              name: '11010001',
-              type: '办工卓',
-              code: '办公设备',
-              size: '双人',
-              SN: '002110C0D0034',
-              purchaseDate: '2018-3-1',
-              blong: '测试机构',
-              bill: '102110987',
-              money: 200,
-              useCompany: '网开',
-              useDepart: '研发部',
-              usePerson: 'xxx',
-              supplier: '供应商1',
-              contacts: '张峰',
-              tel: '114',
-              site: '',
-              creater: '李小二',
-              createDate: '2018-9-8',
-              remarks: ''
-            }
-          ],
+          wareData: [],
           multipleSelection: [],    //当前选中的行数据
           currentPage: 1,
           total: 20,
@@ -270,26 +224,26 @@
           formData: {
             editDate:'',
             name: '',
-            type: '',
-            code: '',
-            size: '',
-            SN: '',
-            purchaseDate: '',
-            blong: '',
-            bill: '',
-            money:0,
-            showMoney:0,
-            chineseMoney:'',
-            numMoney:'',
-            useCompany: '',
-            useDepart: '',
-            usePerson: '',
-            site: '',
-            remarks: '',
-            supplier: '',
-            contacts: '',
-            tel: '',
-            explain:''
+            company: '',
+            use_type: '',
+            address: '',
+            area_num: '',
+            station_num: '',
+            meeting_room_num: '',
+            registerable_company_num: '',
+            registered_companies:0,
+            contract_start:0,
+            contract_end:'',
+            contract_money:'',
+            contract_attachment: '',
+            pay_interval: '',
+            rent_money: '',
+            deposit_money: '',
+            property_charge: '',
+            water_charge: '',
+            energy_charge: '',
+            internet_charge: '',
+            comment:''
           },
           dialogLoading: false,
           editDate: '2019-05-11',
@@ -325,6 +279,9 @@
         }
       },
       methods:{
+        init(){
+          this.fetchData();
+        },
         querySearch(queryString, cb) {
           var departmentList = this.departmentList;
           var results = queryString ? departmentList.filter(this.createFilter(queryString)) : departmentList;
@@ -339,24 +296,6 @@
         handleSelect(item) {
           this.formData.department = item.value;
         },
-        fetchData(){
-
-        },
-        // 新增,修改
-        clickBtn(type){
-          this.formTitle = type == 1 ? '新增':'修改';
-          this.editDate = type == 1 ? this.$Store.formatDate() : this.formData.editDate;
-          if(this.multipleSelection.length != 1 && type == 2){
-            this.$message({
-              message: '请选择一条要修改的数据',
-              type: 'warning'
-            });
-            return;
-          }else{
-            this.formData = Object.assign({},this.multipleSelection[0]);
-          }
-          this.dialogFormVisible = true;
-        },
         handleSelectionChange(val) {
           this.multipleSelection = val;
           // console.log(this.multipleSelection);
@@ -368,9 +307,89 @@
           console.log(`当前页: ${val}`);
           this.currentPage = val;
         },
+        fetchData(){
+          this.$axios.Asset.workplace('GET',{}).then(res=>{
+            console.log(" result ==++++====" + JSON.stringify(res.data));
+            this.wareData = res.data;
+            this.total = res.meta.total
+          })
+        },
+        // 新增,修改
+        clickBtn(type){
+          this.formTitle = type == 1 ? '新增':'修改';
+          this.editDate = this.$Store.formatDate();
+          this.formData = this.$Store.resetForm(this.formData);
+          if(type === 2){
+            console.log(JSON.stringify(this.multipleSelection));
+            if(this.multipleSelection.length === 1){
+              this.formData = Object.assign({},this.multipleSelection[0]);
+              console.log(JSON.stringify(this.formData));
+              // this.validDate = this.formData.validDate.split('-');
+            }else{
+              this.$message({
+                message:'请选择一条要修改的数据',
+                type:'warning'
+              })
+              return;
+            }
+          }
+          this.dialogFormVisible = true;
+        },
         confirmBtn(){
-          console.log(this.formData);
-          this.dialogFormVisible = false;
+          let id = this.formData.id;
+          let data = this.formData;
+          if(this.formTitle == '新增'){
+            this.$axios.Asset.workplace('POST',data).then(res=>{
+              // this.tipMessage('新增成功！');
+              this.$message({
+                message:'新增成功！',
+                type:'success'
+              })
+              this.fetchData();
+              this.dialogFormVisible = false;
+            })
+          }else{
+            this.$axios.Asset.workplace('PUT',data).then(res=>{
+              console.log(res);
+              this.$message({
+                message:'修改成功！',
+                type:'success'
+              })
+              this.fetchData();
+              this.dialogFormVisible = false;
+            }).catch(error=>{
+              // TODO error result
+            })
+          }
+        },
+        deleteData(){
+          if(this.multipleSelection.length === 0){
+            this.$message({
+              message:'请选择一条要删除的数据',
+              type:'warning'
+            })
+            return;
+          }else{
+            let data = this.multipleSelection;
+            let deleteNum = 0;
+            data.forEach(item=>{
+              this.$axios.Asset.workplace('DELETE',item).then(res=>{
+                deleteNum+=1;
+                if(data.length === deleteNum){
+                  this.tipMessage('删除成功！');
+                  this.fetchData();
+                }
+              })
+            })
+          }
+        },
+        tipMessage(msg,type){
+          type = type ? type : 'success';
+          this.$message({
+            message:msg,
+            type:type,
+            duration:1500
+          })
         },
         changeFormVal([key,val]){
           console.log(val);
@@ -395,10 +414,7 @@
         SelfInput
       },
       mounted(){
-         // let arr = new Array(5).fill(this.wareData[0]);
-         // this.wareData = arr;
-        this.$Store.NumberToChinese(101.31);
-
+        this.init();
       }
     }
 </script>

@@ -100,7 +100,7 @@ export default new Router({
         {
           meta:'办公职场管理',
           path:'office',
-          component:()=>import('@/page/asset/office')
+          component:()=>import('@/page/asset/workplace')
         }
         // ,{
         //   meta:'资产调拨',

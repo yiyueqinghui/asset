@@ -33,21 +33,21 @@
             <img class="tabPic" :src="scope.row.src" />
           </template>
         </el-table-column>
-        <el-table-column  label="资产类型" prop="name"  align="center">
+        <el-table-column  label="资产类型" prop="asset_class"  align="center">
         </el-table-column>
-        <el-table-column  label="发票类型" prop="type"  align="center">
+        <el-table-column  label="发票类型" prop="inv_type"  align="center">
         </el-table-column>
-        <el-table-column  label="发票号码" prop="code"  align="center">
+        <el-table-column  label="发票号码" prop="inv_number"  align="center">
         </el-table-column>
-        <el-table-column  label="开票日期" prop="size"  align="center">
+        <el-table-column  label="开票日期" prop="inv_time"  align="center">
         </el-table-column>
-        <el-table-column  label="发票金额" prop="SN"  align="center">
+        <el-table-column  label="发票金额" prop="inv_money"  align="center">
         </el-table-column>
         <el-table-column  label="创建人" prop="creater"  align="center">
         </el-table-column>
         <el-table-column  label="创建时间" prop="createDate"  align="center">
         </el-table-column>
-        <el-table-column  label="备注" prop="remarks"  align="center">
+        <el-table-column  label="备注" prop="comment"  align="center">
         </el-table-column>
 
       </el-table>
@@ -75,7 +75,7 @@
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="8">
-              <el-form-item label="资产类型" class="receivers">
+              <!--<el-form-item label="资产类型" class="receivers">
                 <el-select
                   v-model="formData.name"
                   multiple
@@ -89,26 +89,27 @@
                     :value="item.value">
                   </el-option>
                 </el-select>
-              </el-form-item>
+              </el-form-item>-->
+              <SelfInput type="1"  labelName="资产类型" :selectList="typeList"  keyName="asset_class" :val="formData.asset_class" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="2"  labelName="发票类型" :selectList="typeList"  keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="1"  labelName="发票类型" :selectList="typeList"  keyName="inv_type" :val="formData.inv_type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="发票号码" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
+              <SelfInput  labelName="发票号码" keyName="inv_number" :val="formData.inv_number" :required="true" @changeFormVal="changeFormVal" :disabled="false"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="8">
-              <SelfInput type="3" labelName="开票日期" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="3" labelName="开票日期" keyName="inv_time" :val="formData.inv_time" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="5" labelName="发票金额" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="5" labelName="发票金额" keyName="inv_money" :val="formData.inv_money" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput  type="4" labelName="开票备注" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  type="4" labelName="开票备注" :selectList="typeList"  keyName="comment" :val="formData.comment" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
@@ -164,29 +165,6 @@
             }
           ],
           wareData: [
-            {
-              status: '1',
-              src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
-              name: '11010001',
-              type: '办工卓',
-              code: '办公设备',
-              size: '双人',
-              SN: '002110C0D0034',
-              purchaseDate: '2018-3-1',
-              blong: '测试机构',
-              bill: '102110987',
-              money: 200,
-              useCompany: '网开',
-              useDepart: '研发部',
-              usePerson: 'xxx',
-              supplier: '供应商1',
-              contacts: '张峰',
-              tel: '114',
-              site: '',
-              creater: '李小二',
-              createDate: '2018-9-8',
-              remarks: ''
-            }
           ],
           multipleSelection: [],    //当前选中的行数据
           currentPage: 1,
@@ -194,25 +172,13 @@
           dialogFormVisible:false,
           formTitle: '新增',
           formData: {
-            name: '',
-            type: '',
-            code: '',
-            size: '',
-            SN: '',
-            purchaseDate: '',
-            blong: '',
-            bill: '',
-            money: 0,
-            useCompany: '',
-            useDepart: '',
-            usePerson: '',
-            supplier: '',
-            contacts: '',
-            tel: '',
-            site: '',
-            creater: '',
-            createDate: '',
-            remarks: ''
+            asset_class: '',
+            inv_type: '',
+            inv_number: '',
+            inv_time: '',
+            inv_money: '',
+            comment: '',
+            image: ''
           },
           dialogLoading: false,
           editDate: '2019-5-14',
@@ -278,18 +244,6 @@
         handleSelect(item) {
           this.formData.department = item.value;
         },
-        fetchData(){
-          this.$axios.Asset.invoice('GET',{}).then(res=>{
-            console.log(res);
-            this.wareData = res;
-            this.total = res.length;
-          })
-        },
-        // 新增,修改
-        clickBtn(type){
-          this.editDate = this.$Store.formatDate();
-          this.dialogFormVisible = true;
-        },
         handleSelectionChange(val) {
           this.multipleSelection = val;
           console.log(this.multipleSelection);
@@ -301,11 +255,39 @@
           console.log(`当前页: ${val}`);
           this.currentPage = val;
         },
+        fetchData(){
+          this.$axios.Asset.invoice('GET',{}).then(res=>{
+            console.log(" result ==++++====" + JSON.stringify(res.data));
+            this.wareData = res.data;
+            this.total = res.meta.total
+          })
+        },
+        // 新增,修改
+        clickBtn(type){
+          this.formTitle = type == 1 ? '新增':'修改';
+          this.editDate = this.$Store.formatDate();
+          this.formData = this.$Store.resetForm(this.formData);
+          if(type === 2){
+            console.log(JSON.stringify(this.multipleSelection));
+            if(this.multipleSelection.length === 1){
+              this.formData = Object.assign({},this.multipleSelection[0]);
+              console.log(JSON.stringify(this.formData));
+              // this.validDate = this.formData.validDate.split('-');
+            }else{
+              this.$message({
+                message:'请选择一条要修改的数据',
+                type:'warning'
+              })
+              return;
+            }
+          }
+          this.dialogFormVisible = true;
+        },
         confirmBtn(){
           let id = this.formData.id;
           let data = this.formData;
-          if(this.formTitle == '1'){
-            this.$axios.Asset.icp('POST',data).then(res=>{
+          if(this.formTitle == '新增'){
+            this.$axios.Asset.invoice('POST',data).then(res=>{
               // this.tipMessage('新增成功！');
               this.$message({
                 message:'新增成功！',
@@ -315,7 +297,7 @@
               this.dialogFormVisible = false;
             })
           }else{
-            this.$axios.Asset.icp('PUT',data).then(res=>{
+            this.$axios.Asset.invoice('PUT',data).then(res=>{
               console.log(res);
               this.$message({
                 message:'修改成功！',
@@ -323,9 +305,39 @@
               })
               this.fetchData();
               this.dialogFormVisible = false;
+            }).catch(error=>{
+              // TODO error result
             })
           }
-
+        },
+        deleteData(){
+          if(this.multipleSelection.length === 0){
+            this.$message({
+              message:'请选择一条要删除的数据',
+              type:'warning'
+            })
+            return;
+          }else{
+            let data = this.multipleSelection;
+            let deleteNum = 0;
+            data.forEach(item=>{
+              this.$axios.Asset.invoice('DELETE',item).then(res=>{
+                deleteNum+=1;
+                if(data.length === deleteNum){
+                  this.tipMessage('删除成功！');
+                  this.fetchData();
+                }
+              })
+            })
+          }
+        },
+        tipMessage(msg,type){
+          type = type ? type : 'success';
+          this.$message({
+            message:msg,
+            type:type,
+            duration:1500
+          })
         },
         changeFormVal([key,val]){
           this.formData[key] = val;

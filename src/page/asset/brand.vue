@@ -1,5 +1,5 @@
 <template>
-    <div id="invoice">
+    <div id="brand">
       <!--查寻-->
       <el-form :inline="true"  :model="searchData" >
          <el-form-item label="">
@@ -28,17 +28,17 @@
         </el-table-column>
         <el-table-column type="index" label="序号" width="60" align="center">
         </el-table-column>
-        <el-table-column  label="公司名称" prop="name"  align="center">
+        <el-table-column  label="公司名称" prop="company"  align="center">
         </el-table-column>
-        <el-table-column  label="中文名称" prop="type"  align="center">
+        <el-table-column  label="中文名称" prop="name_zh"  align="center">
         </el-table-column>
-        <el-table-column  label="英文名称" prop="code"  align="center">
+        <el-table-column  label="英文名称" prop="name_en"  align="center">
         </el-table-column>
-        <el-table-column  label="商标分类" prop="size"  align="center">
+        <el-table-column  label="商标分类" prop="category"  align="center">
         </el-table-column>
-        <el-table-column  label="注册日期" prop="SN"  align="center">
+        <el-table-column  label="注册日期" prop="reg_time"  align="center">
         </el-table-column>
-        <el-table-column  label="有效日期" prop="purchaseDate"  align="center">
+        <el-table-column  label="有效日期" prop="end_time"  align="center">
         </el-table-column>
 
         <el-table-column  label="（照片）商标"  align="center">
@@ -50,7 +50,7 @@
         </el-table-column>
         <el-table-column  label="创建时间" prop="createDate"  align="center">
         </el-table-column>
-        <el-table-column  label="备注" prop="remarks"  align="center">
+        <el-table-column  label="备注" prop="comment"  align="center">
         </el-table-column>
 
       </el-table>
@@ -78,45 +78,56 @@
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput type="2" labelName="公司名称" keyName="name" :val="formData.name" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="1" labelName="公司名称" keyName="company" :val="formData.company" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput type="1"  labelName="中文名称"  keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput  labelName="英文名称" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput type="2" labelName="商标分类" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="1"  labelName="中文名称"  keyName="name_zh" :val="formData.name_zh" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput type="3" labelName="注册日期" keyName="registerDate" :val="formData.registerDate" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  labelName="英文名称" keyName="name_en" :val="formData.name_en" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
+              <SelfInput type="1" labelName="商标分类" keyName="category" :val="formData.category" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <SelfInput type="3" labelName="注册日期" keyName="reg_time" :val="formData.reg_time" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
+              <SelfInput type="3" labelName="有效期" keyName="end_time" :val="formData.end_time" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+
+
+
+            <!--<el-col :sm="12">
               <el-form-item label="有效期">
                 <el-date-picker
                   v-model="validDate"
-                  type="daterange"
+                  type="end_time"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
                   value-format="yyyyMMdd">
                 </el-date-picker>
               </el-form-item>
-            </el-col>
+            </el-col>-->
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput :disabled="true"  type="4" labelName="备注" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput :disabled="true"  type="4" labelName="备注" :selectList="typeList"  keyName="comment" :val="formData.comment" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
+
+
+
+
           <el-row>
             <el-col :sm="12">
               <el-form-item label="附件上传">
-                <UploadFile :upload-data="fileData" @uploadSuccess="uploadSuccess"></UploadFile>
+<!--                <UploadFile :upload-data="fileData" @uploadSuccess="uploadSuccess"></UploadFile>-->
+                  <input type="file" name="attachment" :val="formData.attachment">
               </el-form-item>
             </el-col>
           </el-row>
@@ -147,56 +158,22 @@
             {"value": "黄鱼儿", "en": "HYR"}
           ],
           wareData: [
-            {
-              status: '1',
-              src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
-              name: '11010001',
-              type: '办工卓',
-              code: '办公设备',
-              size: '双人',
-              SN: '002110C0D0034',
-              purchaseDate: '2018-3-1',
-              blong: '测试机构',
-              bill: '102110987',
-              money: 200,
-              useCompany: '网开',
-              useDepart: '研发部',
-              usePerson: 'xxx',
-              supplier: '供应商1',
-              contacts: '张峰',
-              tel: '114',
-              site: '',
-              creater: '李小二',
-              createDate: '2018-9-8',
-              remarks: ''
-            }
           ],
           multipleSelection: [],    //当前选中的行数据
           currentPage: 1,
           total: 20,
           dialogFormVisible:false,
           formTitle: '新增',
+
           formData: {
-            name: '11010001',
-            type: '办工卓',
-            code: '办公设备',
-            size: '双人',
-            registerDate:'2019-05-10',
-            purchaseDate: '2019-05-10',
-            blong: '测试机构',
-            bill: '102110987',
-            money: 200,
-            useCompany: '网开',
-            useDepart: '研发部',
-            usePerson: 'xxx',
-            supplier: '供应商1',
-            contacts: '张峰',
-            tel: '114',
-            site: '',
-            creater: '李小二',
-            createDate: '2018-9-8',
-            validate:'',
-            remarks: ''
+              company: '',
+              name_zh: '',
+              name_en: '',
+              category: '',
+              reg_time:'',
+              end_time: '',
+              comment: '',
+              // attachment: ''
           },
           dialogLoading: false,
           editDate: '2019-5-14',
@@ -220,7 +197,7 @@
       },
       methods:{
         init(){
-
+          this.fetchData();
         },
         uploadSuccess(res){
           let key = res[1],
@@ -236,17 +213,6 @@
             downloadModule('','模板');
           }
         },
-        downLoadExcel(){
-          require.ensure([], () => {
-            const { export_json_to_excel } = require('@/vendor/Export2Excel')
-            const tHeader = ['状态','图片','资产名称', '资产类别', '资产编码','规格型号','SN','购入时间','所属公司','发票号码','实付金额','使用公司','使用部门','使用人','供应商','联系人(供应商)','联系电话(供应商)','存放地点','创建人','创建时间','备注'];
-            const filterVal = ['status','src','name', 'type', 'code','SN','size','purchaseDate','blong','bill','money','useCompany','useDepart','usePerson','supplier','contacts','tel','site','creater','createDate','remarks'];
-            const list = this.wareData;
-            const data = this.formatJson(filterVal, list)
-            export_json_to_excel(tHeader, data, '资产')
-          })
-
-        },
         querySearch(queryString, cb) {
           var departmentList = this.departmentList;
           var results = queryString ? departmentList.filter(this.createFilter(queryString)) : departmentList;
@@ -261,15 +227,6 @@
         handleSelect(item) {
           this.formData.department = item.value;
         },
-        fetchData(){
-
-        },
-        // 新增,修改
-        clickBtn(type){
-          this.editDate = this.$Store.formatDate();
-          this.dialogFormVisible = true;
-
-        },
         handleSelectionChange(val) {
           this.multipleSelection = val;
           console.log(this.multipleSelection);
@@ -281,8 +238,89 @@
           console.log(`当前页: ${val}`);
           this.currentPage = val;
         },
+        fetchData(){
+          this.$axios.Asset.brand('GET',{}).then(res=>{
+            console.log(" result ==++++====" + JSON.stringify(res.data));
+            this.wareData = res.data;
+            this.total = res.meta.total
+          })
+        },
+        // 新增,修改
+        clickBtn(type){
+          this.formTitle = type == 1 ? '新增':'修改';
+          this.editDate = this.$Store.formatDate();
+          this.formData = this.$Store.resetForm(this.formData);
+          if(type === 2){
+            console.log(JSON.stringify(this.multipleSelection));
+            if(this.multipleSelection.length === 1){
+              this.formData = Object.assign({},this.multipleSelection[0]);
+              console.log(JSON.stringify(this.formData));
+              // this.validDate = this.formData.validDate.split('-');
+            }else{
+              this.$message({
+                message:'请选择一条要修改的数据',
+                type:'warning'
+              })
+              return;
+            }
+          }
+          this.dialogFormVisible = true;
+        },
         confirmBtn(){
-          this.dialogFormVisible = false;
+          let id = this.formData.id;
+          let data = this.formData;
+          if(this.formTitle == '新增'){
+            this.$axios.Asset.brand('POST',data).then(res=>{
+              // this.tipMessage('新增成功！');
+              this.$message({
+                message:'新增成功！',
+                type:'success'
+              })
+              this.fetchData();
+              this.dialogFormVisible = false;
+            })
+          }else{
+            this.$axios.Asset.brand('PUT',data).then(res=>{
+              console.log(res);
+              this.$message({
+                message:'修改成功！',
+                type:'success'
+              })
+              this.fetchData();
+              this.dialogFormVisible = false;
+            }).catch(error=>{
+              // TODO error result
+            })
+          }
+        },
+        deleteData(){
+          if(this.multipleSelection.length === 0){
+            this.$message({
+              message:'请选择一条要删除的数据',
+              type:'warning'
+            })
+            return;
+          }else{
+            let data = this.multipleSelection;
+            let deleteNum = 0;
+            data.forEach(item=>{
+              this.$axios.Asset.brand('DELETE',item).then(res=>{
+                deleteNum+=1;
+                if(data.length === deleteNum){
+                  this.tipMessage('删除成功！');
+                  this.fetchData();
+                }
+              })
+            })
+          }
+        },
+        tipMessage(msg,type){
+          type = type ? type : 'success';
+          this.$message({
+            message:msg,
+            type:type,
+            duration:1500
+          })
         },
         changeFormVal([key,val]){
           this.formData[key] = val;
@@ -318,10 +356,11 @@
         }
       },
       mounted(){
-         let arr = new Array(30).fill(this.wareData[0]);
-         this.wareData = arr;
-         this.init();
-
+        this.init();
+        // let arr = new Array(5).fill(this.wareData[0]);
+        // this.wareData = arr;
+        // this.$Store.NumberToChinese(101.31);
+        // console.log(this.$Store.data.statusList)
 
       }
     }

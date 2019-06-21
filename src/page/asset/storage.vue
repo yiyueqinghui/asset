@@ -360,7 +360,7 @@
       confirmBtn(){
         let id = this.formData.id;
         let data = this.formData;
-        if(this.formTitle == '1'){
+        if(this.formTitle == '新增'){
           this.$axios.Asset.storage('POST',data).then(res=>{
             // this.tipMessage('新增成功！');
             this.$message({

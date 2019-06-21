@@ -2,8 +2,12 @@
     <div id="car">
       <!--查寻-->
       <el-form :inline="true"  :model="searchData" >
+        <el-form-item label="">
+          <el-input v-model="searchData.department" filterable placeholder="请选择">
+          </el-input>
+        </el-form-item>
          <el-form-item>
-           <!--<el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>-->
+           <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
            <el-button  style="margin-left: 10px;" @click="deleteData" type="primary" icon="el-icon-edit">删除</el-button>
@@ -29,39 +33,39 @@
         </el-table-column>
         <el-table-column type="index" label="序号" width="60" align="center">
         </el-table-column>
-        <el-table-column  label="公司名称" prop="vehicleCompany"  align="center">
+        <el-table-column  label="公司名称" prop="company"  align="center">
         </el-table-column>
-        <el-table-column  label="车辆牌照" prop="noPlate"  align="center">
+        <el-table-column  label="车辆牌照" prop="car_number"  align="center">
         </el-table-column>
-        <el-table-column  label="投保人" prop="insuranceApplicant"  align="center">
+        <el-table-column  label="投保人" prop="proposer"  align="center">
         </el-table-column>
-        <el-table-column  label="被保人" prop="insured"  align="center">
+        <el-table-column  label="被保人" prop="recognizee"  align="center">
         </el-table-column>
-        <el-table-column  label="年检日期" width="120" prop="annualInspectionDate"  align="center">
+        <el-table-column  label="年检日期" width="120" prop="annual_inspection_time"  align="center">
         </el-table-column>
-        <el-table-column  label="保险有效期" width="160" prop="validDate"  align="center">
+        <el-table-column  label="保险有效期" width="160" prop="insurance_end_time"  align="center">
         </el-table-column>
-        <el-table-column  label="公里数"  prop="km"  align="center">
+        <el-table-column  label="公里数"  prop="mileage"  align="center">
         </el-table-column>
-        <el-table-column  label="最新保养日期" width="130" prop="lastMaintenance"  align="center">
+        <el-table-column  label="最新保养日期" width="130" prop="maintain_time"  align="center">
         </el-table-column>
         <el-table-column  label="预计下次保养期" width="140" prop="nextMaintenance"  align="center">
         </el-table-column>
-        <el-table-column  label="钥匙数量" prop="noOfKeys"  align="center">
+        <el-table-column  label="钥匙数量" prop="key_count"  align="center">
         </el-table-column>
-        <el-table-column  label="钥匙编号" prop="keySerials"  align="center">
+        <el-table-column  label="钥匙编号" prop="key_number"  align="center">
         </el-table-column>
         <el-table-column  label="使用人" prop="user"  align="center">
         </el-table-column>
-        <el-table-column  label="现使用机构" width="130" prop="currentlyOwnedOrg"  align="center">
+        <el-table-column  label="现使用机构" width="130" prop="useby_dep"  align="center">
         </el-table-column>
-        <el-table-column  label="管理人" prop="administrator"  align="center">
+        <el-table-column  label="管理人" prop="manager"  align="center">
         </el-table-column>
         <!--<el-table-column  label="创建人" prop="creater"  align="center">-->
         <!--</el-table-column>-->
         <!--<el-table-column  label="创建时间" prop="createDate"  align="center">-->
         <!--</el-table-column>-->
-        <el-table-column  label="备注" prop="vehicleMemo"  align="center">
+        <el-table-column  label="备注" prop="comment"  align="center">
         </el-table-column>
 
       </el-table>
@@ -91,27 +95,27 @@
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput type="2"  labelName="资产名称" :selectList="typeList" keyName="vehicleCompany" :val="formData.vehicleCompany" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="1"  labelName="公司名称" :selectList="typeList" keyName="company" :val="formData.company" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput labelName="车辆牌照"   keyName="noPlate" :val="formData.noPlate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput  labelName="投保人" keyName="insuranceApplicant" :val="formData.insuranceApplicant" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput  labelName="被保人" keyName="insured" :val="formData.insured" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput labelName="车辆牌照"   keyName="car_number" :val="formData.car_number" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput type="3" labelName="年检日期" keyName="annualInspectionDate" :val="formData.annualInspectionDate" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  labelName="投保人" keyName="proposer" :val="formData.proposer" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
+              <SelfInput  labelName="被保人" keyName="recognizee" :val="formData.recognizee" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <SelfInput type="3" labelName="年检日期" keyName="annual_inspection_time" :val="formData.annual_inspection_time" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
               <!--<SelfInput  type="3" labelName="保险有效日期" keyName="validDate" :val="formData.validDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>-->
-              <el-form-item label="保险有效日期">
+              <!--<el-form-item label="保险有效日期">
                 <el-date-picker
                   v-model="validDate"
                   type="daterange"
@@ -119,15 +123,16 @@
                   start-placeholder="开始日期"
                   end-placeholder="结束日期">
                 </el-date-picker>
-              </el-form-item>
+              </el-form-item>-->
+              <SelfInput type="3" labelName="保险有效日期" keyName="insurance_end_time" :val="formData.insurance_end_time" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput labelName="公里数" keyName="km" :val="formData.km" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput labelName="公里数" keyName="mileage" :val="formData.mileage" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput type="3" labelName="最新保养日期" keyName="lastMaintenance" :val="formData.lastMaintenance" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="3" labelName="最新保养日期" keyName="maintain_time" :val="formData.maintain_time" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
@@ -135,31 +140,48 @@
               <SelfInput type="3" labelName="预计下次保养期" keyName="nextMaintenance" :val="formData.nextMaintenance" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput labelName="钥匙数量" keyName="noOfKeys" :val="formData.noOfKeys" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput labelName="钥匙数量" keyName="key_count" :val="formData.key_count" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput  labelName="钥匙编号" keyName="keySerials" :val="formData.keySerials" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  labelName="钥匙编号" keyName="key_number" :val="formData.key_number" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput  labelName="使用人" keyName="user" :val="formData.user" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  labelName="使用人" keyName="useby_user" :val="formData.useby_user" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput labelName="现使用机构" :selectList="typeList"  keyName="currentlyOwnedOrg" :val="formData.currentlyOwnedOrg"  @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput labelName="现使用机构" :selectList="typeList"  keyName="useby_dep" :val="formData.useby_dep"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput type="1" labelName="管理人" keyName="administrator" :val="formData.administrator" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="1" labelName="管理人" keyName="manager" :val="formData.manager" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput type="1" labelName="使用人联系电话" keyName="userPhone" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="1" labelName="使用人联系电话" keyName="useby_user_mobile" :val="formData.useby_user_mobile" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
+              <SelfInput type="1" labelName="行驶本" keyName="driving_detail" :val="formData.driving_detail" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
-          <el-row>
+
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput type="1" labelName="被保人信息" keyName="recognizee_detail" :val="formData.recognizee_detail" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput type="4" labelName="备注" keyName="comment" :val="formData.comment"  @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput type="1" labelName="车辆保养信息" keyName="maintain_detail" :val="formData.maintain_detail" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+          <!--<el-row>
             <el-col :sm="12">
               <el-form-item label="被保人附件">
                 <UploadFile :upload-data="uploadData" @uploadSuccess="uploadSuccess"></UploadFile>
@@ -179,12 +201,7 @@
                 <UploadFile :upload-data="carData" @uploadSuccess="uploadSuccess"></UploadFile>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput type="4" labelName="备注" keyName="vehicleMemo" :val="formData.vehicleMemo"  @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
+          </el-row>-->
         </el-form>
         </el-scrollbar>
         <div slot="footer" class="dialog-footer">
@@ -221,26 +238,28 @@
           dialogFormVisible:false,
           formTitle: 1,
           formData: {
-            "annualInspectionDate": "2018-09-09",
-            "vehicleCompany": "公司名称",
-            "vehicleMemo": "备注",
-            "insured": "被保人",
-            "user": "使用人",
-            "vehicleLicenseAttachment": "",
-            "nextMaintenance": "2019-09-13",
-            "maintenanceAttachment": "",
-            "insuredAttachment": "",
-            "validDate": "20180909-20220914",
-            "km": "1123",
-            "insuranceApplicant": "投保人",
-            "currentlyOwnedOrg": "现使用机构",
-            "lastMaintenance": "2019-09-08",
-            "noPlate": "车辆牌照",
-            "administrator": "管理人",
-            "noOfKeys": "10",
-            "userPhone": "使用人联系电话",
-            "keySerials": "钥匙编号",
+            "company": "",
+            "car_number": "",
+            "proposer": "",
+            "recognizee": "",
+            "annual_inspection_time": "",
+            "insurance_end_time": "",
+            "mileage": "",
 
+
+            "maintain_time": "",
+            "key_count": "",
+            "key_number": "",
+            "useby_user": "",
+            "insuranceApplicant": "",
+            "useby_user_mobile": "",
+
+            "useby_dep": "",
+            "manager": "",
+            "recognizee_detail": "",
+            "driving_detail": "",
+            "maintain_detail": "",
+            "comment": "",
           },
           dialogLoading: false,
           editDate: '2019-5-14',
@@ -315,33 +334,6 @@
         handleSelect(item) {
           this.formData.department = item.value;
         },
-        fetchData(){
-          console.log('开始查寻');
-          this.$axios.Asset.car('GET',{}).then(res=>{
-            console.log(res);
-            this.wareData = res;
-            this.total = res.length;
-          })
-        },
-        // 新增,修改
-        clickBtn(type){
-          this.formTitle = type;
-          this.editDate = this.$Store.formatDate();
-          this.formData = this.$Store.resetForm(this.formData);
-          if(type === 2){
-            if(this.multipleSelection.length === 1){
-              this.formData = Object.assign({},this.multipleSelection[0]);
-              this.validDate = this.formData.validDate.split('-');
-            }else{
-              this.$message({
-                message:'请选择一条要修改的数据',
-                type:'warning'
-              })
-              return;
-            }
-          }
-          this.dialogFormVisible = true;
-        },
         handleSelectionChange(val) {
           this.multipleSelection = val;
           console.log(this.multipleSelection);
@@ -353,11 +345,40 @@
           console.log(`当前页: ${val}`);
           this.currentPage = val;
         },
+        fetchData(){
+          this.$axios.Asset.car('GET',{}).then(res=>{
+            console.log(" result ==++++====" + JSON.stringify(res.data));
+            this.wareData = res.data;
+            this.total = res.meta.total
+          })
+        },
+        // 新增,修改
+        clickBtn(type){
+          this.formTitle = type == 1 ? '新增':'修改';
+          this.editDate = this.$Store.formatDate();
+          this.formData = this.$Store.resetForm(this.formData);
+          if(type === 2){
+            console.log(JSON.stringify(this.multipleSelection));
+            if(this.multipleSelection.length === 1){
+              this.formData = Object.assign({},this.multipleSelection[0]);
+              console.log(JSON.stringify(this.formData));
+              // this.validDate = this.formData.validDate.split('-');
+            }else{
+              this.$message({
+                message:'请选择一条要修改的数据',
+                type:'warning'
+              })
+              return;
+            }
+          }
+          this.dialogFormVisible = true;
+        },
         confirmBtn(){
           let id = this.formData.id;
           let data = this.formData;
-          if(this.formTitle == '1'){
+          if(this.formTitle == '新增'){
             this.$axios.Asset.car('POST',data).then(res=>{
+              // this.tipMessage('新增成功！');
               this.$message({
                 message:'新增成功！',
                 type:'success'
@@ -369,11 +390,13 @@
             this.$axios.Asset.car('PUT',data).then(res=>{
               console.log(res);
               this.$message({
-                message:'修改成功!',
+                message:'修改成功！',
                 type:'success'
               })
               this.fetchData();
               this.dialogFormVisible = false;
+            }).catch(error=>{
+              // TODO error result
             })
           }
         },
@@ -391,15 +414,20 @@
               this.$axios.Asset.car('DELETE',item).then(res=>{
                 deleteNum+=1;
                 if(data.length === deleteNum){
-                  this.$message({
-                    message:'删除成功！',
-                    type:'success'
-                  })
+                  this.tipMessage('删除成功！');
                   this.fetchData();
                 }
               })
             })
           }
+        },
+        tipMessage(msg,type){
+          type = type ? type : 'success';
+          this.$message({
+            message:msg,
+            type:type,
+            duration:1500
+          })
         },
         changeFormVal([key,val]){
           this.formData[key] = val;
