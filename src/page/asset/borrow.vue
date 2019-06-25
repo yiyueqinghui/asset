@@ -1,5 +1,5 @@
 <template>
-  <div id="wareHousing">
+  <div id="borrow">
     <!--查寻-->
     <el-form :inline="true"  :model="searchData" >
       <el-form-item label="借用日期">
@@ -35,21 +35,21 @@
           {{scope.row.status | turnStatus }}
         </template>
       </el-table-column>
-      <el-table-column  label="借用单号" prop="borrowCode"  align="center">
+      <el-table-column  label="借用单号" prop="borrow_number"  align="center">
       </el-table-column>
-      <el-table-column  label="借用人"  prop="person"  align="center">
+      <el-table-column  label="借用人"  prop="borrow_user"  align="center">
       </el-table-column>
-      <el-table-column  label="借出时间" width="120" prop="borrowDate"  align="center">
+      <el-table-column  label="借出时间" width="120" prop="borrow_time"  align="center">
       </el-table-column>
-      <el-table-column  label="预计归还时间" width="120" prop="expectDate"  align="center">
+      <el-table-column  label="预计归还时间" width="120" prop="expect_return_time"  align="center">
       </el-table-column>
-      <el-table-column  label="实际归还时间" width="120" prop="realDate"  align="center">
+      <el-table-column  label="实际归还时间" width="120" prop="return_time"  align="center">
       </el-table-column>
-      <el-table-column  label="借用处理人" width="120" prop="borrowDealer"  align="center">
+      <el-table-column  label="借用处理人" width="120" prop="return_user"  align="center">
       </el-table-column>
-      <el-table-column  label="归还处理人" width="120" prop="backDealer"  align="center">
+      <el-table-column  label="归还处理人" width="120" prop="return_confirm_user"  align="center">
       </el-table-column>
-      <el-table-column  label="备注" prop="borrowRemarks"  align="center">
+      <el-table-column  label="备注" prop="comment"  align="center">
       </el-table-column>
       <el-table-column  label="资产明细"  align="center" height="50">
         <el-table-column label="资产名称" width="100" prop="name" align="center"></el-table-column>
@@ -93,23 +93,50 @@
       <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input border">
         <el-row>
           <el-col :sm="12">
-              <SelfInput labelName="借用单号"   keyName="borrowCode" :val="formData.borrowCode" :disabled="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput labelName="借用单号"   keyName="borrow_number" :val="formData.borrow_number" :disabled="false" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
           <el-col :sm="12">
-            <SelfInput  labelName="借用人"   keyName="borrowPerson" :val="formData.borrowPerson"  @changeFormVal="changeFormVal"></SelfInput>
+            <SelfInput  labelName="借用人"   keyName="borrow_user" :val="formData.borrow_user"  @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
         </el-row>
         <el-row>
           <el-col :sm="12">
-            <SelfInput type="3"  labelName="借出时间"  keyName="borrowDate" :val="formData.borrowDate"  @changeFormVal="changeFormVal" ></SelfInput>
+            <SelfInput type="3"  labelName="借出时间"  keyName="borrow_time" :val="formData.borrow_time"  @changeFormVal="changeFormVal" ></SelfInput>
           </el-col>
           <el-col :sm="12">
-            <SelfInput type="3"  labelName="预计归还时间" keyName="expectDate" :val="formData.expectDate" @changeFormVal="changeFormVal"></SelfInput>
+            <SelfInput type="3"  labelName="预计归还时间" keyName="expect_return_time" :val="formData.expect_return_time" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :sm="16">
-            <SelfInput type="4" labelName="备注"  keyName="borrowRemarks" :val="formData.borrowRemarks" @changeFormVal="changeFormVal"></SelfInput>
+          <el-col :sm="12">
+            <SelfInput type="3"  labelName="借出确认时间" keyName="borrow_confirm_time" :val="formData.borrow_confirm_time" @changeFormVal="changeFormVal"></SelfInput>
+          </el-col>
+          <el-col :sm="12">
+            <SelfInput type="3"  labelName="实际归还时间" keyName="return_time" :val="formData.return_time" @changeFormVal="changeFormVal"></SelfInput>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :sm="12">
+            <SelfInput type="3"  labelName="归还确认时间" keyName="return_confirm_time" :val="formData.return_confirm_time" @changeFormVal="changeFormVal"></SelfInput>
+          </el-col>
+          <el-col :sm="12">
+            <SelfInput type="1"  labelName="借出确认人" keyName="borrow_confirm_user" :val="formData.borrow_confirm_user" @changeFormVal="changeFormVal"></SelfInput>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :sm="12">
+            <SelfInput type="1"  labelName="归还处理人" keyName="return_user" :val="formData.return_user" @changeFormVal="changeFormVal"></SelfInput>
+          </el-col>
+          <el-col :sm="12">
+            <SelfInput type="1"  labelName="归还确认人" keyName="return_confirm_user" :val="formData.return_confirm_user" @changeFormVal="changeFormVal"></SelfInput>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :sm="12">
+            <SelfInput type="1"  labelName="状态" keyName="status" :val="formData.status" @changeFormVal="changeFormVal"></SelfInput>
+          </el-col>
+          <el-col :sm="12">
+            <SelfInput type="4" labelName="备注"  keyName="comment" :val="formData.comment" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
         </el-row>
       </el-form>
@@ -229,58 +256,6 @@
           endDate:''
         },
         tabData: [
-          {
-            status:1,
-            borrowCode:'12345',
-            person:'',
-            borrowDate:'2018-09-09',
-            expectDate:'2018-09-09',
-            realDate:'2018-09-09',
-            borrowDealer:'cj',
-            backDealer:'cj',
-            borrowRemarks: '',
-
-            name: '11010001',
-            type: '办工卓',
-            code: '办公设备',
-            size: '双人',
-            SN: '002110C0D0034',
-            purchaseDate: '2018-3-1',
-            blong: '测试机构',
-            bill: '102110987',
-            money: 200,
-            useCompany: '网开',
-            useDepart: '研发部',
-            usePerson: 'xxx',
-            site: '',
-            remarks:''
-          },
-          {
-            status:2,
-            borrowCode:'54321',
-            person:'',
-            borrowDate:'2018-09-09',
-            expectDate:'2018-09-09',
-            realDate:'2018-09-09',
-            borrowDealer:'cj',
-            backDealer:'cj',
-            borrowRemarks: '',
-
-            name: '11010001',
-            type: '办工卓',
-            code: '办公设备',
-            size: '双人',
-            SN: '002110C0D0034',
-            purchaseDate: '2018-3-1',
-            blong: '测试机构',
-            bill: '102110987',
-            money: 200,
-            useCompany: '网开',
-            useDepart: '研发部',
-            usePerson: 'xxx',
-            site: '',
-            remarks:''
-          }
         ],
         multipleSelection: [],    //当前选中的行数据
         currentPage: 1,
@@ -393,6 +368,9 @@
       }
     },
     methods:{
+      init(){
+        this.fetchData();
+      },
       confirmBack(){
         this.backFormVisible = false;
       },
@@ -461,11 +439,6 @@
       fetchData(){
 
       },
-      // 新增,修改
-      clickBtn(type){
-        this.editDate = this.$Store.formatDate();
-        this.dialogFormVisible = true;
-      },
       backBtn(){
         if(this.multipleSelection.length == 0){
           this.$message({
@@ -522,8 +495,77 @@
       confirmChoosed(){
         this.allAssetVisible = false;
       },
-      fetchAssetData(){
-
+      fetchData(){
+        this.$axios.Asset.borrow('GET',{}).then(res=>{
+          console.log(" result ==++++====" + JSON.stringify(res.data));
+          this.tabData = res.data;
+          this.total = res.meta.total
+        })
+      },
+      // 新增,修改
+      clickBtn(){
+        this.formTitle = '新增';
+        this.editDate = this.$Store.formatDate();
+        this.formData = this.$Store.resetForm(this.formData);
+        this.dialogFormVisible = true;
+      },
+      confirmBtn(){
+        let id = this.formData.id;
+        let data = this.formData;
+        if(this.formTitle == '新增'){
+          // TODO 暂且用于测试
+          data.asset_ids = [1]
+          this.$axios.Asset.borrow('POST',data).then(res=>{
+            // this.tipMessage('新增成功！');
+            this.$message({
+              message:'新增成功！',
+              type:'success'
+            })
+            this.fetchData();
+            this.dialogFormVisible = false;
+          })
+        }else{
+          this.$axios.Asset.borrow('PUT',data).then(res=>{
+            console.log(res);
+            this.$message({
+              message:'修改成功！',
+              type:'success'
+            })
+            this.fetchData();
+            this.dialogFormVisible = false;
+          }).catch(error=>{
+            // TODO error result
+          })
+        }
+      },
+      deleteData(){
+        if(this.multipleSelection.length === 0){
+          this.$message({
+            message:'请选择一条要删除的数据',
+            type:'warning'
+          })
+          return;
+        }else{
+          let data = this.multipleSelection;
+          let deleteNum = 0;
+          data.forEach(item=>{
+            this.$axios.Asset.borrow('DELETE',item).then(res=>{
+              deleteNum+=1;
+              if(data.length === deleteNum){
+                this.tipMessage('删除成功！');
+                this.fetchData();
+              }
+            })
+          })
+        }
+      },
+      tipMessage(msg,type){
+        type = type ? type : 'success';
+        this.$message({
+          message:msg,
+          type:type,
+          duration:1500
+        })
       },
       filterStatus(value,row){
         return row.status === value
@@ -544,7 +586,7 @@
       }
     },
     mounted(){
-
+      this.init();
 
     }
   }

@@ -2,9 +2,9 @@
     <div class="uploadfile">
       <el-upload
         class="upload-demo"
-        action='/upload-api/api/file/upload'
+        action='http://10.20.45.61:11001/api-1.0/upload/'
         :data="{module:uploadData.name}"
-         name="fileName"
+         name="file"
         :headers="headers"
         :on-success="uploadSuccess"
         :multiple="false"
@@ -29,14 +29,16 @@
       },
       data(){
         return {
-          headers:{},
+          headers:{
+            "Authorization":"Bearer api_token_admin"
+          },
           uploadStatus:'default'
         }
       },
       methods:{
         uploadSuccess(res){
            console.log(res);
-           if(res.code == '0'){
+           if(res.code == '1'){
              this.uploadStatus = '0';
              this.$emit('uploadSuccess',[res,this.uploadData.name]);
            }else{

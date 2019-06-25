@@ -13,9 +13,9 @@
          </el-col>
          <el-col :span="20" :sm="20" class="employeeZone">
            <el-row>
-             <el-button   type="primary" @click="edit(1)"  icon="el-icon-plus">人员新增</el-button>
+             <el-button   type="primary" @click="edit(1)"  icon="el-icon-plus">新增</el-button>
              <el-button  type="primary" @click="edit(2)" icon="el-icon-edit"  >修改</el-button>
-             <el-button  type="primary" @click="edit(3)" icon="el-icon-edit"  >删除</el-button>
+             <el-button  type="primary" @click="deleteData()" icon="el-icon-edit"  >删除</el-button>
              <el-button  type="primary"  icon="el-icon-download"  >导出</el-button>
            </el-row>
 
@@ -24,11 +24,15 @@
              </el-table-column>
              <el-table-column type="index" label="序号" width="60" align="center">
              </el-table-column>
-             <el-table-column  label="员工编号" prop="code"  align="center">
+             <el-table-column  label="登录名称" prop="username"  align="center">
              </el-table-column>
              <el-table-column  label="员工姓名"  prop="name"  align="center">
              </el-table-column>
-             <el-table-column  label="性别" prop="sex"  align="center">
+             <el-table-column  label="工号" prop="job_number"  align="center">
+             </el-table-column>
+             <el-table-column  label="头像" prop="avatar"  align="center">
+             </el-table-column>
+             <el-table-column  label="性别" prop="gender"  align="center">
              </el-table-column>
              <el-table-column  label="所属公司" prop="blongCompany"  align="center">
              </el-table-column>
@@ -36,15 +40,19 @@
              </el-table-column>
              <el-table-column  label="移动电话" width="120" prop="mobile"  align="center">
              </el-table-column>
-             <el-table-column  label="身份证号" width="140" prop="identityCard"  align="center">
+             <el-table-column  label="身份证" prop="id_card"  align="center">
              </el-table-column>
-             <el-table-column  label="个人邮箱" width="140" prop="selfEmail"  align="center">
+             <el-table-column  label="个人邮箱" width="140" prop="email"  align="center">
              </el-table-column>
-             <el-table-column  label="集团邮箱" width="170" prop="groupEmail"  align="center">
+             <el-table-column  label="集团邮箱" width="170" prop="company_email"  align="center">
              </el-table-column>
-             <el-table-column  label="职位名称" prop="employeeName"  align="center">
+             <el-table-column  label="职位名称" prop="job_title"  align="center">
              </el-table-column>
-             <el-table-column  label="办公地点" prop="site"  align="center">
+             <el-table-column  label="办公地点" prop="office"  align="center">
+             </el-table-column>
+             <el-table-column  label="在职状态" prop="job_status"  align="center">
+             </el-table-column>
+             <el-table-column  label="是否启用" prop="active"  align="center">
              </el-table-column>
            </el-table>
            <!--分页-->
@@ -71,7 +79,7 @@
         <el-form :inline="true" v-if="dialogVisible" :model="employeeInfo"  label-width="auto"  class="demo-form-inline self-input border">
           <el-row>
             <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" labelName="员工编号" :required="true"  keyName="code" :val="employeeInfo.code" @changeFormVal="changeAllotVal"></SelfInput>
+              <SelfInput v-if="dialogVisible" labelName="员工编号" :required="true"  keyName="job_number" :val="employeeInfo.job_number" @changeFormVal="changeAllotVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
               <SelfInput v-if="dialogVisible" labelName="员工姓名" :required="true"  keyName="name" :val="employeeInfo.name" @changeFormVal="changeAllotVal"></SelfInput>
@@ -79,15 +87,15 @@
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" type="2" :selectList="sexList" labelName="性别" :required="true"  keyName="sex" :val="employeeInfo.sex" @changeFormVal="changeAllotVal"></SelfInput>
+              <SelfInput v-if="dialogVisible" type="1" :selectList="sexList" labelName="性别" :required="true"  keyName="gender" :val="employeeInfo.gender" @changeFormVal="changeAllotVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" type="2" :selectList="companyList" labelName="所属公司" :required="true"  keyName="blongCompany" :val="employeeInfo.blongCompany" @changeFormVal="changeAllotVal"></SelfInput>
+              <SelfInput v-if="dialogVisible" type="1" :selectList="companyList" labelName="在职状态" :required="true"  keyName="job_status" :val="employeeInfo.job_status" @changeFormVal="changeAllotVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" type="2" :selectList="departList" labelName="所属部门" :required="true"  keyName="blongDepart" :val="employeeInfo.blongDepart" @changeFormVal="changeAllotVal"></SelfInput>
+              <SelfInput v-if="dialogVisible" type="1" :selectList="departList" labelName="是否启用" :required="true"  keyName="active" :val="employeeInfo.active" @changeFormVal="changeAllotVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
               <SelfInput v-if="dialogVisible" labelName="移动电话" :required="true"  keyName="mobile" :val="employeeInfo.mobile" @changeFormVal="changeAllotVal"></SelfInput>
@@ -95,29 +103,44 @@
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" labelName="身份证号"   keyName="identifyCard" :val="employeeInfo.identifyCard" @changeFormVal="changeAllotVal"></SelfInput>
+              <SelfInput v-if="dialogVisible" labelName="身份证号"   keyName="id_card" :val="employeeInfo.id_card" @changeFormVal="changeAllotVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" labelName="个人邮箱"   keyName="selfEmail" :val="employeeInfo.slefEmail" @changeFormVal="changeAllotVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" labelName="集团邮箱" :required="true"  keyName="groupEmail" :val="employeeInfo.groupEmail" @changeFormVal="changeAllotVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" labelName="职位名称"  keyName="employeeName" :val="employeeInfo.employeeName" @changeFormVal="changeAllotVal"></SelfInput>
+              <SelfInput v-if="dialogVisible" labelName="个人邮箱"   keyName="email" :val="employeeInfo.email" @changeFormVal="changeAllotVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" labelName="办公地点" keyName="site" :val="employeeInfo.site" @changeFormVal="changeAllotVal"></SelfInput>
+              <SelfInput v-if="dialogVisible" labelName="集团邮箱" :required="true"  keyName="company_email" :val="employeeInfo.company_email" @changeFormVal="changeAllotVal"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
+              <SelfInput v-if="dialogVisible" labelName="职位名称"  keyName="job_title" :val="employeeInfo.job_title" @changeFormVal="changeAllotVal"></SelfInput>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <SelfInput v-if="dialogVisible" labelName="办公地点" keyName="office" :val="employeeInfo.office" @changeFormVal="changeAllotVal"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
+              <SelfInput v-if="dialogVisible" labelName="登录姓名" keyName="username" :val="employeeInfo.username" @changeFormVal="changeAllotVal"></SelfInput>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="10">
+              <SelfInput v-if="dialogVisible" labelName="部门" keyName="dep_id" :val="employeeInfo.dep_id" @changeFormVal="changeAllotVal"></SelfInput>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <el-form-item label="头像上传">
+                <Avatar :upload-data="uploadData" v-on:uploadSuccess="uploadSuccess"></Avatar>
+              </el-form-item>
             </el-col>
           </el-row>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="confirm">确 定</el-button>
+          <el-button type="primary" @click="confirmBtn">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -125,6 +148,7 @@
 
 <script>
     import SelfInput from '../../components/common/selfInput'
+    import Avatar from '../../components/common/avatar'
     export default {
       name: "user",
       data(){
@@ -160,48 +184,26 @@
           currentPage:1,
           total:50,
           employeeList:[
-            {
-              code:'001',
-              name:'cj',
-              sex:'男',
-              blongCompany:'公司一',
-              blongDepart:'部门一',
-              mobile:'18310097654',
-              identifyCard:'xxx',
-              slefEmail:'12345678@qq.com',
-              groupEmail:'65432veragroup.com',
-              employeeName:'普工',
-              site:'北京'
-            },
-            {
-              code:'002',
-              name:'cj',
-              sex:'男',
-              blongCompany:'',
-              blongDepart:'',
-              mobile:'',
-              identifyCard:'',
-              slefEmail:'',
-              groupEmail:'',
-              employeeName:'',
-              site:''
-            }
+
           ],
           dialogVisible:false,
           employeeInfo:{
-            code:'',
-            name:'',
-            sex:'',
-            blongCompany:'',
-            blongDepart:'',
+            avatar:'',
+            active:'',
+            job_status:'',
             mobile:'',
-            identifyCard:'',
-            slefEmail:'',
-            groupEmail:'',
-            employeeName:'',
-            site:''
+            office:'',
+            gender:'',
+            id_card:'',
+            job_title:'',
+            company_email:'',
+            email:'',
+            job_number:'',
+            name:'',
+            username:'',
+            dep_id:''
           },
-          title:'人员新增',
+          title:'新增',
           sexList:[
             {
               code:1,
@@ -232,9 +234,20 @@
               value:'部门二'
             }
           ],
+          uploadData:{
+            name:'file'
+          }
         }
       },
       methods:{
+        init(){
+          this.fetchData();
+        },
+        uploadSuccess(res){
+          let uuid = res[0].uuid;
+          console.log('uuid == ' + uuid);
+          this.employeeInfo['avatar'] = uuid;
+        },
         handleSelectionChange(val) {
           this.multipleSelection = val;
           // console.log(this.multipleSelection);
@@ -255,37 +268,90 @@
         changeAllotVal([key,val]){
           this.employeeInfo[key] = val;
         },
+        fetchData(){
+          this.$axios.Asset.user('GET',{}).then(res=>{
+            console.log(" result ==++++====" + JSON.stringify(res.data));
+            this.employeeList = res.data;
+            this.total = res.meta.total
+          })
+        },
+        // 新增,修改
         edit(type){
-          let resetData = this.$Store.resetForm(this.employeeInfo);
-          this.employeeInfo = resetData;
-          if(type === 1){
-            this.dialogVisible = true;
-            this.title = '人员新增'
-          }else if(type === 2){
+          this.title = type == 1 ? '新增':'修改';
+          // this.employeeInfo = this.$Store.resetForm(this.formData);
+          if(type === 2){
+            console.log(JSON.stringify(this.multipleSelection));
             if(this.multipleSelection.length === 1){
-              this.employeeInfo = this.multipleSelection[0];
-              this.dialogVisible = true;
-              this.title = '修改员工信息'
+              this.employeeInfo = Object.assign({},this.multipleSelection[0]);
+              console.log(JSON.stringify(this.formData));
+              // this.validDate = this.formData.validDate.split('-');
             }else{
               this.$message({
-                type:'warning',
-                message:'请选择一条要修改的数据'
+                message:'请选择一条要修改的数据',
+                type:'warning'
               })
-            }
-          }else if(type === 3){
-            if(this.multipleSelection.length >= 1) {
-              this.$message({
-                type:'success',
-                message:'删除成功！'
-              })
-
-            }else{
-              this.$message({
-                type:'warning',
-                message:'请选择要删除的数据'
-              })
+              return;
             }
           }
+          this.dialogVisible = true;
+        },
+        confirmBtn(){
+          let id = this.employeeInfo.id;
+          let data = this.employeeInfo;
+          if(this.title == '新增'){
+            // TODO 暂且用于测试
+            data.asset_ids = [1]
+            this.$axios.Asset.user('POST',data).then(res=>{
+              // this.tipMessage('新增成功！');
+              this.$message({
+                message:'新增成功！',
+                type:'success'
+              })
+              this.fetchData();
+              this.dialogVisible = false;
+            })
+          }else{
+            this.$axios.Asset.user('PUT',data).then(res=>{
+              console.log(res);
+              this.$message({
+                message:'修改成功！',
+                type:'success'
+              })
+              this.fetchData();
+              this.dialogVisible = false;
+            }).catch(error=>{
+              // TODO error result
+            })
+          }
+        },
+        deleteData(){
+          if(this.multipleSelection.length === 0){
+            this.$message({
+              message:'请选择一条要删除的数据',
+              type:'warning'
+            })
+            return;
+          }else{
+            let data = this.multipleSelection;
+            let deleteNum = 0;
+            data.forEach(item=>{
+              this.$axios.Asset.user('DELETE',item).then(res=>{
+                deleteNum+=1;
+                if(data.length === deleteNum){
+                  this.tipMessage('删除成功！');
+                  this.fetchData();
+                }
+              })
+            })
+          }
+        },
+        tipMessage(msg,type){
+          type = type ? type : 'success';
+          this.$message({
+            message:msg,
+            type:type,
+            duration:1500
+          })
         }
       },
       watch:{
@@ -296,8 +362,13 @@
           deep:true
         }
       },
+      mounted(){
+        this.init();
+
+      },
       components:{
-        SelfInput
+        SelfInput,
+        Avatar
       }
 
     }

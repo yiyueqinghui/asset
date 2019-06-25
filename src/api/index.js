@@ -50,7 +50,12 @@ const URLS = {
   INVOICE:'/api-1.0/invoice/',
   BRAND:'/api-1.0/trademark/',
   WORKPLACE:'/api-1.0/workplace/',
-  ALLOT:'/api-1.0/allot/'
+  ALLOT:'/api-1.0/allot/',
+  BORROW:'/api-1.0/borrow/',
+  USER:'/api-1.0/user/',
+  ROLE:'/api-1.0/rbac/',
+  DEPARTMENT:'/api-1.0/department/',
+  UPLOAD:'/api-1.0/upload/'
 }
 
 
@@ -88,6 +93,22 @@ const Asset = {
   },
   allot:(method,data)=>{
     let res = initPhpApi(data,method,URLS.ALLOT);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+  borrow:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.BORROW);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+  user:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.USER);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+  role:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.ROLE);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+  department:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.DEPARTMENT);
     return ApiAxios(res.method,res.url,res.data)
   }
 

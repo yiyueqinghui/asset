@@ -3,7 +3,7 @@
       <el-row>
         <el-button  type="primary" icon="el-icon-plus" @click="editRole(1)">新建角色</el-button>
         <el-button  type="primary" icon="el-icon-edit"  @click="editRole(2)">修改</el-button>
-        <el-button  type="primary" icon="el-icon-edit"  @click="editRole(3)">删除</el-button>
+        <el-button  type="primary" icon="el-icon-edit"  @click="deleteRole">删除</el-button>
         <el-button  type="primary" icon="el-icon-plus" @click="authRole">角色授权</el-button>
         <el-button  type="primary" icon="el-icon-s-custom" @click="assignUser" >分配用户</el-button>
       </el-row>
@@ -13,9 +13,9 @@
           </el-table-column>
           <el-table-column type="index" label="序号" width="60" align="center">
           </el-table-column>
-          <el-table-column  label="角色名称" class="roleName" prop="roleName"  align="center">
+          <el-table-column  label="角色名称" class="roleName" prop="name"  align="center">
           </el-table-column>
-          <el-table-column  label="备注" prop="remarks"  align="center">
+          <el-table-column  label="备注" prop="comment"  align="center">
           </el-table-column>
         </el-table>
       </el-row>
@@ -29,16 +29,16 @@
         top="80px">
         <el-form  :inline="true" :model="createForm"  label-width="auto"  class="demo-form-inline self-input">
           <el-form-item label="角色名称">
-            <el-input v-model="createForm.roleName"></el-input>
+            <el-input v-model="createForm.name"></el-input>
           </el-form-item>
           <el-form-item label="备注">
-            <el-input type="textarea" :rows="3"  v-model="createForm.remarks"></el-input>
+            <el-input type="textarea" :rows="3"  v-model="createForm.comment"></el-input>
           </el-form-item>
         </el-form>
 
         <div slot="footer" class="dialog-footer">
           <el-button @click="createVisible = false">取 消</el-button>
-          <el-button type="primary" @click="confirmCreate">确 定</el-button>
+          <el-button type="primary" @click="confirmBtn">确 定</el-button>
         </div>
       </el-dialog>
       <!--编辑角色-->
@@ -57,10 +57,10 @@
         <!--角色信息-->
         <el-form  :inline="true" v-if="currentIndex === 1" :model="createForm"  label-width="auto"  class="demo-form-inline self-input">
           <el-form-item label="角色名称">
-            <el-input v-model="createForm.roleName"></el-input>
+            <el-input v-model="createForm.name"></el-input>
           </el-form-item>
           <el-form-item label="备注">
-            <el-input type="textarea" :rows="3"  v-model="createForm.remarks"></el-input>
+            <el-input type="textarea" :rows="3"  v-model="createForm.comment"></el-input>
           </el-form-item>
         </el-form>
         <!--角色权限-->
@@ -102,7 +102,7 @@
 
         <div slot="footer" class="dialog-footer">
           <el-button @click="editVisible = false">取 消</el-button>
-          <el-button type="primary" @click="confirmEdit">确 定</el-button>
+          <el-button type="primary" @click="confirmBtn">确 定</el-button>
         </div>
       </el-dialog>
       <!--角色授权-->
@@ -187,14 +187,6 @@
         return {
           propsData: { multiple: true, expandTrigger: 'hover'},
           roleData:[
-            {
-              roleName:'普通用户',
-              remarks:'查看个人资产，可操作盘点和退库'
-            },
-            {
-              roleName:'管理员',
-              remarks:'查看个人资产，可操作盘点和退库'
-            }
           ],
           multipleSelection:[],
           createVisible:false,
@@ -336,7 +328,96 @@
         }
       },
       methods:{
+        init(){
+          this.fetchData();
+        },
+        fetchData(){
+          this.$axios.Asset.role('GET',{}).then(res=>{
+            console.log(" result ==++++====" + JSON.stringify(res.data));
+            this.roleData = res.data;
+            this.total = res.meta.total
+          })
+        },
+        // 新增,修改
         editRole(type){
+          this.title = type == 1 ? '新增':'修改';
+          this.createForm = this.$Store.resetForm(this.createForm);
+          if(type === 2){
+            console.log(JSON.stringify(this.multipleSelection));
+            if(this.multipleSelection.length === 1){
+              this.createForm = Object.assign({},this.multipleSelection[0]);
+              console.log(JSON.stringify(this.createForm));
+              // this.validDate = this.formData.validDate.split('-');
+            }else{
+              this.$message({
+                message:'请选择一条要修改的数据',
+                type:'warning'
+              })
+              return;
+            }
+            this.editVisible = true;
+          }else{
+            this.createVisible = true;
+          }
+        },
+        confirmBtn(){
+          let id = this.createForm.id;
+          let data = this.createForm;
+          if(this.title == '新增'){
+            this.$axios.Asset.role('POST',data).then(res=>{
+              // this.tipMessage('新增成功！');
+              this.$message({
+                message:'新增成功！',
+                type:'success'
+              })
+              this.fetchData();
+              this.createVisible = false;
+            })
+          }else{
+            this.$axios.Asset.role('PUT',data).then(res=>{
+              console.log(res);
+              this.$message({
+                message:'修改成功！',
+                type:'success'
+              })
+              this.fetchData();
+              this.editVisible = false;
+            }).catch(error=>{
+              // TODO error result
+            })
+          }
+        },
+        deleteRole(){
+          if(this.multipleSelection.length === 0){
+            this.$message({
+              message:'请选择一条要删除的数据',
+              type:'warning'
+            })
+            return;
+          }else{
+            let data = this.multipleSelection;
+            let deleteNum = 0;
+            data.forEach(item=>{
+              this.$axios.Asset.role('DELETE',item).then(res=>{
+                deleteNum+=1;
+                if(data.length === deleteNum){
+                  this.tipMessage('删除成功！');
+                  this.fetchData();
+                }
+              })
+            })
+          }
+        },
+        tipMessage(msg,type){
+          type = type ? type : 'success';
+          this.$message({
+            message:msg,
+            type:type,
+            duration:1500
+          })
+        },
+
+        /*editRole(type){
           if(type === 1){
             this.createForm = this.$Store.resetForm(this.createForm);
             this.createVisible = true;
@@ -366,7 +447,7 @@
 
           }
 
-        },
+        },*/
         handleSelectionChange(val) {
           this.multipleSelection = val;
           console.log(this.multipleSelection);
@@ -438,7 +519,8 @@
         }
       },
       mounted(){
-        this.personData = new Array(20).fill(this.personData[0])
+        this.personData = new Array(20).fill(this.personData[0]);
+        this.init();
       }
 
     }

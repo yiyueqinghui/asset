@@ -84,14 +84,15 @@
       </el-row>
       <!--新增/修改-->
       <el-dialog
-        :close-on-click-modal="false" :close-on-press-escape="false"
+        :close-on-click-modal="false" :close-on-press-escape="false" ref
         :title="formTitle === 1?'新增':'修改'"
         :visible.sync="dialogFormVisible"
+        v-if="dialogFormVisible"
         width="960px"
         top="20px">
         <el-scrollbar class="dialogZone">
           <EditorInfo :edit-date="editDate"></EditorInfo>
-          <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline date-range-input">
+          <el-form :inline="true" :model="formData"  ref="formData" label-width="auto"  class="demo-form-inline date-range-input">
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="12">
@@ -114,16 +115,6 @@
               <SelfInput type="3" labelName="年检日期" keyName="annual_inspection_time" :val="formData.annual_inspection_time" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <!--<SelfInput  type="3" labelName="保险有效日期" keyName="validDate" :val="formData.validDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>-->
-              <!--<el-form-item label="保险有效日期">
-                <el-date-picker
-                  v-model="validDate"
-                  type="daterange"
-                  value-format="yyyyMMdd"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期">
-                </el-date-picker>
-              </el-form-item>-->
               <SelfInput type="3" labelName="保险有效日期" keyName="insurance_end_time" :val="formData.insurance_end_time" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
@@ -163,45 +154,34 @@
             <el-col :sm="12">
               <SelfInput type="1" labelName="使用人联系电话" keyName="useby_user_mobile" :val="formData.useby_user_mobile" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="12">
-              <SelfInput type="1" labelName="行驶本" keyName="driving_detail" :val="formData.driving_detail" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
           </el-row>
 
             <el-row>
               <el-col :sm="12">
-                <SelfInput type="1" labelName="被保人信息" keyName="recognizee_detail" :val="formData.recognizee_detail" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-              </el-col>
-              <el-col :sm="12">
                 <SelfInput type="4" labelName="备注" keyName="comment" :val="formData.comment"  @changeFormVal="changeFormVal"></SelfInput>
               </el-col>
             </el-row>
-            <el-row>
-              <el-col :sm="12">
-                <SelfInput type="1" labelName="车辆保养信息" keyName="maintain_detail" :val="formData.maintain_detail" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-              </el-col>
-            </el-row>
-          <!--<el-row>
+          <el-row>
             <el-col :sm="12">
               <el-form-item label="被保人附件">
-                <UploadFile :upload-data="uploadData" @uploadSuccess="uploadSuccess"></UploadFile>
+                <UploadFile :upload-data="uploadData" v-on:uploadSuccess="uploadSuccess1"></UploadFile>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
               <el-form-item label="行驶本附件">
-                <UploadFile :upload-data="drivingData" @uploadSuccess="uploadSuccess"></UploadFile>
+                <UploadFile :upload-data="uploadData" v-on:uploadSuccess="uploadSuccess2"></UploadFile>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
               <el-form-item label="车辆保养附件">
-                <UploadFile :upload-data="carData" @uploadSuccess="uploadSuccess"></UploadFile>
+                <UploadFile :upload-data="uploadData" v-on:uploadSuccess="uploadSuccess3"></UploadFile>
               </el-form-item>
             </el-col>
-          </el-row>-->
+          </el-row>
         </el-form>
         </el-scrollbar>
         <div slot="footer" class="dialog-footer">
@@ -245,15 +225,12 @@
             "annual_inspection_time": "",
             "insurance_end_time": "",
             "mileage": "",
-
-
             "maintain_time": "",
             "key_count": "",
             "key_number": "",
             "useby_user": "",
             "insuranceApplicant": "",
             "useby_user_mobile": "",
-
             "useby_dep": "",
             "manager": "",
             "recognizee_detail": "",
@@ -276,13 +253,7 @@
           ],
           uploadVisible:false,
           uploadData:{
-            name:'personFile'
-          },
-          drivingData:{
-            name:'drivingFile'
-          },
-          carData:{
-            name:'carFile'
+            name:'file'
           },
           validDate:[]
         }
@@ -291,7 +262,18 @@
         init(){
           this.fetchData();
         },
-
+        uploadSuccess1(res){
+          let uuid = res[0].uuid;
+          this.formData['recognizee_detail'] = uuid;
+        },
+        uploadSuccess2(res){
+          let uuid = res[0].uuid;
+          this.formData['driving_detail'] = uuid;
+        },
+        uploadSuccess3(res){
+          let uuid = res[0].uuid;
+          this.formData['maintain_detail'] = uuid;
+        },
         handleCommand(command){
           if(command == 'upload'){
             this.uploadVisible = true;
@@ -311,14 +293,6 @@
             export_json_to_excel(tHeader, data, '资产')
           })
 
-        },
-        uploadSuccess(res){
-          let key = res[1],
-              val = res[0].message;
-          this.formData[key] = val;
-        },
-        closeUpload(){
-          this.uploadVisible = false;
         },
         querySearch(queryString, cb) {
           var departmentList = this.departmentList;
@@ -347,22 +321,38 @@
         },
         fetchData(){
           this.$axios.Asset.car('GET',{}).then(res=>{
-            console.log(" result ==++++====" + JSON.stringify(res.data));
+            // console.log(" result ==++++====" + JSON.stringify(res.data));
             this.wareData = res.data;
             this.total = res.meta.total
           })
         },
         // 新增,修改
         clickBtn(type){
-          this.formTitle = type == 1 ? '新增':'修改';
-          this.editDate = this.$Store.formatDate();
-          this.formData = this.$Store.resetForm(this.formData);
+          let _this = this;
+          _this.formTitle = type;
+          // 重置数据为空值
+          // this.editDate = this.$Store.formatDate();
+          // _this.formData = this.$Store.formData(this.formData);
+
+          // 清空操作
+          Object.keys(_this.formData).forEach(name => {
+            _this.$set(_this.formData, name, '')
+          });
+
+          // type=2 修改操作，否则新增
           if(type === 2){
             console.log(JSON.stringify(this.multipleSelection));
-            if(this.multipleSelection.length === 1){
-              this.formData = Object.assign({},this.multipleSelection[0]);
-              console.log(JSON.stringify(this.formData));
-              // this.validDate = this.formData.validDate.split('-');
+            if(_this.multipleSelection.length === 1){
+              // 修改，抓取列表数据赋值
+              _this.formData = Object.assign({},this.multipleSelection[0]);
+              /*let obj = this.multipleSelection[0];
+              // setValue(_this, _this.multipleSelection[0]);
+              Object.keys(_this.formData).forEach(name => {
+                console.log('name = ' + name + '=== value = ' + obj[name]);
+                _this.$set(_this.formData, name, obj[name])
+              });*/
+
+
             }else{
               this.$message({
                 message:'请选择一条要修改的数据',
@@ -371,7 +361,9 @@
               return;
             }
           }
+
           this.dialogFormVisible = true;
+
         },
         confirmBtn(){
           let id = this.formData.id;

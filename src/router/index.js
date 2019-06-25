@@ -70,7 +70,7 @@ export default new Router({
         {
           meta:'资产入库',
           path:'storage',
-          component:()=>import('@/page/asset/storage')
+          component:()=>import('@/page/asset/asset')
         },
         {
           meta:'票据管理',
