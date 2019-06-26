@@ -55,7 +55,8 @@ const URLS = {
   USER:'/api-1.0/user/',
   ROLE:'/api-1.0/rbac/',
   DEPARTMENT:'/api-1.0/department/',
-  UPLOAD:'/api-1.0/upload/'
+  UPLOAD:'/api-1.0/upload/',
+  ASSET_TYPE:'/api-1.0/asset-class/'
 }
 
 
@@ -77,6 +78,10 @@ const Asset = {
   storage:(method,data)=>{
     // console.log('method===' + method)
     let res = initPhpApi(data,method,URLS.ASSET);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+  asset_type:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.ASSET_TYPE);
     return ApiAxios(res.method,res.url,res.data)
   },
   invoice:(method,data)=>{

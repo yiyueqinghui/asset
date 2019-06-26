@@ -39,10 +39,8 @@
           {{scope.row.status | turnStatus }}
         </template>
       </el-table-column>
-      <el-table-column  label="照片"  align="center">
-        <template slot-scope="scope">
-          <img class="tabPic" :src="scope.row.src" />
-        </template>
+
+      <el-table-column  label="状态" width="100" prop="status_zh"  align="center">
       </el-table-column>
       <el-table-column  label="资产名称" width="100" prop="name"  align="center">
       </el-table-column>
@@ -60,12 +58,7 @@
       </el-table-column>
       <el-table-column  label="发票号码" width="100" prop="invoice"  align="center">
       </el-table-column>
-      <!-- 实付金额,  使用部门 创建人 创建时间 暂无-->
-      <el-table-column  label="实付金额" prop="money"  align="center">
-      </el-table-column>
       <el-table-column  label="使用公司" prop="dep_to_use"  align="center">
-      </el-table-column>
-      <el-table-column  label="使用部门" prop="useDepart"  align="center">
       </el-table-column>
       <el-table-column  label="使用人" prop="user_to_use"  align="center">
       </el-table-column>
@@ -77,9 +70,7 @@
       </el-table-column>
       <el-table-column  label="存放地点" prop="store_at"  align="center">
       </el-table-column>
-      <el-table-column  label="创建人" prop="creater"  align="center">
-      </el-table-column>
-      <el-table-column  label="创建时间" width="120" sortable prop="createDate"   align="center">
+      <el-table-column  label="创建人" prop="create_by_zh"  align="center">
       </el-table-column>
       <el-table-column  label="备注" prop="mt_comment"  align="center">
       </el-table-column>
@@ -103,6 +94,7 @@
       :close-on-click-modal="false" :close-on-press-escape="false"
       :title="formTitle"
       :visible.sync="dialogFormVisible"
+      v-if="dialogFormVisible"
       width="960px"
       top="80px">
       <el-scrollbar class="dialogZone">
@@ -114,7 +106,15 @@
               <SelfInput  labelName="资产名称" keyName="name" :val="formData.name" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="1"  labelName="资产类别" :selectList="typeList"  keyName="asset_class" :required="true" :val="formData.asset_class_zh"  @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="资产类别">
+                <treeselect
+                  v-model="formData.asset_class"
+                  @select="funTreeSel3"
+                  :multiple="false"
+                  placeholder="Select..."
+                  :show-count="false"
+                  :options="assetTypeList" />
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
               <SelfInput  labelName="资产编码" keyName="asset_number" :val="formData.asset_number" :required="false" @changeFormVal="changeFormVal" :disabled="false"></SelfInput>
@@ -133,10 +133,18 @@
           </el-row>
           <el-row>
             <el-col :sm="8">
-              <SelfInput type="1" labelName="所属机构" :selectList="typeList"  keyName="dep_owner" :val="formData.dep_owner" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="所属机构">
+                <treeselect
+                  v-model="formData.dep_owner"
+                  @select="funTreeSel1"
+                  :multiple="false"
+                  placeholder="请选择"
+                  :show-count="false"
+                  :options="companyList" />
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput labelName="发票号码" keyName="invoice" :val="formData.invoice" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="2" labelName="发票号码" :selectList="invoiceList"  keyName="invoice" :val="formData.invoice" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
               <SelfInput type="5" labelName="实付金额" keyName="money" :val="formData.money" :required="true" @changeFormVal="changeFormVal"></SelfInput>
@@ -147,16 +155,19 @@
           </el-row>
           <el-row>
             <el-col :sm="8">
-              <SelfInput type="1"  labelName="使用公司" :selectList="companyList"  keyName="dep_to_use" :val="formData.dep_to_use" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="使用机构">
+                <treeselect
+                  v-model="formData.dep_to_use"
+                  @select="funTreeSel2"
+                  :multiple="false"
+                  placeholder="请选择"
+                  :show-count="false"
+                  :options="companyList" />
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="2" labelName="使用部门" :selectList="departList" keyName="useDepart" :val="formData.useDepart" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="2" labelName="使用人" :selectList="userList"  keyName="user_to_use" :val="formData.user_to_use" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
-              <SelfInput labelName="使用人" keyName="user_to_use" :val="formData.user_to_use" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
             <el-col :sm="8">
               <SelfInput  labelName="存放地点"  keyName="store_at" :val="formData.store_at" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
@@ -201,17 +212,17 @@
   import SelfInput from '../../components/common/selfInput'
   import UploadExcel from '../../components/common/uploadExcel'
   import downloadModule from '../../utils/download'
+  import Treeselect from '@riophae/vue-treeselect'
+  import '@riophae/vue-treeselect/dist/vue-treeselect.css'
   export default {
     data: function () {
       return {
         searchData: {
           department: ''
         },
-        departmentList: [
-          {"value": "佳禾集团", "en": "JHJT"},
-          {"value": "中恒信", "en": "ZHX"},
-          {"value": "黄鱼儿", "en": "HYR"}
-        ],
+        userList: [],
+        invoiceList:[],
+        assetTypeList:[],
         wareData: [],
         multipleSelection: [],    //当前选中的行数据
         currentPage: 1,
@@ -222,18 +233,17 @@
           editDate:'',
           name: '',
           asset_spec: '',
-          asset_class: '',
+          asset_class: null,
           asset_number: '',
           asset_sn: '',
           buy_at: '',
-          dep_owner: '',
+          dep_owner: null,
           invoice: '',
           money:0,
           showMoney:0,
           chineseMoney:'',
           numMoney:'',
-          dep_to_use: '',
-          useDepart: '',
+          dep_to_use: null,
           user_to_use: '',
           store_at: '',
           comment: '',
@@ -244,33 +254,11 @@
         },
         dialogLoading: false,
         editDate: '2019-05-11',
-        typeList:[
-          {
-            value:'类别一'
-          },
-          {
-            value:'类别二'
-          },
-          {
-            value:'类别三'
-          }
-        ],
         companyList:[
-          {
-            value:'公司一'
-          },
-          {
-            value:'公司二'
-          }
         ],
         departList:[
-          {
-            value:'部门一'
-          },
-          {
-            value:'部门二'
-          }
         ],
+        departmentList:[],
         uploadVisible:false
       }
     },
@@ -278,12 +266,105 @@
       init(){
         this.fetchData();
         this.getDepartmentList();
+        this.getInvoiceList();
+        this.getUserList();
+        this.getAssetTypeList();
+      },
+
+      getAssetTypeList() {
+        this.$axios.Asset.asset_type('GET', {}).then(res => {
+          // console.log(" result ==" + res.data.tree);
+          let _departList = res.data.tree;
+          let result = this.transData2Tree(_departList);
+          this.assetTypeList = result;
+        })
+      },
+      getUserList() {
+        this.$axios.Asset.user('GET', {}).then(res => {
+          let _departList = res.data;
+          this.userList = trasfer2ViewListofUser(_departList);
+        })
+
+        function trasfer2ViewListofUser(list){
+          let retList = [];
+          list.forEach((item)=>{
+            let node = {};
+            node.value = item.id;
+            node.label = item.name;
+            retList.push(node);
+          })
+          return retList;
+        }
+      },
+      getInvoiceList() {
+        this.$axios.Asset.invoice('GET', {}).then(res => {
+          let _departList = res.data;
+          this.invoiceList = trasfer2ViewListofVoice(_departList);
+        })
+
+        function trasfer2ViewListofVoice(list){
+          let retList = [];
+          list.forEach((item)=>{
+            let node = {};
+            node.value = item.id;
+            node.label = item.inv_number;
+            retList.push(node);
+          })
+          return retList;
+        }
+      },
+
+      transData2Tree(list){
+        let retList = [];
+        list.forEach((item)=>{
+          let node = {};
+          node.id = item.id;
+          node.label = item.name;
+          let children = item.children;
+          if(typeof children != "undefined"){
+            this.getChildData(node, children);
+          }
+          retList.push(node);
+        })
+        return retList;
+      },
+      getChildData(node, list) {
+        let retList = [];
+        list.forEach((item)=>{
+          let node = {};
+          node.id = item.id;
+          node.label = item.name;
+          let children = item.children;
+          if(typeof children != "undefined"){
+            this.getChildData(node, children);
+          }
+          retList.push(node);
+        })
+        node.children = retList;
       },
       getDepartmentList(){
         this.$axios.Asset.department('GET',{}).then(res=>{
-          console.log(" result ==" + res.data);
-          this.departList = res.data;
+          // console.log(" result ==" + res.data.tree);
+          let _departList = res.data.tree;
+          let result = this.transData2Tree(_departList);
+          this.departList = result;
+          this.companyList = result;
         })
+      },
+      funTreeSel1(node){
+        console.log(JSON.stringify(node.id))
+        let val = node.id;
+        this.formData.dep_owner = val;
+      },
+      funTreeSel2(node){
+        console.log(JSON.stringify(node.id))
+        let val = node.id;
+        this.formData.dep_to_use = val;
+      },
+      funTreeSel3(node){
+        console.log(JSON.stringify(node.id))
+        let val = node.id;
+        this.formData.asset_class = val;
       },
       handleCommand(command){
         if(command == 'upload'){
@@ -432,7 +513,8 @@
     components:{
       EditorInfo,
       SelfInput,
-      UploadExcel
+      UploadExcel,
+      Treeselect
     },
     mounted(){
       this.init();
