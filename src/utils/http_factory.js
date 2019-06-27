@@ -64,17 +64,43 @@ function ApiAxios(method, url, params,config){
   return new Promise((resolve,reject)=>{
     http(config).then(res=>{
       if(res.status < 300 && res.status >= 200){
-        return resolve(res.data);
+        let code = res.data.code;
+        if(code == 1){
+          return resolve(res.data);
+        }else{
+
+          let msg = res.data.errors;
+            if(typeof msg == "undefined"){
+            msg = res.data.message;
+          }
+
+          Message({
+            message:msg,
+            type:'warning'
+          })
+        }
       }else{
-        Message({
-          message:res.message,
-          type:'warning'
-        })
+        let retStatus = res.status;
+        if(typeof retStatus == "undefined"){
+          res = res.response;
+        }
+
+        let retcode = res.data.code;
+        if(retcode != 1){
+          let msg = res.data.errors;
+          if(typeof msg == "undefined"){
+            msg = res.data.message;
+          }
+          Message({
+            message:msg,
+            type:'warning'
+          })
+        }
         return;
       }
-    }).catch(err=>{
+    }).catch(res=>{
       Message({
-        message:'请求失败',
+        message:"请求失败",
         type:'warning'
       })
       return reject(res);

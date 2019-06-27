@@ -20,7 +20,9 @@
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
         <el-button  style="margin-left: 10px;" @click="clickBtn" type="primary" icon="el-icon-edit">新增</el-button>
-        <el-button  style="margin-left: 10px;" @click="backBtn" icon="el-icon-edit" type="primary" >归还</el-button>
+        <el-button  style="margin-left: 10px;" @click="borrowConfirm" icon="el-icon-edit" type="primary" >借用确认单</el-button>
+        <el-button  style="margin-left: 10px;" @click="giveBack" icon="el-icon-edit" type="primary" >归还</el-button>
+        <el-button  style="margin-left: 10px;" @click="giveBackConfirm" icon="el-icon-edit" type="primary" >归还确认单</el-button>
       </el-form-item>
     </el-form>
     <!--表格-->
@@ -29,11 +31,7 @@
       </el-table-column>
       <el-table-column type="index" label="序号" width="60" align="center">
       </el-table-column>
-      <el-table-column  label="状态" prop="status" width="120" filterable :filters="this.$Store.data.statusList"
-                        :filter-method="filterStatus" filter-placement="bottom-end"  align="center">
-        <template slot-scope="scope">
-          {{scope.row.status | turnStatus }}
-        </template>
+      <el-table-column  label="状态" width="100" prop="status_zh"  align="center">
       </el-table-column>
       <el-table-column  label="借用单号" prop="borrow_number"  align="center">
       </el-table-column>
@@ -96,7 +94,7 @@
               <SelfInput labelName="借用单号"   keyName="borrow_number" :val="formData.borrow_number" :disabled="false" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
           <el-col :sm="12">
-            <SelfInput  labelName="借用人"   keyName="borrow_user" :val="formData.borrow_user"  @changeFormVal="changeFormVal"></SelfInput>
+            <SelfInput type="2" labelName="借用人" :selectList="userList"  keyName="borrow_user" :val="formData.borrow_user"  @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
         </el-row>
         <el-row>
@@ -120,15 +118,16 @@
             <SelfInput type="3"  labelName="归还确认时间" keyName="return_confirm_time" :val="formData.return_confirm_time" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
           <el-col :sm="12">
-            <SelfInput type="1"  labelName="借出确认人" keyName="borrow_confirm_user" :val="formData.borrow_confirm_user" @changeFormVal="changeFormVal"></SelfInput>
+            <SelfInput type="2" labelName="借出确认人" :selectList="userList"  keyName="borrow_confirm_user" :val="formData.borrow_confirm_user"  @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
         </el-row>
         <el-row>
           <el-col :sm="12">
-            <SelfInput type="1"  labelName="归还处理人" keyName="return_user" :val="formData.return_user" @changeFormVal="changeFormVal"></SelfInput>
+            <SelfInput type="2" labelName="归还处理人" :selectList="userList"  keyName="return_user" :val="formData.return_user"  @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
           <el-col :sm="12">
-            <SelfInput type="1"  labelName="归还确认人" keyName="return_confirm_user" :val="formData.return_confirm_user" @changeFormVal="changeFormVal"></SelfInput>
+            <SelfInput type="2" labelName="归还确认人" :selectList="userList"  keyName="return_confirm_user" :val="formData.return_confirm_user"  @changeFormVal="changeFormVal"></SelfInput>
+
           </el-col>
         </el-row>
         <el-row>
@@ -154,35 +153,39 @@
         </el-table-column>
         <el-table-column type="index" label="序号" width="60" align="center">
         </el-table-column>
-        <el-table-column  label="状态" width="120"  align="center">
-          <template slot-scope="scope">
-            {{scope.row.status | turnStatus }}
-          </template>
+        <el-table-column  label="状态" width="100" prop="status_zh"  align="center">
         </el-table-column>
-        <el-table-column  label="照片"  align="center">
-          <template slot-scope="scope">
-            <img class="tabPic" :src="scope.row.src" />
-          </template>
+        <el-table-column  label="资产名称" width="100" prop="name"  align="center">
         </el-table-column>
-        <el-table-column width="100" label="资产名称" prop="name"  align="center">
+        <el-table-column  label="资产类别" prop="asset_class"  align="center">
         </el-table-column>
-        <el-table-column  label="资产编码" prop="code"  align="center">
+        <el-table-column  label="资产编码" prop="asset_number"  align="center">
         </el-table-column>
-        <el-table-column  label="规格型号" prop="size"  align="center">
+        <el-table-column  label="规格型号" prop="asset_spec"  align="center">
         </el-table-column>
-        <el-table-column  label="购入时间" prop="purchaseDate"  align="center">
+        <el-table-column  label="SN号" width="130" prop="asset_sn"  align="center">
         </el-table-column>
-        <el-table-column  label="所属公司" prop="blong"  align="center">
+        <el-table-column  label="购入时间" width="120" sortable prop="buy_at"  align="center">
         </el-table-column>
-        <el-table-column  label="当前所在公司" width="110" prop="useCompany"  align="center">
+        <el-table-column  label="所属公司" prop="dep_owner"  align="center">
         </el-table-column>
-        <el-table-column  label="当前所在部门" width="110" prop="useDepart"  align="center">
+        <el-table-column  label="发票号码" width="100" prop="invoice"  align="center">
         </el-table-column>
-        <el-table-column  label="当前使用人" width="100" prop="usePerson"  align="center">
+        <el-table-column  label="使用公司" prop="dep_to_use"  align="center">
         </el-table-column>
-        <el-table-column  label="存放地点" prop="site"  align="center">
+        <el-table-column  label="使用人" prop="user_to_use"  align="center">
         </el-table-column>
-        <el-table-column  label="备注" prop="remarks"  align="center">
+        <el-table-column  label="供应商" prop="mt_supplier"  align="center">
+        </el-table-column>
+        <el-table-column  label="联系人(供应商)" width="130" prop="mt_user"  align="center">
+        </el-table-column>
+        <el-table-column  label="联系电话(供应商)" width="130" prop="mt_phone"  align="center">
+        </el-table-column>
+        <el-table-column  label="存放地点" prop="store_at"  align="center">
+        </el-table-column>
+        <el-table-column  label="创建人" prop="create_by_zh"  align="center">
+        </el-table-column>
+        <el-table-column  label="备注" prop="mt_comment"  align="center">
         </el-table-column>
       </el-table>
 
@@ -251,6 +254,7 @@
   export default {
     data: function () {
       return {
+        userList: [],
         searchData: {
           startDate:'',
           endDate:''
@@ -326,29 +330,6 @@
           val:''
         },
         allAssets:[
-          {
-            src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
-            name: '11010001',
-            type: '办工卓',
-            code: '办公设备',
-            size: '双人',
-            SN: '002110C0D0034',
-            purchaseDate: '2018-3-1',
-            blong: '测试机构',
-            bill: '102110987',
-            money: 200,
-            moneyChinese:'',
-            useCompany: '网开',
-            useDepart: '研发部',
-            usePerson: 'xxx',
-            supplier: '供应商1',
-            contacts: '张峰',
-            tel: '114',
-            site: '',
-            creater: '李小二',
-            createDate: '2018-9-8',
-            remarks: ''
-          }
         ],
         allAssetVisible:false,
         choosedList:[],
@@ -370,6 +351,24 @@
     methods:{
       init(){
         this.fetchData();
+        this.getUserList();
+      },
+      getUserList() {
+        this.$axios.Asset.user('GET', {}).then(res => {
+          let _departList = res.data;
+          this.userList = trasfer2ViewListofUser(_departList);
+        })
+
+        function trasfer2ViewListofUser(list){
+          let retList = [];
+          list.forEach((item)=>{
+            let node = {};
+            node.value = item.id;
+            node.label = item.name;
+            retList.push(node);
+          })
+          return retList;
+        }
       },
       confirmBack(){
         this.backFormVisible = false;
@@ -381,9 +380,16 @@
         console.log(arr);
         this.choosedData = arr;
         this.allAssetVisible = false;
+
+        // 增加选择的资产项
+        this.formData.asset_ids = [];
+        arr.forEach(({id})=>{
+          this.formData.asset_ids.push(id);
+        })
       },
       deleteAsset(){
         let deleteItem = [];
+        this.formData.asset_ids = [];
         this.choosedAsset.forEach(item=>{
           deleteItem.push(item.name);
         })
@@ -391,11 +397,54 @@
         this.choosedData.forEach((item,index)=>{
           if(deleteItem.indexOf(item.name)==-1){
             data.push(item);
+
+            // 增加选择的资产id
+            this.formData.asset_ids.push(item.id);
           }
         })
         this.choosedData = data;
 
       },
+
+      borrowConfirmFinal(){
+        // 退库提交操作
+        let ids = [];
+        this.multipleSelection.forEach(item=>{
+          ids .push(item.id);
+        })
+        console.log("选中的ids==", ids);
+
+        let data = {};
+        data.ids = ids;
+
+        this.$axios.Asset.borrowconfirm('POST',data).then(res=>{
+          this.$message({
+            message:'调入确认成功！',
+            type:'success'
+          })
+          this.fetchData();
+        })
+      },
+      borrowConfirm(){
+        if(this.multipleSelection.length >= 1){
+
+          this.$confirm('是否继续', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.borrowConfirmFinal();
+          }).catch(() => {
+
+          });
+        }else{
+          this.$message({
+            message:'请选择至少一个资产调入单',
+            type:'warning'
+          })
+        }
+      },
+
       handleCommand(command){
         if(command == 'upload'){
           this.uploadVisible = true;
@@ -436,13 +485,16 @@
       handleSelect(item) {
         this.formData.department = item.value;
       },
-      fetchData(){
+      giveBackConfirm(){  // TODO
+
+      },
+      giveBack(){// TODO
 
       },
       backBtn(){
         if(this.multipleSelection.length == 0){
           this.$message({
-            message:'请至少选择一个要归还的资产',
+            message:'请至少选择一个要借用的资产',
             type:'warning'
           })
         }else{
@@ -478,7 +530,7 @@
         this.newCurrentPage = val;
       },
 
-      confirmBtn(){
+      confirmBtn2(){
         console.log(this.formData);
         this.dialogFormVisible = false;
       },

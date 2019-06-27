@@ -20,7 +20,7 @@
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
         <el-button  style="margin-left: 10px;" @click="clickBtn" type="primary" icon="el-icon-edit">新增</el-button>
-        <el-button  style="margin-left: 10px;" @click="backBtn" icon="el-icon-edit" type="primary" >调入确认</el-button>
+        <el-button  style="margin-left: 10px;" @click="confirmAllot" icon="el-icon-edit" type="primary" >调入确认</el-button>
       </el-form-item>
     </el-form>
     <!--表格-->
@@ -29,11 +29,7 @@
       </el-table-column>
       <el-table-column type="index" label="序号" width="60" align="center">
       </el-table-column>
-      <el-table-column  label="状态" prop="status" width="100" filterable :filters="this.$Store.data.statusList"
-                        :filter-method="filterStatus" filter-placement="bottom-end"  align="center">
-        <template slot-scope="scope">
-          {{scope.row.status | turnStatus }}
-        </template>
+      <el-table-column  label="状态" prop="status_zh"  align="center">
       </el-table-column>
       <el-table-column  label="调拨单号" prop="allot_number"  align="center">
       </el-table-column>
@@ -47,7 +43,7 @@
       </el-table-column>
       <el-table-column  label="备注" prop="comment"  align="center">
       </el-table-column>
-      <!--<el-table-column  label="资产明细"  align="center" height="50">
+      <el-table-column  label="资产明细"  align="center">
         <el-table-column label="资产名称" width="100" prop="name" align="center"></el-table-column>
         <el-table-column label="资产类别" prop="type" align="center"></el-table-column>
         <el-table-column label="资产编码" prop="code" align="center"></el-table-column>
@@ -62,7 +58,7 @@
         <el-table-column label="使用人" prop="usePerson" align="center"></el-table-column>
         <el-table-column label="存放地点" prop="site" align="center"></el-table-column>
         <el-table-column label="备注" prop="remarks" align="center"></el-table-column>
-      </el-table-column>-->
+      </el-table-column>
 
     </el-table>
     <!--分页-->
@@ -83,21 +79,39 @@
       :close-on-click-modal="false" :close-on-press-escape="false"
       title="新增"
       :visible.sync="dialogFormVisible"
+      v-if="dialogFormVisible"
       width="960px"
       top="80px">
       <EditorInfo v-if="dialogFormVisible" :textObj="textObj" :edit-date="editDate" ></EditorInfo>
       <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input border">
         <el-row>
           <el-col :sm="12">
-              <SelfInput  type="1" :selectList="outCompanyList" labelName="调出公司"   keyName="company_out" :val="formData.company_out"  @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item label="调出公司">
+              <treeselect
+                v-model="formData.company_out"
+                @select="funTreeSel1"
+                :multiple="false"
+                placeholder="请选择"
+                :show-count="false"
+                :options="companyList" />
+            </el-form-item>
+
           </el-col>
           <el-col :sm="12">
-            <SelfInput type="1" :selectList="inCompanyList"  labelName="调入公司"   keyName="company_in" :val="formData.company_in"  @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item label="调入公司">
+              <treeselect
+                v-model="formData.company_in"
+                @select="funTreeSel2"
+                :multiple="false"
+                placeholder="请选择"
+                :show-count="false"
+                :options="companyList" />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :sm="12">
-            <SelfInput type="1" :selectList="adminList"  labelName="调入管理员"  keyName="user_id_in" :val="formData.user_id_in"  @changeFormVal="changeFormVal" ></SelfInput>
+            <SelfInput type="2" labelName="调入管理员" :selectList="userList"  keyName="user_id_in" :val="formData.user_id_in" :required="true" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
             <el-col :sm="12">
               <SelfInput type="3" labelName="调入确认时间"  keyName="confirm_time_in" :val="formData.confirm_time_in" @changeFormVal="changeFormVal"></SelfInput>
@@ -126,35 +140,39 @@
         </el-table-column>
         <el-table-column type="index" label="序号" width="60" align="center">
         </el-table-column>
-        <el-table-column  label="状态" width="120"  align="center">
-          <template slot-scope="scope">
-            {{scope.row.status | turnStatus }}
-          </template>
+        <el-table-column  label="状态" width="100" prop="status_zh"  align="center">
         </el-table-column>
-        <el-table-column  label="照片"  align="center">
-          <template slot-scope="scope">
-            <img class="tabPic" :src="scope.row.src" />
-          </template>
+        <el-table-column  label="资产名称" width="100" prop="name"  align="center">
         </el-table-column>
-        <el-table-column width="100" label="资产名称" prop="name"  align="center">
+        <el-table-column  label="资产类别" prop="asset_class"  align="center">
         </el-table-column>
-        <el-table-column  label="资产编码" prop="code"  align="center">
+        <el-table-column  label="资产编码" prop="asset_number"  align="center">
         </el-table-column>
-        <el-table-column  label="规格型号" prop="size"  align="center">
+        <el-table-column  label="规格型号" prop="asset_spec"  align="center">
         </el-table-column>
-        <el-table-column  label="购入时间" prop="purchaseDate"  align="center">
+        <el-table-column  label="SN号" width="130" prop="asset_sn"  align="center">
         </el-table-column>
-        <el-table-column  label="所属公司" prop="blong"  align="center">
+        <el-table-column  label="购入时间" width="120" sortable prop="buy_at"  align="center">
         </el-table-column>
-        <el-table-column  label="当前所在公司" width="110" prop="useCompany"  align="center">
+        <el-table-column  label="所属公司" prop="dep_owner"  align="center">
         </el-table-column>
-        <el-table-column  label="当前所在部门" width="110" prop="useDepart"  align="center">
+        <el-table-column  label="发票号码" width="100" prop="invoice"  align="center">
         </el-table-column>
-        <el-table-column  label="当前使用人" width="100" prop="usePerson"  align="center">
+        <el-table-column  label="使用公司" prop="dep_to_use"  align="center">
         </el-table-column>
-        <el-table-column  label="存放地点" prop="site"  align="center">
+        <el-table-column  label="使用人" prop="user_to_use"  align="center">
         </el-table-column>
-        <el-table-column  label="备注" prop="remarks"  align="center">
+        <el-table-column  label="供应商" prop="mt_supplier"  align="center">
+        </el-table-column>
+        <el-table-column  label="联系人(供应商)" width="130" prop="mt_user"  align="center">
+        </el-table-column>
+        <el-table-column  label="联系电话(供应商)" width="130" prop="mt_phone"  align="center">
+        </el-table-column>
+        <el-table-column  label="存放地点" prop="store_at"  align="center">
+        </el-table-column>
+        <el-table-column  label="创建人" prop="create_by_zh"  align="center">
+        </el-table-column>
+        <el-table-column  label="备注" prop="mt_comment"  align="center">
         </el-table-column>
       </el-table>
 
@@ -166,73 +184,6 @@
 
     <!--选择资产-->
     <AssetList :visible="allAssetVisible" @hideDialog="hideDialog"></AssetList>
-    <!--调拨确认单-->
-    <el-dialog
-      :close-on-click-modal="false" :close-on-press-escape="false"
-      title="调拨确认单"
-      :visible.sync="allotFormVisible"
-      width="960px"
-      top="80px">
-      <EditorInfo v-if="allotFormVisible" :textObj="textObj" :edit-date="editDate" ></EditorInfo>
-      <el-form :inline="true" v-if="allotFormVisible" :model="allotData"  label-width="auto"  class="demo-form-inline self-input border">
-        <el-row>
-          <el-col :sm="12">
-            <SelfInput v-if="allotFormVisible" type="1" labelName="调出公司"   keyName="company_out" :val="allotData.company_out" :disabled="true" @changeFormVal="changeAllotVal"></SelfInput>
-          </el-col>
-          <el-col :sm="12">
-            <SelfInput v-if="allotFormVisible" type="1" labelName="调入公司"   keyName="company_in" :val="allotData.company_in" :disabled="true"  @changeFormVal="changeAllotVal"></SelfInput>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :sm="12">
-            <SelfInput type="4" labelName="调入说明"  keyName="comment" :val="allotData.comment" @changeFormVal="changeAllotVal"></SelfInput>
-          </el-col>
-        </el-row>
-      </el-form>
-      <!--此次调拨的清单-->
-      <el-table :data="codeData" :max-height="400"  border stripe fit style="overflow-x: auto">
-        <!--<el-table-column type="selection" width="55">-->
-        <!--</el-table-column>-->
-        <el-table-column type="index" label="序号" width="60" align="center">
-        </el-table-column>
-        <el-table-column  label="状态" width="120"  align="center">
-          <template slot-scope="scope">
-            {{scope.row.status | turnStatus }}
-          </template>
-        </el-table-column>
-        <el-table-column  label="照片"  align="center">
-          <template slot-scope="scope">
-            <img class="tabPic" :src="scope.row.src" />
-          </template>
-        </el-table-column>
-        <el-table-column width="100" label="资产名称" prop="name"  align="center">
-        </el-table-column>
-        <el-table-column width="100" label="资产类别" prop="type"  align="center">
-        </el-table-column>
-        <el-table-column  label="资产编码" prop="code"  align="center">
-        </el-table-column>
-        <el-table-column  label="规格型号" prop="size"  align="center">
-        </el-table-column>
-        <el-table-column  label="SN号" prop="SN"  align="center">
-        </el-table-column>
-        <el-table-column  label="调入公司" prop="inCompany"  align="center">
-        </el-table-column>
-        <el-table-column  label="调入日期" prop="allotDate"  align="center">
-        </el-table-column>
-        <el-table-column  label="存放地点" prop="site"  align="center">
-        </el-table-column>
-        <el-table-column  label="创建人" prop="creater"  align="center">
-        </el-table-column>
-        <el-table-column  label="创建时间" prop="createDate"  align="center">
-        </el-table-column>
-        <el-table-column  label="备注" prop="remarks"  align="center">
-        </el-table-column>
-      </el-table>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="allotFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="confirmBack">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -240,16 +191,19 @@
   import EditorInfo from '../../components/common/editorInfo'
   import SelfInput from '../../components/common/selfInput'
   import AssetList from '../../components/assetList'
+  import Treeselect from '@riophae/vue-treeselect'
+  import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
   export default {
     data: function () {
       return {
+        userList: [],
+        companyList:[],
         searchData: {
           startDate:'',
           endDate:''
         },
         tabData: [
-
         ],
         multipleSelection: [],    //当前选中的行数据
         currentPage: 1,
@@ -267,35 +221,10 @@
           company_out:'',
           status:'',
           comment:'',
-          asset_ids:[1]
+          asset_ids:[]
         },
         dialogLoading: false,
         adminList:[
-          {
-            value:'admin01'
-          },
-          {
-            value:'admin02'
-          },
-          {
-            value:'admin03'
-          }
-        ],
-        outCompanyList:[
-          {
-            value:'公司一'
-          },
-          {
-            value:'公司二'
-          }
-        ],
-        inCompanyList:[
-          {
-            value:'部门一'
-          },
-          {
-            value:'部门二'
-          }
         ],
         uploadVisible:false,
         choosedAsset:[],
@@ -303,31 +232,6 @@
         searchAsset:{
           val:''
         },
-        allAssets:[
-          {
-            src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
-            name: '11010001',
-            type: '办工卓',
-            code: '办公设备',
-            size: '双人',
-            SN: '002110C0D0034',
-            purchaseDate: '2018-3-1',
-            blong: '测试机构',
-            bill: '102110987',
-            money: 200,
-            moneyChinese:'',
-            useCompany: '网开',
-            useDepart: '研发部',
-            usePerson: 'xxx',
-            supplier: '供应商1',
-            contacts: '张峰',
-            tel: '114',
-            site: '',
-            creater: '李小二',
-            createDate: '2018-9-8',
-            remarks: ''
-          }
-        ],
         allAssetVisible:false,
         choosedList:[],
         newCurrentPage:1,
@@ -338,45 +242,78 @@
           outCompany:'',
           inCompany:'',
           allotRemarks:''
-        },
-        codeData:[
-          {
-            status:1,
-            src:'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
-            name:'10000000',
-            type:'办工桌',
-            code:'11111',
-            size:'双人',
-            SN:'0986544CH3',
-            inCompany:'xx',
-            allotDate:'2019-5-27',
-            site:'管理部',
-            creater:'liunian',
-            createDate:'2019-05-17',
-            remarks:''
-          },
-          {
-            status:3,
-            src:'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
-            name:'10000000',
-            type:'办工桌',
-            code:'11111',
-            size:'双人',
-            SN:'0986544CH3',
-            inCompany:'xx',
-            allotDate:'2019-5-27',
-            site:'管理部',
-            creater:'liunian',
-            createDate:'2019-05-17',
-            remarks:''
-          }
-        ]
-
+        }
       }
     },
     methods:{
       init(){
         this.fetchData();
+        this.getDepartmentList();
+        this.getUserList();
+      },
+      getUserList() {
+        this.$axios.Asset.user('GET', {}).then(res => {
+          let _departList = res.data;
+          this.userList = trasfer2ViewListofUser(_departList);
+        })
+
+        function trasfer2ViewListofUser(list){
+          let retList = [];
+          list.forEach((item)=>{
+            let node = {};
+            node.value = item.id;
+            node.label = item.name;
+            retList.push(node);
+          })
+          return retList;
+        }
+      },
+      transData2Tree(list){
+        let retList = [];
+        list.forEach((item)=>{
+          let node = {};
+          node.id = item.id;
+          node.label = item.name;
+          let children = item.children;
+          if(typeof children != "undefined"){
+            this.getChildData(node, children);
+          }
+          retList.push(node);
+        })
+        return retList;
+      },
+      getChildData(node, list) {
+        let retList = [];
+        list.forEach((item)=>{
+          let node = {};
+          node.id = item.id;
+          node.label = item.name;
+          let children = item.children;
+          if(typeof children != "undefined"){
+            this.getChildData(node, children);
+          }
+          retList.push(node);
+        })
+        node.children = retList;
+      },
+      getDepartmentList(){
+        this.$axios.Asset.department('GET',{}).then(res=>{
+          // console.log(" result ==" + res.data.tree);
+          let _departList = res.data.tree;
+          let result = this.transData2Tree(_departList);
+          this.departList = result;
+          this.companyList = result;
+        })
+      },
+      funTreeSel1(node){
+        console.log(JSON.stringify(node.id))
+        let val = node.id;
+        this.formData.company_out = val;
+      },
+      funTreeSel2(node){
+        console.log(JSON.stringify(node.id))
+        let val = node.id;
+        this.formData.company_in = val;
       },
       confirmBack(){
         this.allotFormVisible = false;
@@ -388,9 +325,17 @@
         console.log(arr);
         this.choosedData = arr;
         this.allAssetVisible = false;
+
+        // 增加选择的资产项
+        this.formData.asset_ids = [];
+        arr.forEach(({id})=>{
+          this.formData.asset_ids.push(id);
+        })
       },
       deleteAsset(){
         let deleteItem = [];
+        this.formData.asset_ids = [];
+
         this.choosedAsset.forEach(item=>{
           deleteItem.push(item.name);
         })
@@ -398,11 +343,57 @@
         this.choosedData.forEach((item,index)=>{
           if(deleteItem.indexOf(item.name)==-1){
             data.push(item);
+
+            // 增加选择的资产id
+            this.formData.asset_ids.push(item.id);
           }
         })
         this.choosedData = data;
 
       },
+      confirmBackFinal(){
+        // 退库提交操作
+        let ids = [];
+        this.multipleSelection.forEach(item=>{
+          ids .push(item.id);
+        })
+        console.log("选中的ids==", ids);
+
+        let data = {};
+        data.ids = ids;
+
+        this.$axios.Asset.allotconfirm('POST',data).then(res=>{
+          this.$message({
+            message:'调入确认成功！',
+            type:'success'
+          })
+          this.fetchData();
+        })
+      },
+      confirmAllot(){
+
+        if(this.multipleSelection.length >= 1){
+
+          this.$confirm('是否继续', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.confirmBackFinal();
+          }).catch(() => {
+
+          });
+        }else{
+          this.$message({
+            message:'请选择至少一个资产调入单',
+            type:'warning'
+          })
+        }
+      },
+
+
+
+
       handleCommand(command){
         if(command == 'upload'){
           this.uploadVisible = true;
@@ -516,8 +507,6 @@
         let id = this.formData.id;
         let data = this.formData;
         if(this.formTitle == '新增'){
-          // TODO 暂且用于测试
-          data.asset_ids = [1]
           this.$axios.Asset.allot('POST',data).then(res=>{
             // this.tipMessage('新增成功！');
             this.$message({
@@ -581,7 +570,8 @@
     components:{
       EditorInfo,
       SelfInput,
-      AssetList
+      AssetList,
+      Treeselect
     },
     watch:{
       formData:{

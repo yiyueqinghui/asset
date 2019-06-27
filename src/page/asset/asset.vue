@@ -33,12 +33,12 @@
       </el-table-column>
       <el-table-column type="index" label="序号" width="60" align="center">
       </el-table-column>
-      <el-table-column  label="状态" prop="status" width="120" filterable :filters="this.$Store.data.statusList"
+      <!--<el-table-column  label="状态" prop="status" width="120" filterable :filters="this.$Store.data.statusList"
                         :filter-method="filterStatus" filter-placement="bottom-end"  align="center">
         <template slot-scope="scope">
           {{scope.row.status | turnStatus }}
         </template>
-      </el-table-column>
+      </el-table-column>-->
 
       <el-table-column  label="状态" width="100" prop="status_zh"  align="center">
       </el-table-column>

@@ -1,5 +1,5 @@
 <template>
-    <div id="car">
+    <div id="changeInfo">
       <!--查寻-->
       <el-form :inline="true"  :model="searchData" >
          <el-form-item>

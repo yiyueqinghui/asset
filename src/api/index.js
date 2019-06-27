@@ -6,8 +6,6 @@ function initData(data,method,url){
   return JSON.stringify(JSON.stringify(data));
 }
 function initUrl(data,method,url){
-  // if(method.toUpperCase() == 'PUT' || method.toUpperCase() == 'DELETE') url += data.id;
-  // return url;
   if(method.toUpperCase() == 'PUT' || method.toUpperCase() == 'DELETE'){
     if(method.toUpperCase() == 'PUT'){
       data._method="PUT"
@@ -22,9 +20,6 @@ function initUrl(data,method,url){
 }
 
 function initPhpApi(data,method,url){
-  // if(method.toUpperCase() == 'PUT' || method.toUpperCase() == 'DELETE') url += data.id;
-  // return url;
-  console.log(method + "======" + JSON.stringify(data));
   if(method.toUpperCase() == 'PUT' || method.toUpperCase() == 'DELETE' || method.toUpperCase() == 'POST'){
     if(method.toUpperCase() == 'POST'){
       data._method=""
@@ -51,12 +46,18 @@ const URLS = {
   BRAND:'/api-1.0/trademark/',
   WORKPLACE:'/api-1.0/workplace/',
   ALLOT:'/api-1.0/allot/',
+  ALLOT_CONFIRM:'/api-1.0/allot/confirm/',
   BORROW:'/api-1.0/borrow/',
+  BORROW_CONFIRM:'/api-1.0/borrow/confirm/',
+  GIVEBACK:'/api-1.0/borrow/give-back/',
+  GIVEBACK_CONFIRM:'/api-1.0/borrow/give-back-confirm/',
   USER:'/api-1.0/user/',
   ROLE:'/api-1.0/rbac/',
   DEPARTMENT:'/api-1.0/department/',
   UPLOAD:'/api-1.0/upload/',
-  ASSET_TYPE:'/api-1.0/asset-class/'
+  ASSET_TYPE:'/api-1.0/asset-class/',
+  BACK_CONFIRM:'/api-1.0/cancel-confirm/',
+  RECEIVE:'/api-1.0/recipient/'
 }
 
 
@@ -100,8 +101,24 @@ const Asset = {
     let res = initPhpApi(data,method,URLS.ALLOT);
     return ApiAxios(res.method,res.url,res.data)
   },
+  allotconfirm:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.ALLOT_CONFIRM);
+    return ApiAxios(res.method,res.url,res.data)
+  },
   borrow:(method,data)=>{
     let res = initPhpApi(data,method,URLS.BORROW);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+  borrowconfirm:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.BORROW_CONFIRM);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+  giveback:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.GIVEBACK);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+  givebackconfirm:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.GIVEBACK_CONFIRM);
     return ApiAxios(res.method,res.url,res.data)
   },
   user:(method,data)=>{
@@ -114,6 +131,14 @@ const Asset = {
   },
   department:(method,data)=>{
     let res = initPhpApi(data,method,URLS.DEPARTMENT);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+  receive:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.RECEIVE);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+  backconfirm:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.BACK_CONFIRM);
     return ApiAxios(res.method,res.url,res.data)
   }
 
