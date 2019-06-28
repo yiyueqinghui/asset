@@ -11,16 +11,6 @@
            <el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
            <el-button  style="margin-left: 10px;" @click="deleteData" type="primary" icon="el-icon-edit">删除</el-button>
-           <!--<el-dropdown trigger="hover" style="margin-left: 10px;" @command="handleCommand">-->
-             <!--<el-button type="primary" icon="el-icon-document-add">-->
-               <!--导入/导出-->
-             <!--</el-button>-->
-             <!--<el-dropdown-menu slot="dropdown">-->
-               <!--<el-dropdown-item icon="el-icon-download" command="module">下载导入模板</el-dropdown-item>-->
-               <!--<el-dropdown-item icon="el-icon-upload" command="upload" >批量导入资产</el-dropdown-item>-->
-               <!--<el-dropdown-item icon="el-icon-download" command="download">导出资产数据</el-dropdown-item>-->
-             <!--</el-dropdown-menu>-->
-           <!--</el-dropdown>-->
          </el-form-item>
       </el-form>
       <!--表格-->
@@ -31,23 +21,21 @@
         </el-table-column>
         <el-table-column  label="公司名称" prop="company"  align="center">
         </el-table-column>
-        <el-table-column width="140"  label="初次申请时间" prop="initialRegDate"  align="center">
+        <el-table-column width="140"  label="初次申请时间" prop="apply_time_1"  align="center">
         </el-table-column>
-        <el-table-column width="140" label="经营许可证编号"  prop="managementLicenseNo"  align="center">
+        <el-table-column width="140" label="经营许可证编号"  prop="license_number"  align="center">
         </el-table-column>
-        <el-table-column  label="网站名称" prop="websiteName"  align="center">
+        <el-table-column  label="网站名称" prop="site_name"  align="center">
         </el-table-column>
-        <el-table-column  label="网址" prop="url"  align="center">
+        <el-table-column  label="网址" prop="site_url"  align="center">
         </el-table-column>
-        <el-table-column  label="有效期" width="150" prop="validDate"  align="center">
+        <el-table-column  label="有效期" prop="end_time"  align="center">
         </el-table-column>
-        <el-table-column width="140"  label="年检时间记录" prop="annualInspection"  align="center">
+        <el-table-column width="140"  label="年检时间记录" prop="annual_inspection_time"  align="center">
         </el-table-column>
-        <el-table-column  label="创建人" prop="creater"  align="center">
+        <el-table-column  label="创建人" prop="create_by_zh"  align="center">
         </el-table-column>
-        <el-table-column  label="创建时间" prop="createDate"  align="center">
-        </el-table-column>
-        <el-table-column  label="备注" prop="icpMemo"  align="center">
+        <el-table-column  label="备注" prop="comment"  align="center">
         </el-table-column>
 
       </el-table>
@@ -76,45 +64,42 @@
             <el-row class="dialog_subtitle">基本信息</el-row>
             <el-row>
               <el-col :sm="12">
-                <SelfInput type="2" :selectList="companyList" labelName="公司名称" keyName="company" :val="formData.company" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-              </el-col>
-              <el-col :sm="12">
-                <SelfInput type="3"  labelName="初次申请时间"  keyName="initialRegDate" :val="formData.initialRegDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :sm="12">
-                <SelfInput  labelName="经营许可证编号" keyName="managementLicenseNo" :val="formData.managementLicenseNo" :required="true" @changeFormVal="changeFormVal" ></SelfInput>
-              </el-col>
-              <el-col :sm="12">
-                <SelfInput labelName="网站名称" keyName="websiteName" :val="formData.websiteName" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :sm="12">
-                <SelfInput labelName="网址" keyName="url" :val="formData.url" @changeFormVal="changeFormVal"></SelfInput>
-              </el-col>
-              <el-col :sm="12">
-                <!--<SelfInput type="3" labelName="有效期" keyName="validDate" :val="formData.validDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>-->
-                <el-form-item label="有效期">
-                  <el-date-picker
-                    v-model="validDate"
-                    type="daterange"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    value-format="yyyyMMdd">
-                  </el-date-picker>
+                <el-form-item label="公司名称">
+                  <treeselect
+                    v-model="formData.company"
+                    @select="funTreeSel1"
+                    :multiple="false"
+                    placeholder="请选择"
+                    :show-count="false"
+                    :options="companyList" />
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row>
               <el-col :sm="12">
-                <SelfInput type="3" labelName="年检时间记录" keyName="annualInspection" :val="formData.annualInspection" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+                <SelfInput type="3"  labelName="初次申请时间"  keyName="apply_time_1" :val="formData.apply_time_1" :required="true" @changeFormVal="changeFormVal"></SelfInput>
               </el-col>
             </el-row>
             <el-row>
               <el-col :sm="12">
-                <SelfInput type="4" labelName="备注"   keyName="icpMemo" :val="formData.icpMemo" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+                <SelfInput  labelName="经营许可证编号" keyName="license_number" :val="formData.license_number" :required="true" @changeFormVal="changeFormVal" ></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput labelName="网站名称" keyName="site_name" :val="formData.site_name" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput type="3" labelName="年检时间记录" keyName="annual_inspection_time" :val="formData.annual_inspection_time" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput labelName="网址" keyName="site_url" :val="formData.site_url" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput type="3" labelName="有效期" keyName="end_time" :val="formData.end_time" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput type="4" labelName="备注"   keyName="comment" :val="formData.comment" :required="true" @changeFormVal="changeFormVal"></SelfInput>
               </el-col>
             </el-row>
             <el-row>
@@ -138,6 +123,9 @@
     import EditorInfo from '../../components/common/editorInfo'
     import SelfInput from '../../components/common/selfInput'
     import UploadFile from '../../components/common/uploadFile'
+    import Treeselect from '@riophae/vue-treeselect'
+    import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+
     export default {
       data: function () {
         return {
@@ -156,15 +144,6 @@
           dialogFormVisible:false,
           formTitle: '1',
           formData: {
-            "icpMemo": "备注",
-            "initialRegDate": "2019-04-09",
-            "url": "http://www.baidu.com",
-            "icpAttachment": "附件",
-            "company": "公司一",
-            "validDate": "2018-09-12",
-            "websiteName": "官网",
-            "managementLicenseNo":"12345",
-            "annualInspection": "2019-01-02"
           },
           dialogLoading: false,
           editDate: '2019-5-14',
@@ -180,15 +159,6 @@
             }
           ],
           companyList:[
-            {
-              value:'公司一'
-            },
-            {
-              value:'公司二'
-            },
-            {
-              value:'公司三'
-            }
           ],
           icpFile:{
             name:'icpFile'
@@ -199,12 +169,53 @@
       methods:{
         init(){
            this.fetchData();
-
+            this.getDepartmentList();
+        },
+        funTreeSel1(node){
+          console.log(JSON.stringify(node.id))
+          let val = node.id;
+          this.formData.company = val;
+        },
+        transData2Tree(list){
+          let retList = [];
+          list.forEach((item)=>{
+            let node = {};
+            node.id = item.id;
+            node.label = item.name;
+            let children = item.children;
+            if(typeof children != "undefined"){
+              this.getChildData(node, children);
+            }
+            retList.push(node);
+          })
+          return retList;
+        },
+        getChildData(node, list) {
+          let retList = [];
+          list.forEach((item)=>{
+            let node = {};
+            node.id = item.id;
+            node.label = item.name;
+            let children = item.children;
+            if(typeof children != "undefined"){
+              this.getChildData(node, children);
+            }
+            retList.push(node);
+          })
+          node.children = retList;
+        },
+        getDepartmentList(){
+          this.$axios.Asset.department('GET',{}).then(res=>{
+            // console.log(" result ==" + res.data.tree);
+            let _departList = res.data.tree;
+            let result = this.transData2Tree(_departList);
+            // this.departList = result;
+            this.companyList = result;
+          })
         },
         uploadSuccess(res){
-          let key = res[1],
-            val = res[0].message;
-          this.formData[key] = val;
+          let uuid = res[0].uuid;
+          this.formData['attachment'] = uuid;
         },
         querySearch(queryString, cb) {
           var departmentList = this.departmentList;
@@ -223,8 +234,8 @@
         fetchData(){
           this.$axios.Asset.icp('GET',{}).then(res=>{
              console.log(res);
-             this.wareData = res;
-             this.total = res.length;
+            this.wareData = res.data;
+            this.total = res.meta.total
           })
         },
         // 新增,修改
@@ -232,10 +243,14 @@
           this.formTitle = type;
           this.editDate = this.$Store.formatDate();
           this.formData = this.$Store.resetForm(this.formData);
+          if(typeof this.formData.company != undefined){
+            this.formData.company = null;
+          }
+
           if(type === 2){
             if(this.multipleSelection.length === 1){
               this.formData = Object.assign({},this.multipleSelection[0]);
-              this.validDate = this.formData.validDate.split('-');
+              // this.validDate = this.formData.validDate.split('-');
             }else{
               this.$message({
                 message:'请选择一条要修改的数据',
@@ -344,7 +359,8 @@
       components:{
         EditorInfo,
         SelfInput,
-        UploadFile
+        UploadFile,
+        Treeselect
       },
       mounted(){
          this.init();

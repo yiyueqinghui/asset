@@ -1,5 +1,5 @@
 <template>
-    <div id="wareHousing">
+    <div id="rent">
       <!--查寻-->
       <el-form :inline="true"  :model="searchData" >
          <el-form-item label="状态">

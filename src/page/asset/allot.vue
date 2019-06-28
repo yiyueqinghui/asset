@@ -99,7 +99,7 @@
           </el-col>
           <el-col :sm="12">
             <el-form-item label="调入公司">
-              <treeselect
+              <treeselect width="100"
                 v-model="formData.company_in"
                 @select="funTreeSel2"
                 :multiple="false"
@@ -217,8 +217,8 @@
           allot_number:'xxx',
           user_id_in:'',
           confirm_time_in:'',
-          company_in:'',
-          company_out:'',
+          company_in:null,
+          company_out:null,
           status:'',
           comment:'',
           asset_ids:[]
@@ -491,7 +491,6 @@
       },
       fetchData(){
         this.$axios.Asset.allot('GET',{}).then(res=>{
-          console.log(" result ==++++====" + JSON.stringify(res.data));
           this.tabData = res.data;
           this.total = res.meta.total
         })
@@ -501,6 +500,12 @@
         this.formTitle = '新增';
         this.editDate = this.$Store.formatDate();
         this.formData = this.$Store.resetForm(this.formData);
+        if(typeof this.formData.company_in != undefined){
+          this.formData.company_in = null;
+        }
+        if(typeof this.formData.company_out != undefined){
+          this.formData.company_out = null;
+        }
         this.dialogFormVisible = true;
       },
       confirmBtn(){

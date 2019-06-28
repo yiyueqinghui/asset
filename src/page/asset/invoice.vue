@@ -43,9 +43,7 @@
         </el-table-column>
         <el-table-column  label="发票金额" prop="inv_money"  align="center">
         </el-table-column>
-        <el-table-column  label="创建人" prop="creater"  align="center">
-        </el-table-column>
-        <el-table-column  label="创建时间" prop="createDate"  align="center">
+        <el-table-column  label="创建人" prop="create_by_zh"  align="center">
         </el-table-column>
         <el-table-column  label="备注" prop="comment"  align="center">
         </el-table-column>
@@ -75,25 +73,18 @@
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="8">
-              <!--<el-form-item label="资产类型" class="receivers">
-                <el-select
-                  v-model="formData.name"
-                  multiple
-                  collapse-tags
-                  style="margin-left:0px;"
-                  placeholder="请选择">
-                  <el-option
-                    v-for="item in assetTypeList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </el-form-item>-->
-              <SelfInput type="1"  labelName="资产类型" :selectList="typeList"  keyName="asset_class" :val="formData.asset_class" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="资产类型">
+                <treeselect
+                  v-model="formData.asset_class"
+                  @select="funTreeSel"
+                  :multiple="false"
+                  placeholder="请选择"
+                  :show-count="false"
+                  :options="assetTypeList" />
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="1"  labelName="发票类型" :selectList="typeList"  keyName="inv_type" :val="formData.inv_type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="2"  labelName="发票类型" :selectList="invoiceTypeList"  keyName="inv_type" :val="formData.inv_type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
               <SelfInput  labelName="发票号码" keyName="inv_number" :val="formData.inv_number" :required="true" @changeFormVal="changeFormVal" :disabled="false"></SelfInput>
@@ -106,10 +97,8 @@
             <el-col :sm="8">
               <SelfInput type="5" labelName="发票金额" keyName="inv_money" :val="formData.inv_money" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput  type="4" labelName="开票备注" :selectList="typeList"  keyName="comment" :val="formData.comment" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-col :sm="8">
+              <SelfInput  type="4" labelName="开票备注" keyName="comment" :val="formData.comment" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
@@ -134,6 +123,9 @@
     import SelfInput from '../../components/common/selfInput'
     import downloadModule from '../../utils/download'
     import UploadFile from '../../components/common/uploadFile'
+    import Treeselect from '@riophae/vue-treeselect'
+    import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+
     export default {
       data: function () {
         return {
@@ -146,23 +138,11 @@
             {"value": "中恒信", "en": "ZHX"},
             {"value": "黄鱼儿", "en": "HYR"}
           ],
+          invoiceTypeList: [
+            {"value": 1, "label": "普通发票"},
+            {"value": 2, "label": "增值税专用发票"}
+          ],
           assetTypeList:[
-            {
-              value:1,
-              label:'张三'
-            },
-            {
-              value:2,
-              label:'李忠'
-            },
-            {
-              value:3,
-              label:'张三'
-            },
-            {
-              value:4,
-              label:'李忠'
-            }
           ],
           wareData: [
           ],
@@ -182,17 +162,6 @@
           },
           dialogLoading: false,
           editDate: '2019-5-14',
-          typeList:[
-            {
-              value:'类别一'
-            },
-            {
-              value:'类别二'
-            },
-            {
-              value:'类别三'
-            }
-          ],
           invoiceFile:{
             name:'invoiceFile'
           }
@@ -203,7 +172,48 @@
       methods:{
         init(){
           this.fetchData();
-
+          this.getAssetTypeList();
+        },
+        transData2Tree(list){
+          let retList = [];
+          list.forEach((item)=>{
+            let node = {};
+            node.id = item.id;
+            node.label = item.name;
+            let children = item.children;
+            if(typeof children != "undefined"){
+              this.getChildData(node, children);
+            }
+            retList.push(node);
+          })
+          return retList;
+        },
+        getChildData(node, list) {
+          let retList = [];
+          list.forEach((item)=>{
+            let node = {};
+            node.id = item.id;
+            node.label = item.name;
+            let children = item.children;
+            if(typeof children != "undefined"){
+              this.getChildData(node, children);
+            }
+            retList.push(node);
+          })
+          node.children = retList;
+        },
+        getAssetTypeList() {
+          this.$axios.Asset.asset_type('GET', {}).then(res => {
+            // console.log(" result ==" + res.data.tree);
+            let _departList = res.data.tree;
+            let result = this.transData2Tree(_departList);
+            this.assetTypeList = result;
+          })
+        },
+        funTreeSel(node){
+          console.log(JSON.stringify(node.id))
+          let val = node.id;
+          this.formData.asset_class = val;
         },
         uploadSuccess(res){
           let key = res[1],
@@ -267,6 +277,9 @@
           this.formTitle = type == 1 ? '新增':'修改';
           this.editDate = this.$Store.formatDate();
           this.formData = this.$Store.resetForm(this.formData);
+          if(typeof this.formData.asset_class != "undefined"){
+            this.formData.asset_class = null;
+          }
           if(type === 2){
             console.log(JSON.stringify(this.multipleSelection));
             if(this.multipleSelection.length === 1){
@@ -361,7 +374,8 @@
         EditorInfo,
         SelfInput,
         downloadModule,
-        UploadFile
+        UploadFile,
+        Treeselect
       },
       mounted(){
          this.init();

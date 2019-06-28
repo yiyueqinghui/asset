@@ -23,16 +23,6 @@
         </el-table-column>
         <el-table-column type="index" label="序号" width="60" align="center">
         </el-table-column>
-        <el-table-column  label="状态" width="120"  align="center">
-          <template slot-scope="scope">
-            {{scope.row.status | turnStatus }}
-          </template>
-        </el-table-column>
-        <el-table-column  label="照片（合同）"  align="center">
-          <template slot-scope="scope">
-            <img class="tabPic" :src="scope.row.src" />
-          </template>
-        </el-table-column>
         <el-table-column  label="公司名称" prop="company"  align="center">
         </el-table-column>
         <el-table-column  label="职场类型" prop="use_type"  align="center">
@@ -95,6 +85,7 @@
         :close-on-click-modal="false" :close-on-press-escape="false"
         :title="formTitle"
         :visible.sync="dialogFormVisible"
+        v-if="dialogFormVisible"
         width="960px">
         <EditorInfo v-if="dialogFormVisible" :edit-date="editDate"></EditorInfo>
         <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input">
@@ -104,7 +95,7 @@
               <SelfInput  labelName="公司名称" keyName="company" :val="formData.company" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput type="1"  labelName="职场类型" :selectList="typeList"  keyName="use_type" :required="true" :val="formData.tuse_type"  @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="2"  labelName="职场类型" :selectList="useTypeList"  keyName="use_type" :required="true" :val="formData.use_type"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
@@ -149,10 +140,10 @@
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput  type="1" labelName="支付方式"  :selectList="companyList" keyName="pay_mode" :val="formData.pay_mode" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  type="2" labelName="支付方式"  :selectList="payModeList" keyName="pay_mode" :val="formData.pay_mode" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput  type="1" labelName="支付类型"  :selectList="companyList" keyName="pay_interval" :val="formData.pay_interval" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  type="2" labelName="支付类型"  :selectList="payIntervalList" keyName="pay_interval" :val="formData.pay_interval" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
@@ -181,16 +172,16 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <SelfInput type="4" labelName="备注"  keyName="comment" :val="formData.remarks" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="4" labelName="备注"  keyName="comment" :val="formData.comment" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
-
           <el-row>
             <el-col :sm="12">
-              <SelfInput  type="1" labelName="（附件）合同"  keyName="contract_attachment" :val="formData.contract_attachment" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="合同附件">
+                <UploadFile :upload-data="uploadData" v-on:uploadSuccess="uploadSuccess"></UploadFile>
+              </el-form-item>
             </el-col>
           </el-row>
-
         </el-form>
 
         <div slot="footer" class="dialog-footer">
@@ -204,16 +195,34 @@
 <script>
     import EditorInfo from '../../components/common/editorInfo'
     import SelfInput from '../../components/common/selfInput'
+    import UploadFile from '../../components/common/uploadFile'
     export default {
       data: function () {
         return {
           searchData: {
             department: ''
           },
+          uploadData:{
+            name:'file'
+          },
           departmentList: [
             {"value": "佳禾集团", "en": "JHJT"},
             {"value": "中恒信", "en": "ZHX"},
             {"value": "黄鱼儿", "en": "HYR"}
+          ],
+          useTypeList: [
+            {"value": 1, "label": "自有"},
+            {"value": 2, "label": "租赁"}
+          ],
+          payModeList: [
+            {"value": 1, "label": "预付"},
+            {"value": 2, "label": "银行托收"},
+            {"value": 3, "label": "公对公转账"}
+          ],
+          payIntervalList:[
+            {"value": 1, "label": "年付"},
+            {"value": 2, "label": "季付"},
+            {"value": 3, "label": "月付"}
           ],
           wareData: [],
           multipleSelection: [],    //当前选中的行数据
@@ -281,6 +290,10 @@
       methods:{
         init(){
           this.fetchData();
+        },
+        uploadSuccess(res){
+          let uuid = res[0].uuid;
+          this.formData['contract_attachment'] = uuid;
         },
         querySearch(queryString, cb) {
           var departmentList = this.departmentList;
@@ -411,7 +424,8 @@
       },
       components:{
         EditorInfo,
-        SelfInput
+        SelfInput,
+        UploadFile
       },
       mounted(){
         this.init();

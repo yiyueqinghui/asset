@@ -49,13 +49,11 @@
         </el-table-column>
         <el-table-column  label="最新保养日期" width="130" prop="maintain_time"  align="center">
         </el-table-column>
-        <el-table-column  label="预计下次保养期" width="140" prop="nextMaintenance"  align="center">
-        </el-table-column>
         <el-table-column  label="钥匙数量" prop="key_count"  align="center">
         </el-table-column>
         <el-table-column  label="钥匙编号" prop="key_number"  align="center">
         </el-table-column>
-        <el-table-column  label="使用人" prop="user"  align="center">
+        <el-table-column  label="使用人" prop="useby_user"  align="center">
         </el-table-column>
         <el-table-column  label="现使用机构" width="130" prop="useby_dep"  align="center">
         </el-table-column>
@@ -128,14 +126,6 @@
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput type="3" labelName="预计下次保养期" keyName="nextMaintenance" :val="formData.nextMaintenance" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput labelName="钥匙数量" keyName="key_count" :val="formData.key_count" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
               <SelfInput  labelName="钥匙编号" keyName="key_number" :val="formData.key_number" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
@@ -153,6 +143,9 @@
           <el-row>
             <el-col :sm="12">
               <SelfInput type="1" labelName="使用人联系电话" keyName="useby_user_mobile" :val="formData.useby_user_mobile" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            </el-col>
+            <el-col :sm="12">
+              <SelfInput labelName="钥匙数量" keyName="key_count" :val="formData.key_count" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
 
@@ -368,7 +361,7 @@
         confirmBtn(){
           let id = this.formData.id;
           let data = this.formData;
-          if(this.formTitle == '新增'){
+          if(this.formTitle == 1){
             this.$axios.Asset.car('POST',data).then(res=>{
               // this.tipMessage('新增成功！');
               this.$message({

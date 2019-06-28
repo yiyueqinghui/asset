@@ -4,7 +4,7 @@
       <el-form :inline="true"  :model="searchData" >
          <el-form-item>
            <!--<el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>-->
-           <el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>
+           <!--<el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>-->
            <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
            <el-dropdown trigger="hover" style="margin-left: 10px;" @command="handleCommand">
              <el-button type="primary" icon="el-icon-document-add">
@@ -27,27 +27,26 @@
         </el-table-column>
         <el-table-column type="index" label="序号" width="60" align="center">
         </el-table-column>
-        <el-table-column  label="照片" prop="name"  align="center">
+          <el-table-column  label="资产编号" prop="as_asset_number"  align="center">
         </el-table-column>
-        <el-table-column  label="资产编码" prop="type"  align="center">
+        <el-table-column  label="资产名称" prop="as_name"  align="center">
         </el-table-column>
-        <el-table-column  label="资产名称" prop="code"  align="center">
+        <el-table-column  label="供应商" prop="mt_supplier"  align="center">
         </el-table-column>
-        <el-table-column  label="资产类型" prop="size"  align="center">
+        <el-table-column  label="联系人" width="120" prop="mt_user"  align="center">
         </el-table-column>
-        <el-table-column  label="供应商" prop="SN"  align="center">
+        <el-table-column  label="联系方式"  prop="mt_phone"  align="center">
         </el-table-column>
-        <el-table-column  label="联系人" width="120" prop="purchaseDate"  align="center">
+        <el-table-column  label="维保日期" width="130" prop="mt_date"  align="center">
         </el-table-column>
-        <el-table-column  label="联系方式"  prop="blong"  align="center">
+        <el-table-column  label="下次维保日期" width="130" prop="mt_next"  align="center">
         </el-table-column>
-        <el-table-column  label="维保日期" width="130" prop="bill"  align="center">
+        <el-table-column  label="维保说明" prop="mt_comment"  align="center">
         </el-table-column>
-        <el-table-column  label="创建人" prop="creater"  align="center">
-        </el-table-column>
-        <el-table-column  label="创建时间" prop="createDate"  align="center">
-        </el-table-column>
-        <el-table-column  label="备注" prop="remarks"  align="center">
+        <el-table-column  label="（照片）单据"  prop="mt_attachment_url" align="center">
+          <template slot-scope="scope">
+            <img class="tabPic" :src="scope.row.mt_attachment_url" />
+          </template>
         </el-table-column>
       </el-table>
       <!--分页-->
@@ -68,6 +67,7 @@
         :close-on-click-modal="false" :close-on-press-escape="false"
         :title="formTitle"
         :visible.sync="dialogFormVisible"
+        v-if="dialogFormVisible"
         width="960px"
         top="80px">
         <el-scrollbar class="dialogZone">
@@ -75,95 +75,42 @@
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput   labelName="资产编码"  keyName="name" :val="formData.name" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <!--<SelfInput type="2" labelName="资产编号" :selectList="assetList" keyName="asset_id" :val="formData.asset_id" :required="true" @changeFormVal="changeFormVal"></SelfInput>-->
+              <SelfInput labelName="资产编号"  :disabled="true" keyName="as_asset_number" :val="formData.as_asset_number" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput labelName="供应商"   keyName="type" :val="formData.type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput labelName="供应商"   keyName="mt_supplier" :val="formData.mt_supplier" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput  labelName="联系人" keyName="code" :val="formData.code" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  labelName="联系人" keyName="mt_user" :val="formData.mt_user" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput  labelName="联系方式" keyName="size" :val="formData.size" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  labelName="联系方式" keyName="mt_phone" :val="formData.mt_phone" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput type="3" labelName="维保日期" keyName="SN" :val="formData.SN" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="3" labelName="维保日期" keyName="mt_date" :val="formData.mt_date" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput  type="3" labelName="下次维保日期" keyName="purchaseDate" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  type="3" labelName="下次维保日期" keyName="mt_next" :val="formData.mt_next" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <el-form-item label="单据上传">
-                <UploadFile :upload-data="carData" @uploadSuccess="uploadSuccess"></UploadFile>
-              </el-form-item>
+              <SelfInput type="4" labelName="维保说明" keyName="mt_comment" :val="formData.mt_comment" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput type="4" labelName="维保说明" :selectList="typeList"  keyName="blong" :val="formData.blong" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
+            <el-row>
+              <el-col :sm="16">
+                <el-form-item label="（单据）附件上传">
+                  <UploadFile @uploadSuccess="uploadSuccess"></UploadFile>
+                </el-form-item>
+              </el-col>
+            </el-row>
         </el-form>
-          <!--资产编码对应的资产详情表格-->
-          <el-row class="dialog_subtitle">资产详情列表</el-row>
-          <el-table v-show="codeData.length > 0"  :data="codeData" :max-height="400"  border stripe fit style="overflow-x: auto">
-            <el-table-column type="index" label="序号" width="60" align="center">
-            </el-table-column>
-            <el-table-column  label="状态" prop="status" width="120" filterable  align="center">
-              <template slot-scope="scope">
-                {{scope.row.status | turnStatus }}
-              </template>
-            </el-table-column>
-            <el-table-column  label="照片"  align="center">
-              <template slot-scope="scope">
-                <img class="tabPic" :src="scope.row.src" />
-              </template>
-            </el-table-column>
-            <el-table-column  label="资产名称" width="100" prop="name"  align="center">
-            </el-table-column>
-            <el-table-column  label="资产类别" prop="type"  align="center">
-            </el-table-column>
-            <el-table-column  label="资产编码" prop="code"  align="center">
-            </el-table-column>
-            <el-table-column  label="规格型号" prop="size"  align="center">
-            </el-table-column>
-            <el-table-column  label="SN号" width="130" prop="SN"  align="center">
-            </el-table-column>
-            <el-table-column  label="购入时间" width="120" sortable prop="purchaseDate"  align="center">
-            </el-table-column>
-            <el-table-column  label="所属公司" prop="blong"  align="center">
-            </el-table-column>
-            <el-table-column  label="发票号码" width="100" prop="bill"  align="center">
-            </el-table-column>
-            <el-table-column  label="实付金额" prop="money"  align="center">
-            </el-table-column>
-            <el-table-column  label="使用公司" prop="useCompany"  align="center">
-            </el-table-column>
-            <el-table-column  label="使用部门" prop="useDepart"  align="center">
-            </el-table-column>
-            <el-table-column  label="使用人" prop="usePerson"  align="center">
-            </el-table-column>
-            <el-table-column  label="供应商" prop="supplier"  align="center">
-            </el-table-column>
-            <el-table-column  label="联系人(供应商)" width="130" prop="contacts"  align="center">
-            </el-table-column>
-            <el-table-column  label="联系电话(供应商)" width="130" prop="tel"  align="center">
-            </el-table-column>
-            <el-table-column  label="存放地点" prop="site"  align="center">
-            </el-table-column>
-            <el-table-column  label="创建人" prop="creater"  align="center">
-            </el-table-column>
-            <el-table-column  label="创建时间" width="120" sortable prop="createDate"   align="center">
-            </el-table-column>
-            <el-table-column  label="备注" prop="remarks"  align="center">
-            </el-table-column>
-          </el-table>
         </el-scrollbar>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -187,35 +134,13 @@
           searchData: {
             department: ''
           },
+          assetList:[],
           departmentList: [
             {"value": "佳禾集团", "en": "JHJT"},
             {"value": "中恒信", "en": "ZHX"},
             {"value": "黄鱼儿", "en": "HYR"}
           ],
           wareData: [
-            {
-              status: '1',
-              src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
-              name: '11010001',
-              type: '办工卓',
-              code: '办公设备',
-              size: '双人',
-              SN: '002110C0D0034',
-              purchaseDate: '2018-3-1',
-              blong: '测试机构',
-              bill: '102110987',
-              money: 200,
-              useCompany: '网开',
-              useDepart: '研发部',
-              usePerson: 'xxx',
-              supplier: '供应商1',
-              contacts: '张峰',
-              tel: '114',
-              site: '',
-              creater: '李小二',
-              createDate: '2018-9-8',
-              remarks: ''
-            }
           ],
           multipleSelection: [],    //当前选中的行数据
           currentPage: 1,
@@ -223,25 +148,6 @@
           dialogFormVisible:false,
           formTitle: '新增',
           formData: {
-            name: '',
-            type: '',
-            code: '',
-            size: '',
-            SN: '',
-            purchaseDate: '',
-            blong: '',
-            bill: '',
-            money: 0,
-            useCompany: '',
-            useDepart: '',
-            usePerson: '',
-            supplier: '',
-            contacts: '',
-            tel: '',
-            site: '',
-            creater: '',
-            createDate: '',
-            remarks: ''
           },
           dialogLoading: false,
           editDate: '2019-5-14',
@@ -256,50 +162,35 @@
               value:'类别三'
             }
           ],
-          uploadVisible:false,
-          uploadData:{
-            name:'person'
-          },
-          drivingData:{
-            name:'driving'
-          },
-          carData:{
-            name:'car'
-          },
-          codeData:[
-            {
-              status: '1',
-              src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557731166&di=a35f2105642f239a24a5e6483b0f2a67&src=http://pic2.52pk.com/files/allimg/090626/1553504U2-2.jpg',
-              name: '11010001',
-              type: '办工卓01',
-              code: '办公设备',
-              size: '双人',
-              SN: '002110C0D0034',
-              purchaseDate: '2018-3-1',
-              blong: '测试机构',
-              bill: '102110987',
-              money: 200,
-              moneyChinese:'',
-              useCompany: '网开',
-              useDepart: '研发部',
-              usePerson: 'xxx',
-              supplier: '供应商1',
-              contacts: '张峰',
-              tel: '114',
-              site: '',
-              creater: '李小二',
-              createDate: '2018-9-8',
-              remarks: ''
-            }
-          ]
-
+          uploadVisible:false
         }
       },
       methods:{
         init(){
-
+            this.fetchData();
+            this.getAssetList();
         },
+        getAssetList() {
+          this.$axios.Asset.storage('GET', {}).then(res => {
+            let _departList = res.data;
+            this.assetList = trasfer2ViewListofAsset(_departList);
+          })
 
+          function trasfer2ViewListofAsset(list){
+            let retList = [];
+            list.forEach((item)=>{
+              let node = {};
+              node.value = item.id;
+              node.label = item.asset_number;
+              retList.push(node);
+            })
+            return retList;
+          }
+        },
+        uploadSuccess(res){
+          let uuid = res[0].uuid;
+          this.formData['mt_attachment'] = uuid;
+        },
         handleCommand(command){
           if(command == 'upload'){
             this.uploadVisible = true;
@@ -320,9 +211,6 @@
           })
 
         },
-        uploadSuccess(arr){
-            console.log(arr);
-        },
         closeUpload(){
           this.uploadVisible = false;
         },
@@ -341,25 +229,60 @@
           this.formData.department = item.value;
         },
         fetchData(){
-          console.log('开始查寻');
+          this.$axios.Asset.maintenance('GET',{}).then(res=>{
+            console.log(" result ==++++====" + JSON.stringify(res.data));
+            this.wareData = res.data;
+            this.total = res.meta.total
+          })
         },
         // 新增,修改
         clickBtn(type){
+          this.formTitle = type == 1 ? '新增':'修改';
           this.editDate = this.$Store.formatDate();
-          if(type == 2){
+          this.formData = this.$Store.resetForm(this.formData);
+          if(type === 2){
+            console.log(JSON.stringify(this.multipleSelection));
             if(this.multipleSelection.length === 1){
               this.formData = Object.assign({},this.multipleSelection[0]);
-              console.log(this.formData);
+              console.log(JSON.stringify(this.formData));
+              // this.validDate = this.formData.validDate.split('-');
             }else{
               this.$message({
-                message: '请选择一条要修改的数据',
-                type: 'warning'
-              });
+                message:'请选择一条要修改的数据',
+                type:'warning'
+              })
               return;
             }
           }
           this.dialogFormVisible = true;
-
+        },
+        confirmBtn(){
+          let id = this.formData.id;
+          let data = this.formData;
+          console.log('this.formTitle====',this.formTitle);
+          if(this.formTitle == '新增'){
+            this.$axios.Asset.maintenance('POST',data).then(res=>{
+              // this.tipMessage('新增成功！');
+              this.$message({
+                message:'新增成功！',
+                type:'success'
+              })
+              this.fetchData();
+              this.dialogFormVisible = false;
+            })
+          }else{
+            this.$axios.Asset.maintenance('POST',data).then(res=>{
+              console.log(res);
+              this.$message({
+                message:'修改成功！',
+                type:'success'
+              })
+              this.fetchData();
+              this.dialogFormVisible = false;
+            }).catch(error=>{
+              // TODO error result
+            })
+          }
         },
         handleSelectionChange(val) {
           this.multipleSelection = val;
@@ -371,9 +294,6 @@
         handleCurrentPage(val) {
           console.log(`当前页: ${val}`);
           this.currentPage = val;
-        },
-        confirmBtn(){
-          this.dialogFormVisible = false;
         },
         changeFormVal([key,val]){
           this.formData[key] = val;
@@ -400,10 +320,7 @@
         UploadFile
       },
       mounted(){
-
          this.init();
-
-
       }
     }
 </script>

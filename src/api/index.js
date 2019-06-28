@@ -39,7 +39,7 @@ function initPhpApi(data,method,url){
 }
 
 const URLS = {
-  ICP:'/api/vera/icp/',
+  ICP:'/api-1.0/icp/',
   CAR:'/api-1.0/vehicle/',
   ASSET:'/api-1.0/asset/',
   INVOICE:'/api-1.0/invoice/',
@@ -57,7 +57,9 @@ const URLS = {
   UPLOAD:'/api-1.0/upload/',
   ASSET_TYPE:'/api-1.0/asset-class/',
   BACK_CONFIRM:'/api-1.0/cancel-confirm/',
-  RECEIVE:'/api-1.0/recipient/'
+  RECEIVE:'/api-1.0/recipient/',
+  CARD:'/api-1.0/access-card/',
+  MAINTENANCE:'/api-1.0/maintenance/'
 }
 
 
@@ -68,9 +70,8 @@ const Home = {
 }
 const Asset = {
   icp:(method,data)=>{
-    let url = initUrl(data,method,URLS.ICP);
-    data = initData(data,method,URLS.ICP);
-    return ApiAxios(method,url,data)
+    let res = initPhpApi(data,method,URLS.ICP);
+    return ApiAxios(res.method,res.url,res.data)
   },
   car:(method,data)=>{
     let res = initPhpApi(data,method,URLS.CAR);
@@ -140,8 +141,15 @@ const Asset = {
   backconfirm:(method,data)=>{
     let res = initPhpApi(data,method,URLS.BACK_CONFIRM);
     return ApiAxios(res.method,res.url,res.data)
+  },
+  card:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.CARD);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+  maintenance:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.MAINTENANCE);
+    return ApiAxios(res.method,res.url,res.data)
   }
-
 }
 
 

@@ -203,51 +203,6 @@
             endDate:''
           },
           tabData: [
-            {
-              date:'',
-              person:'',
-              company:'佳禾集团',
-              depart:'xxx',
-              zone:'办公区',
-              dealPerson:'cj',
-              name: '11010001',
-              type: '办工卓',
-              code: '办公设备',
-              size: '双人',
-              SN: '002110C0D0034',
-              purchaseDate: '2018-3-1',
-              blong: '测试机构',
-              bill: '102110987',
-              money: 200,
-              useCompany: '网开',
-              useDepart: '研发部',
-              usePerson: 'xxx',
-              site: '',
-              remarks: '',
-              receiveRemarks:''
-            },
-            {
-              date:'',
-              person:'',
-              company:'佳禾集团',
-              depart:'xxx',
-              zone:'办公区',
-              dealPerson:'cj',
-              name: '11010001',
-              type: '办工卓',
-              code: '办公设备',
-              size: '双人',
-              SN: '002110C0D0034',
-              purchaseDate: '2018-3-1',
-              blong: '测试机构',
-              bill: '102110987',
-              money: 200,
-              useCompany: '网开',
-              useDepart: '研发部',
-              usePerson: 'xxx',
-              site: '',
-              remarks: ''
-            }
           ],
           multipleSelection: [],    //当前选中的行数据
           currentPage: 1,
@@ -263,35 +218,6 @@
             asset_ids:[]
           },
           dialogLoading: false,
-          nameList:[
-            {
-              value:1,
-              label:'张三'
-            },
-            {
-              value:2,
-              label:'李忠'
-            },
-            {
-              value:3,
-              label:'张三'
-            },
-            {
-              value:4,
-              label:'李忠'
-            }
-          ],
-          typeList:[
-            {
-              value:'类别一'
-            },
-            {
-              value:'类别二'
-            },
-            {
-              value:'类别三'
-            }
-          ],
           companyList:[
           ],
           departList:[
@@ -455,6 +381,9 @@
           this.editDate = type == 1 ? this.$Store.formatDate() : this.formData.editDate;
           this.formTitle = type == 1 ? '新增':'修改';
           this.formData = this.$Store.resetForm(this.formData);
+          if(typeof this.formData.recv_dep != "undefined"){
+            this.formData.recv_dep = null;
+          }
           if(type === 2){
             console.log(JSON.stringify(this.multipleSelection));
             if(this.multipleSelection.length === 1){

@@ -41,14 +41,12 @@
         <el-table-column  label="有效日期" prop="end_time"  align="center">
         </el-table-column>
 
-        <el-table-column  label="（照片）商标"  align="center">
+        <el-table-column  label="（照片）商标"  prop="tm_attachment_url" align="center">
           <template slot-scope="scope">
-            <img class="tabPic" :src="scope.row.src" />
+            <img class="tabPic" :src="scope.row.tm_attachment_url" />
           </template>
         </el-table-column>
-        <el-table-column  label="创建人" prop="creater"  align="center">
-        </el-table-column>
-        <el-table-column  label="创建时间" prop="createDate"  align="center">
+        <el-table-column  label="创建人" prop="create_by_zh"  align="center">
         </el-table-column>
         <el-table-column  label="备注" prop="comment"  align="center">
         </el-table-column>
@@ -72,13 +70,22 @@
         :close-on-click-modal="false" :close-on-press-escape="false"
         :title="formTitle"
         :visible.sync="dialogFormVisible"
+        v-if="dialogFormVisible"
         width="960px">
         <EditorInfo :edit-date="editDate"></EditorInfo>
         <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline date-range-input">
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput type="1" labelName="公司名称" keyName="company" :val="formData.company" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="公司名称">
+                <treeselect
+                  v-model="formData.company"
+                  @select="funTreeSel1"
+                  :multiple="false"
+                  placeholder="请选择"
+                  :show-count="false"
+                  :options="companyList" />
+              </el-form-item>
             </el-col>
             <el-col :sm="12">
               <SelfInput type="1"  labelName="中文名称"  keyName="name_zh" :val="formData.name_zh" :required="true" @changeFormVal="changeFormVal"></SelfInput>
@@ -99,35 +106,16 @@
             <el-col :sm="12">
               <SelfInput type="3" labelName="有效期" keyName="end_time" :val="formData.end_time" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-
-
-
-            <!--<el-col :sm="12">
-              <el-form-item label="有效期">
-                <el-date-picker
-                  v-model="validDate"
-                  type="end_time"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  value-format="yyyyMMdd">
-                </el-date-picker>
-              </el-form-item>
-            </el-col>-->
           </el-row>
           <el-row>
             <el-col :sm="12">
               <SelfInput :disabled="true"  type="4" labelName="备注" :selectList="typeList"  keyName="comment" :val="formData.comment" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
-
-
-
-
           <el-row>
-            <el-col :sm="12">
-              <el-form-item label="附件上传">
-<!--                <UploadFile :upload-data="fileData" @uploadSuccess="uploadSuccess"></UploadFile>-->
-                  <input type="file" name="attachment" :val="formData.attachment">
+            <el-col :sm="16">
+              <el-form-item label="（商标）附件上传">
+                <UploadFile @uploadSuccess="uploadSuccess"></UploadFile>
               </el-form-item>
             </el-col>
           </el-row>
@@ -146,9 +134,14 @@
     import SelfInput from '../../components/common/selfInput'
     import downloadModule from '../../utils/download'
     import UploadFile from '../../components/common/uploadFile'
+    import Treeselect from '@riophae/vue-treeselect'
+    import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+
     export default {
       data: function () {
         return {
+          companyList:[
+          ],
           searchData: {
             department: ''
           },
@@ -173,7 +166,7 @@
               reg_time:'',
               end_time: '',
               comment: '',
-              // attachment: ''
+              attachment: ''
           },
           dialogLoading: false,
           editDate: '2019-5-14',
@@ -198,11 +191,53 @@
       methods:{
         init(){
           this.fetchData();
+          this.getDepartmentList();
+        },
+        funTreeSel1(node){
+          console.log(JSON.stringify(node.id))
+          let val = node.id;
+          this.formData.company = val;
+        },
+        transData2Tree(list){
+          let retList = [];
+          list.forEach((item)=>{
+            let node = {};
+            node.id = item.id;
+            node.label = item.name;
+            let children = item.children;
+            if(typeof children != "undefined"){
+              this.getChildData(node, children);
+            }
+            retList.push(node);
+          })
+          return retList;
+        },
+        getChildData(node, list) {
+          let retList = [];
+          list.forEach((item)=>{
+            let node = {};
+            node.id = item.id;
+            node.label = item.name;
+            let children = item.children;
+            if(typeof children != "undefined"){
+              this.getChildData(node, children);
+            }
+            retList.push(node);
+          })
+          node.children = retList;
+        },
+        getDepartmentList(){
+          this.$axios.Asset.department('GET',{}).then(res=>{
+            // console.log(" result ==" + res.data.tree);
+            let _departList = res.data.tree;
+            let result = this.transData2Tree(_departList);
+            // this.departList = result;
+            this.companyList = result;
+          })
         },
         uploadSuccess(res){
-          let key = res[1],
-            val = res[0].message;
-          this.formData[key] = val;
+          let uuid = res[0].uuid;
+          this.formData['attachment'] = uuid;
         },
         handleCommand(command){
           if(command == 'upload'){
@@ -344,7 +379,8 @@
         EditorInfo,
         SelfInput,
         downloadModule,
-        UploadFile
+        UploadFile,
+        Treeselect
       },
       watch:{
         validDate:{
