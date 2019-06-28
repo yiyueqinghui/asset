@@ -117,7 +117,7 @@
               </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="资产编码" keyName="asset_number" :val="formData.asset_number" :required="false" @changeFormVal="changeFormVal" :disabled="false"></SelfInput>
+              <SelfInput  labelName="资产编码" keyName="asset_number" :val="formData.asset_number" :required="false" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
             </el-col>
           </el-row>
           <el-row>

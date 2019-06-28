@@ -35,7 +35,7 @@
       </el-table-column>
       <el-table-column  label="借用单号" prop="borrow_number"  align="center">
       </el-table-column>
-      <el-table-column  label="借用人"  prop="borrow_user"  align="center">
+      <el-table-column  label="借用人"  prop="borrow_user_name"  align="center">
       </el-table-column>
       <el-table-column  label="借出时间" width="120" prop="borrow_time"  align="center">
       </el-table-column>
@@ -43,7 +43,7 @@
       </el-table-column>
       <el-table-column  label="实际归还时间" width="120" prop="return_time"  align="center">
       </el-table-column>
-      <el-table-column  label="借用处理人" width="120" prop="return_user"  align="center">
+      <el-table-column  label="借出确认人" width="120" prop="borrow_confirm_user_name"  align="center">
       </el-table-column>
       <el-table-column  label="归还处理人" width="120" prop="return_confirm_user"  align="center">
       </el-table-column>
@@ -85,6 +85,7 @@
       :close-on-click-modal="false" :close-on-press-escape="false"
       title="借用单"
       :visible.sync="dialogFormVisible"
+      v-if="dialogFormVisible"
       width="960px"
       top="80px">
       <EditorInfo v-if="dialogFormVisible" :textObj="textObj" :edit-date="editDate" ></EditorInfo>
@@ -105,7 +106,7 @@
             <SelfInput type="3"  labelName="预计归还时间" keyName="expect_return_time" :val="formData.expect_return_time" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
         </el-row>
-        <el-row>
+        <!--<el-row>
           <el-col :sm="12">
             <SelfInput type="3"  labelName="借出确认时间" keyName="borrow_confirm_time" :val="formData.borrow_confirm_time" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
@@ -129,11 +130,8 @@
             <SelfInput type="2" labelName="归还确认人" :selectList="userList"  keyName="return_confirm_user" :val="formData.return_confirm_user"  @changeFormVal="changeFormVal"></SelfInput>
 
           </el-col>
-        </el-row>
+        </el-row>-->
         <el-row>
-          <el-col :sm="12">
-            <SelfInput type="1"  labelName="状态" keyName="status" :val="formData.status" @changeFormVal="changeFormVal"></SelfInput>
-          </el-col>
           <el-col :sm="12">
             <SelfInput type="4" labelName="备注"  keyName="comment" :val="formData.comment" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
@@ -205,42 +203,26 @@
       width="960px"
       top="80px">
       <!--归还人信息-->
-      <el-form :inline="true" :model="backData"  label-width="auto"  class="demo-form-inline border" id="backForm">
-        <el-row class="header">归还人信息</el-row>
-        <el-row>
-          <el-col :sm="6">
-            <SelfInput labelName="姓名" type="2"  :selectList="nameList" keyName="name" :val="backData.name" @changeFormVal="changeBackVal"></SelfInput>
-          </el-col>
-          <el-col :sm="6">
-            <SelfInput labelName="所在机构"  type="2"  :selectList="companyList"   keyName="blongOrg" :val="backData.blongOrg" @changeFormVal="changeBackVal"></SelfInput>
-          </el-col>
-          <el-col :sm="6">
-            <SelfInput labelName="所在部门" type="2"  :selectList="departList"   keyName="blongDep" :val="backData.blongDep" @changeFormVal="changeBackVal"></SelfInput>
-          </el-col>
-          <el-col :sm="6">
-            <SelfInput labelName="申请时间" type="3"   keyName="backDate" :val="backData.backDate" @changeFormVal="changeBackVal"></SelfInput>
-          </el-col>
-        </el-row>
-      </el-form>
+      <EditorInfo v-if="backFormVisible" :textObj="textObj" :edit-date="editDate" ></EditorInfo>
 
       <el-form :model="backData"  label-width="auto"  class="demo-form-inline self-input border">
         <el-row>
           <el-col :sm="12">
-            <SelfInput v-if="backFormVisible" labelName="借用单号"   keyName="borrowCode" :val="backData.borrowCode" :disabled="true" @changeFormVal="changeBackVal"></SelfInput>
+            <SelfInput v-if="backFormVisible" labelName="借用单号"   keyName="borrow_number" :val="backData.borrow_number" :disabled="true" @changeFormVal="changeBackVal"></SelfInput>
           </el-col>
           <el-col :sm="12">
-            <SelfInput type="3" labelName="实际归还日期"   keyName="borrowDate" :val="backData.backDate"  @changeFormVal="changeBackVal"></SelfInput>
+            <SelfInput type="3" labelName="实际归还日期"   keyName="return_time" :val="backData.return_time"  @changeFormVal="changeBackVal"></SelfInput>
           </el-col>
         </el-row>
         <el-row>
           <el-col :sm="16">
-            <SelfInput type="4" labelName="备注"  keyName="borrowRemarks" :val="backData.borrowRemarks" @changeFormVal="changeBackVal"></SelfInput>
+            <SelfInput type="4" labelName="备注"  keyName="comment" :val="backData.comment" @changeFormVal="changeBackVal"></SelfInput>
           </el-col>
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="backFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="confirmBack">确 定</el-button>
+        <el-button type="primary" @click="confirmBackBtn">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -337,15 +319,9 @@
         newTotal:20,
         backFormVisible:false,
         backData:{
-          name:'',
-          blongOrg:'',
-          blongDep:'',
-          applyDate:'',
-          borrowCode:'',
-          backDate:'',
-          remarks:''
+          borrow_number:'',
+          return_time:''
         }
-
       }
     },
     methods:{
@@ -369,9 +345,6 @@
           })
           return retList;
         }
-      },
-      confirmBack(){
-        this.backFormVisible = false;
       },
       chooseAsset(){
         this.allAssetVisible = true;
@@ -485,27 +458,42 @@
       handleSelect(item) {
         this.formData.department = item.value;
       },
-      giveBackConfirm(){  // TODO
+      giveBackConfirmFinal(){
+          // 退库提交操作
+          let ids = [];
+          this.multipleSelection.forEach(item=>{
+            ids .push(item.id);
+          })
+          console.log("选中的ids==", ids);
 
-      },
-      giveBack(){// TODO
+          let data = {};
+          data.ids = ids;
 
+          this.$axios.Asset.givebackconfirm('POST',data).then(res=>{
+            this.$message({
+              message:'调入确认成功！',
+              type:'success'
+            })
+            this.fetchData();
+          })
       },
-      backBtn(){
-        if(this.multipleSelection.length == 0){
+      giveBackConfirm(){  // 归还确认
+        if(this.multipleSelection.length >= 1){
+
+            this.$confirm('是否继续', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.giveBackConfirmFinal();
+            }).catch(() => {
+
+            });
+        }else{
           this.$message({
-            message:'请至少选择一个要借用的资产',
+            message:'请选择至少一个资产调入单',
             type:'warning'
           })
-        }else{
-          let allCodes = [];
-          this.multipleSelection.forEach(item=>{
-            allCodes.push(item.borrowCode);
-          })
-          console.log(allCodes);
-          this.backData.borrowCode = allCodes.join(' ');
-          console.log(this.backData.borrowCode);
-          this.backFormVisible = true;
         }
       },
       handleSelectionChange(val) {
@@ -565,10 +553,7 @@
         let id = this.formData.id;
         let data = this.formData;
         if(this.formTitle == '新增'){
-          // TODO 暂且用于测试
-          data.asset_ids = [1]
           this.$axios.Asset.borrow('POST',data).then(res=>{
-            // this.tipMessage('新增成功！');
             this.$message({
               message:'新增成功！',
               type:'success'
@@ -590,26 +575,31 @@
           })
         }
       },
-      deleteData(){
-        if(this.multipleSelection.length === 0){
+      giveBack(){ // 归还表单弹出
+        if(this.multipleSelection.length === 1){
+          this.backData = Object.assign({},this.multipleSelection[0]);
+          this.editDate = this.$Store.formatDate();
+          console.log(JSON.stringify(this.backData));
+        }else{
           this.$message({
-            message:'请选择一条要删除的数据',
+            message:'请选择一个要借用的资产',
             type:'warning'
           })
           return;
-        }else{
-          let data = this.multipleSelection;
-          let deleteNum = 0;
-          data.forEach(item=>{
-            this.$axios.Asset.borrow('DELETE',item).then(res=>{
-              deleteNum+=1;
-              if(data.length === deleteNum){
-                this.tipMessage('删除成功！');
-                this.fetchData();
-              }
-            })
-          })
         }
+        this.backFormVisible = true;
+      },
+      confirmBackBtn(){
+        let id = this.backData.id;
+        let data = this.backData;
+        this.$axios.Asset.giveback('POST',data).then(res=>{
+          this.$message({
+            message:'新增成功！',
+            type:'success'
+          })
+          this.fetchData();
+          this.backFormVisible = false;
+        })
       },
       tipMessage(msg,type){
         type = type ? type : 'success';

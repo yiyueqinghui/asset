@@ -28,11 +28,6 @@
         </el-table-column>
         <el-table-column type="index" label="序号" width="60" align="center">
         </el-table-column>
-        <el-table-column width="120px" label="（照片）发票"  align="center">
-          <template slot-scope="scope">
-            <img class="tabPic" :src="scope.row.src" />
-          </template>
-        </el-table-column>
         <el-table-column  label="资产类型" prop="asset_class"  align="center">
         </el-table-column>
         <el-table-column  label="发票类型" prop="inv_type"  align="center">
@@ -47,7 +42,11 @@
         </el-table-column>
         <el-table-column  label="备注" prop="comment"  align="center">
         </el-table-column>
-
+        <el-table-column  label="（照片）发票"  prop="image_attachment_url" align="center">
+          <template slot-scope="scope">
+            <img class="tabPic" :src="scope.row.image_attachment_url" />
+          </template>
+        </el-table-column>
       </el-table>
       <!--分页-->
       <el-row>
@@ -216,9 +215,8 @@
           this.formData.asset_class = val;
         },
         uploadSuccess(res){
-          let key = res[1],
-            val = res[0].message;
-          this.formData[key] = val;
+          let uuid = res[0].uuid;
+          this.formData['attachment'] = uuid;
         },
         handleCommand(command){
           if(command == 'upload'){

@@ -59,7 +59,8 @@ const URLS = {
   BACK_CONFIRM:'/api-1.0/cancel-confirm/',
   RECEIVE:'/api-1.0/recipient/',
   CARD:'/api-1.0/access-card/',
-  MAINTENANCE:'/api-1.0/maintenance/'
+  MAINTENANCE:'/api-1.0/maintenance/',
+  RENT:'/api-1.0/lease/'
 }
 
 
@@ -148,6 +149,10 @@ const Asset = {
   },
   maintenance:(method,data)=>{
     let res = initPhpApi(data,method,URLS.MAINTENANCE);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+  rent:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.RENT);
     return ApiAxios(res.method,res.url,res.data)
   }
 }
