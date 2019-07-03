@@ -37,8 +37,9 @@
         </el-input>
       </el-form-item>
       <!--金额-->
-      <el-form-item v-else-if="this.type==5" :label="labelName" :class="{labelStyle:labelStyle,remarks:true}" :rules="{required:required}">
-        <el-input  v-model="modelVal" @blur="toChinese" @focus="toNum" @input="changeVal"></el-input>
+      <el-form-item v-else-if="this.type==5" :label="labelName" :class="{labelStyle:labelStyle,remarks:true,chineseMoney:true}" :rules="{required:required}">
+        <el-input  v-model="modelVal" @input="changeVal"></el-input>
+        <el-input  v-model="chineseMoney" :title="chineseMoney" :disabled="true"></el-input>
       </el-form-item>
 
     </div>
@@ -93,20 +94,17 @@
       },
       methods:{
         changeVal(val){
-          if(this.type == 5){
+          if(this.type === '5'){
             let reg = /[0-9,'.']/;
             if(!reg.test(this.modelVal)) return;
+            this.chineseMoney = this.toChinese(val);
           }
           this.$emit('changeFormVal',[this.keyName,val]);
         },
-        toChinese(){
-          this.numMoney = Number(this.modelVal);
-          let chineseMoney = this.$Store.NumberToChinese(this.numMoney);
-          this.chineseMoney = chineseMoney;
-          this.modelVal = chineseMoney;
-        },
-        toNum(){
-          this.modelVal = this.numMoney;
+        toChinese(num){
+          let chineseMoney = this.$Store.NumberToChinese(num);
+          console.log(chineseMoney);
+          return chineseMoney;
         }
       },
       watch:{
@@ -120,10 +118,17 @@
         if(this.labelName.length < 4){
           this.labelStyle = true;
         }
+        if(this.type==='5'&& this.val) this.modelVal = this.toChinese(this.val);
       }
     }
 </script>
 
-<style scoped>
+<style>
+  .chineseMoney .el-input{
+    display: inline;
+  }
+  .chineseMoney .el-input .el-input__inner{
+    width: 90px!important;
+  }
 
 </style>

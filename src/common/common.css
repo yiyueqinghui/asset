@@ -91,6 +91,10 @@ html,body{
   right:-10px;
 }
 
+/*树形选择器*/
+.vue-treeselect{
+  width: 180px;
+}
 
 
 

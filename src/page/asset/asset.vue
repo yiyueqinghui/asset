@@ -52,13 +52,13 @@
       </el-table-column>
       <el-table-column  label="SN号" width="130" prop="asset_sn"  align="center">
       </el-table-column>
-      <el-table-column  label="购入时间" width="120" sortable prop="buy_at"  align="center">
+      <el-table-column  label="购入时间" width="160" sortable prop="buy_at"  align="center">
       </el-table-column>
-      <el-table-column  label="所属公司" prop="dep_owner"  align="center">
+      <el-table-column  label="所属公司" prop="dep_owner_zh"  align="center">
       </el-table-column>
-      <el-table-column  label="发票号码" width="100" prop="invoice"  align="center">
+      <el-table-column  label="发票号码" width="100" prop="invoice_number"  align="center">
       </el-table-column>
-      <el-table-column  label="使用公司" prop="dep_to_use"  align="center">
+      <el-table-column  label="使用公司" prop="dep_to_use_zh"  align="center">
       </el-table-column>
       <el-table-column  label="使用人" prop="user_to_use"  align="center">
       </el-table-column>
@@ -233,17 +233,17 @@
           editDate:'',
           name: '',
           asset_spec: '',
-          asset_class: null,
+          asset_class:'',
           asset_number: '',
           asset_sn: '',
           buy_at: '',
-          dep_owner: null,
+          dep_owner:'',
           invoice: '',
           money:0,
           showMoney:0,
           chineseMoney:'',
           numMoney:'',
-          dep_to_use: null,
+          dep_to_use:'',
           user_to_use: '',
           store_at: '',
           comment: '',
@@ -357,12 +357,10 @@
         this.formData.dep_owner = val;
       },
       funTreeSel2(node){
-        console.log(JSON.stringify(node.id))
         let val = node.id;
         this.formData.dep_to_use = val;
       },
       funTreeSel3(node){
-        console.log(JSON.stringify(node.id))
         let val = node.id;
         this.formData.asset_class = val;
       },
