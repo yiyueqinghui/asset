@@ -118,6 +118,9 @@
                 <UploadFile @uploadSuccess="uploadSuccess"></UploadFile>
               </el-form-item>
             </el-col>
+            <el-col :sm="16">
+              <img :src="formData.tm_attachment_url" width="120" height="120"/>
+            </el-col>
           </el-row>
         </el-form>
 
@@ -238,6 +241,7 @@
         uploadSuccess(res){
           let uuid = res[0].uuid;
           this.formData['attachment'] = uuid;
+          this.formData['tm_attachment_url'] = url;
         },
         handleCommand(command){
           if(command == 'upload'){
