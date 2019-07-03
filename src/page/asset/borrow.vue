@@ -35,35 +35,37 @@
       </el-table-column>
       <el-table-column  label="借用单号" prop="borrow_number"  align="center">
       </el-table-column>
-      <el-table-column  label="借用人"  prop="borrow_user_name"  align="center">
-      </el-table-column>
       <el-table-column  label="借出时间" width="120" prop="borrow_time"  align="center">
       </el-table-column>
       <el-table-column  label="预计归还时间" width="120" prop="expect_return_time"  align="center">
       </el-table-column>
       <el-table-column  label="实际归还时间" width="120" prop="return_time"  align="center">
       </el-table-column>
+      <el-table-column  label="借出人"  prop="borrow_user_name"  align="center">
+      </el-table-column>
       <el-table-column  label="借出确认人" width="120" prop="borrow_confirm_user_name"  align="center">
       </el-table-column>
-      <el-table-column  label="归还处理人" width="120" prop="return_confirm_user"  align="center">
+      <el-table-column  label="归还人" width="120" prop="return_confirm_user_name"  align="center">
+      </el-table-column>
+      <el-table-column  label="归还确认人" width="120" prop="return_confirm_user_name"  align="center">
       </el-table-column>
       <el-table-column  label="备注" prop="comment"  align="center">
       </el-table-column>
-      <el-table-column  label="资产明细"  align="center" height="50">
-        <el-table-column label="资产名称" width="100" prop="name" align="center"></el-table-column>
-        <el-table-column label="资产类别" prop="type" align="center"></el-table-column>
-        <el-table-column label="资产编码" prop="code" align="center"></el-table-column>
-        <el-table-column label="资产型号" prop="size" align="center"></el-table-column>
-        <el-table-column label="SN号" width="150" prop="SN" align="center"></el-table-column>
-        <el-table-column label="购入时间" prop="purchaseDate" align="center"></el-table-column>
-        <el-table-column label="所属公司" prop="blong" align="center"></el-table-column>
-        <el-table-column label="发票号码" width="100" prop="bill" align="center"></el-table-column>
-        <el-table-column label="金额" prop="money" align="center"></el-table-column>
-        <el-table-column label="使用公司" prop="useCompany" align="center"></el-table-column>
-        <el-table-column label="使用部门" prop="useDepart" align="center"></el-table-column>
-        <el-table-column label="使用人" prop="usePerson" align="center"></el-table-column>
-        <el-table-column label="存放地点" prop="site" align="center"></el-table-column>
-        <el-table-column label="备注" prop="remarks" align="center"></el-table-column>
+      <el-table-column  label="资产明细"  prop="related_assets" align="center" height="50">
+          <el-table-column label="资产名称" width="100" prop="name" align="center"></el-table-column>
+          <el-table-column label="资产类别" prop="type" align="center"></el-table-column>
+          <el-table-column label="资产编码" prop="asset_number" align="center"></el-table-column>
+          <el-table-column label="资产型号" prop="size" align="center"></el-table-column>
+          <el-table-column label="SN号" width="150" prop="SN" align="center"></el-table-column>
+          <el-table-column label="购入时间" prop="purchaseDate" align="center"></el-table-column>
+          <el-table-column label="所属公司" prop="blong" align="center"></el-table-column>
+          <el-table-column label="发票号码" width="100" prop="bill" align="center"></el-table-column>
+          <el-table-column label="金额" prop="money" align="center"></el-table-column>
+          <el-table-column label="使用公司" prop="useCompany" align="center"></el-table-column>
+          <el-table-column label="使用部门" prop="useDepart" align="center"></el-table-column>
+          <el-table-column label="使用人" prop="usePerson" align="center"></el-table-column>
+          <el-table-column label="存放地点" prop="site" align="center"></el-table-column>
+          <el-table-column label="备注" prop="remarks" align="center"></el-table-column>
       </el-table-column>
 
     </el-table>
@@ -592,6 +594,8 @@
       confirmBackBtn(){
         let id = this.backData.id;
         let data = this.backData;
+        data.ids=[];
+        data.ids.push(id);
         this.$axios.Asset.giveback('POST',data).then(res=>{
           this.$message({
             message:'新增成功！',
