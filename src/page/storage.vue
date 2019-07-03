@@ -30,19 +30,48 @@
             </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput type="2" :selectList="invoiceCategoryList"   labelName="发票类型" keyName="invoiceCategory" :val="formData.invoiceCategory" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item label="发票类型" :rules="{required:true,message:'请输入发票号码'}" prop="invoiceCategory">
+              <el-select v-model="formData.invoiceCategory" filterable placeholder="请选择">
+                <el-option
+                  v-for="item in invoiceCategoryList"
+                  :key="item.id"
+                  :label="item.data"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput  labelName="发票号码" keyName="invoiceNo" :val="formData.invoiceNo" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item  label="发票号码" :rules="{required:true,message:'请输入发票号码'}" prop="invoiceNo">
+              <el-input v-model="formData.invoiceNo" ></el-input>
+            </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput type="3" labelName="开票日期" keyName="invoiceDate" :val="formData.invoiceDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item  label="开票日期" :rules="{required:true}" prop="invoiceDate">
+              <el-date-picker
+                style="width: 180px;"
+                v-model="formData.invoiceDate"
+                type="date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                placeholder="选择日期">
+              </el-date-picker>
+            </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput type="5" labelName="发票金额" keyName="invoiceAmount" :val="formData.invoiceAmount" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item label="发票金额" :rules="{required:true}" prop="invoiceAmount">
+              <el-input v-model="formData.invoiceAmount" ></el-input>
+            </el-form-item>
           </el-col>
           <el-col :sm="24">
-            <SelfInput  type="4" labelName="发票备注"   keyName="invoiceMemo" :val="formData.invoiceMemo" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item  label="发票备注"  :rules="{required:true}" >
+              <el-input
+                rows="4"
+                type="textarea"
+                placeholder="请输入内容"
+                v-model="formData.invoiceMemo">
+              </el-input>
+            </el-form-item>
           </el-col>
           <el-col :sm="24">
             <el-form-item label="发票附件">
@@ -64,19 +93,36 @@
             </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput type="1" labelName="姓名" keyName="Name" :val="formData.Name" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item  label="姓名" :rules="{required:true}" prop="Name">
+              <el-input v-model="formData.Name" ></el-input>
+            </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput type="2"  labelName="所属机构" :selectList="typeList"  keyName="org" :val="formData.org" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item label="所属机构" :rules="{required:true}" prop="org">
+              <el-select v-model="formData.org" filterable placeholder="请选择">
+                <el-option
+                  v-for="item in typeList"
+                  :key="item.id"
+                  :label="item.data"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput  labelName="卡号" keyName="cardNo" :val="formData.cardNo" :required="true" @changeFormVal="changeFormVal" ></SelfInput>
+            <el-form-item  label="卡号" :rules="{required:true}" prop="cardNo">
+              <el-input v-model="formData.cardNo" ></el-input>
+            </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput type="1"  labelName="手机号码" keyName="phoneNo" :val="formData.phoneNo" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item  label="手机号码" :rules="{required:true}" prop="phoneNo">
+              <el-input v-model="formData.phoneNo" ></el-input>
+            </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput type="1"  labelName="身份证号" keyName="idCardNo" :val="formData.idCardNo" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item  label="身份证号" :rules="{required:true}" prop="idCardNo">
+              <el-input v-model="formData.idCardNo" ></el-input>
+            </el-form-item>
           </el-col>
           <el-col :sm="24">
             <el-form-item label="身份证复印件">
@@ -98,19 +144,43 @@
               </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="2" labelName="公司名称" keyName="company" :val="formData.company" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="公司名称" :rules="{required:true}" prop="company">
+                <el-select v-model="formData.company" filterable placeholder="请选择">
+                  <el-option
+                    v-for="item in typeList"
+                    :key="item.id"
+                    :label="item.data"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="1"  labelName="中文名称"  keyName="chTrademarkName" :val="formData.chTrademarkName" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="中文名称" :rules="{required:true}" prop="chTrademarkName">
+                <el-input v-model="formData.chTrademarkName" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="英文名称" keyName="enTrademarkName" :val="formData.enTrademarkName" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="英文名称" :rules="{required:true}" prop="enTrademarkName">
+                <el-input v-model="formData.enTrademarkName" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="商标分类" keyName="trademarkCategory" :val="formData.trademarkCategory" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="商标分类" :rules="{required:true}" prop="trademarkCategory">
+                <el-input v-model="formData.trademarkCategory" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="3" labelName="注册日期" keyName="regDate" :val="formData.regDate" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="注册日期" :rules="{required:true}" prop="regDate">
+                <el-date-picker
+                  style="width: 180px;"
+                  v-model="formData.regDate"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  placeholder="选择日期">
+                </el-date-picker>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
               <el-form-item label="有效期">
@@ -124,7 +194,14 @@
               </el-form-item>
             </el-col>
             <el-col :sm="24">
-              <SelfInput  type="4" labelName="商标备注" keyName="trademarkMemo" :val="formData.trademarkMemo" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="商标备注"  :rules="{required:true}" >
+                <el-input
+                  rows="4"
+                  type="textarea"
+                  placeholder="请输入内容"
+                  v-model="formData.trademarkMemo">
+                </el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="12">
               <el-form-item label="商标附件">
@@ -146,19 +223,43 @@
             </el-form-item>
           </el-col>
             <el-col :sm="8">
-              <SelfInput type="2" :selectList="typeList" labelName="公司名称" keyName="company" :val="formData.company" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="公司名称" :rules="{required:true}" prop="company">
+                <el-select v-model="formData.company" filterable placeholder="请选择">
+                  <el-option
+                    v-for="item in typeList"
+                    :key="item.id"
+                    :label="item.data"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="3"  labelName="初次申请时间"  keyName="initialRegDate" :val="formData.initialRegDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="初次申请时间" :rules="{required:true}" prop="initialRegDate">
+                <el-date-picker
+                  style="width: 180px;"
+                  v-model="formData.initialRegDate"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  placeholder="选择日期">
+                </el-date-picker>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="经营许可证编号" keyName="managementLicenseNo" :val="formData.managementLicenseNo" :required="true" @changeFormVal="changeFormVal" ></SelfInput>
+              <el-form-item  label="经营许可证编号" :rules="{required:true}" prop="managementLicenseNo">
+                <el-input v-model="formData.managementLicenseNo" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput labelName="网站名称" keyName="websiteName" :val="formData.websiteName" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="网站名称" :rules="{required:true}" prop="websiteName">
+                <el-input v-model="formData.websiteName" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput labelName="网址" keyName="url" :val="formData.url" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="网址" :rules="{required:true}" prop="url">
+                <el-input v-model="formData.url" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
               <el-form-item label="有效期">
@@ -172,10 +273,26 @@
               </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="3" labelName="年检时间记录" keyName="annualInspection" :val="formData.annualInspection" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="年检时间记录" :rules="{required:true}" prop="annualInspection">
+                <el-date-picker
+                  style="width: 180px;"
+                  v-model="formData.annualInspection"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  placeholder="选择日期">
+                </el-date-picker>
+              </el-form-item>
             </el-col>
             <el-col :sm="24">
-              <SelfInput type="4" labelName="ICP备注"   keyName="icpMemo" :val="formData.icpMemo" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="ICP备注"  :rules="{required:true}" prop="icpMemo">
+                <el-input
+                  rows="4"
+                  type="textarea"
+                  placeholder="请输入内容"
+                  v-model="formData.icpMemo">
+                </el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="24">
               <el-form-item label="ICP附件上传">
@@ -197,67 +314,149 @@
             </el-form-item>
           </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="公司名称" :selectList="typeList" keyName="company" :val="formData.company"  @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="公司名称" :rules="{required:true}" prop="company">
+                <el-select v-model="formData.company" filterable placeholder="请选择">
+                  <el-option
+                    v-for="item in typeList"
+                    :key="item.id"
+                    :label="item.data"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="2"  labelName="职场类型" :selectList="workCategoryList"  keyName="branchCategory" :val="formData.branchCategory"  @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="职场类型" :rules="{required:true}" prop="branchCategory">
+                <el-select v-model="formData.branchCategory" filterable placeholder="请选择">
+                  <el-option
+                    v-for="item in workCategoryList"
+                    :key="item.id"
+                    :label="item.data"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="职场地址" keyName="brandhAddress" :val="formData.brandhAddress"  @changeFormVal="changeFormVal" ></SelfInput>
+              <el-form-item  label="职场地址" :rules="{required:true}" prop="brandhAddress">
+                <el-input v-model="formData.brandhAddress" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="职场租赁面积" keyName="branchArea" :val="formData.branchArea" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="职场租赁面积" :rules="{required:true}" prop="branchArea">
+                <el-input v-model="formData.branchArea" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="职场每㎡金额" keyName="amountPerSquareMeter" :val="formData.amountPerSquareMeter" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="职场每㎡金额" :rules="{required:true}" prop="amountPerSquareMeter">
+                <el-input v-model="formData.amountPerSquareMeter" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="职场工位数" keyName="seats" :val="formData.seats" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="职场工位数" :rules="{required:true}" prop="seats">
+                <el-input v-model="formData.seats" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="职场会议室数量"   keyName="conferenceRoomNo" :val="formData.conferenceRoomNo"  @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="职场会议室数量" :rules="{required:true}" prop="conferenceRoomNo">
+                <el-input v-model="formData.conferenceRoomNo" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput labelName="可注册公司数量" keyName="availableRegCompanyNo" :val="formData.availableRegCompanyNo"  @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="可注册公司数量" :rules="{required:true}" prop="availableRegCompanyNo">
+                <el-input v-model="formData.availableRegCompanyNo" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput labelName="已注册公司名称" keyName="registeredCompanyNo" :val="formData.registeredCompanyNo" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="已注册公司名称" :rules="{required:true}" prop="registeredCompanyNo">
+                <el-input v-model="formData.registeredCompanyNo" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="3"  labelName="合同起始日期" keyName="contractStartDate" :val="formData.contractStartDate"  @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="合同起始日期" :rules="{required:true}" prop="contractStartDate">
+                <el-date-picker
+                  style="width: 180px;"
+                  v-model="formData.contractStartDate"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  placeholder="选择日期">
+                </el-date-picker>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="3" labelName="合同终止日期"  keyName="contractEndDate" :val="formData.contractEndDate" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="合同终止日期" :rules="{required:true}" prop="contractEndDate">
+                <el-input v-model="formData.contractEndDate" :disabled="true"  ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput labelName="合同总金额" keyName="contractAmount" :val="formData.contractAmount" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="合同总金额" :rules="{required:true}" prop="contractAmount">
+                <el-input v-model="formData.contractAmount" :disabled="true"  ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="2" :selectList="payCategoryList" labelName="支付方式"  keyName="paymentMethod" :val="formData.paymentMethod" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="支付方式" :rules="{required:true}" prop="paymentMethod">
+                <el-select v-model="formData.paymentMethod" filterable placeholder="请选择">
+                  <el-option
+                    v-for="item in payCategoryList"
+                    :key="item.id"
+                    :label="item.data"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="2" :selectList="payWayList" labelName="支付类型"  keyName="payWay" :val="formData.payWay" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="支付类型" :rules="{required:true}" prop="payWay">
+                <el-select v-model="formData.payWay" filterable placeholder="请选择">
+                  <el-option
+                    v-for="item in payWayList"
+                    :key="item.id"
+                    :label="item.data"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="5" labelName="租金金额"  keyName="rentAmount" :val="formData.rentAmount" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="租金金额" :rules="{required:true}" prop="rentAmount">
+                <el-input v-model="formData.rentAmount" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="保证金金额"  keyName="depositAmount" :val="formData.depositAmount" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="保证金金额" :rules="{required:true}" prop="depositAmount">
+                <el-input v-model="formData.depositAmount" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput labelName="物业费金额/月"  keyName="propertyFree" :val="formData.propertyFree" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="物业费金额/月" :rules="{required:true}" prop="propertyFree">
+                <el-input v-model="formData.propertyFree" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput labelName="水费/立方米"  keyName="waterCharge" :val="formData.waterCharge" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="水费/立方米" :rules="{required:true}" prop="waterCharge">
+                <el-input v-model="formData.waterCharge" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput labelName="电费(每度金额)"  keyName="electricityCharge" :val="formData.electricityCharge" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="电费(每度金额)" :rules="{required:true}" prop="electricityCharge">
+                <el-input v-model="formData.electricityCharge" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput labelName="网费/月"  keyName="InternetCharge" :val="formData.InternetCharge" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="网费/月" :rules="{required:true}" prop="InternetCharge">
+                <el-input v-model="formData.InternetCharge" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :span="24">
-              <SelfInput type="4" labelName="职场备注"  keyName="branchMemo" :val="formData.branchMemo" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="职场备注"  :rules="{required:true}" prop="branchMemo">
+                <el-input
+                  rows="4"
+                  type="textarea"
+                  placeholder="请输入内容"
+                  v-model="formData.branchMemo">
+                </el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="12">
               <el-form-item label="合同附件上传">
@@ -279,22 +478,38 @@
             </el-form-item>
           </el-col>
             <el-col :sm="8">
-              <SelfInput labelName="资产名称" keyName="vehicleCompany" :val="formData.vehicleCompany" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="资产名称" :rules="{required:true}" prop="vehicleCompany">
+                <el-input v-model="formData.vehicleCompany" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput labelName="车辆牌照"   keyName="noPlate" :val="formData.noPlate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="车辆牌照" :rules="{required:true}" prop="noPlate">
+                <el-input v-model="formData.noPlate" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="投保人" keyName="insuranceApplicant" :val="formData.insuranceApplicant" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="投保人" :rules="{required:true}" prop="insuranceApplicant">
+                <el-input v-model="formData.insuranceApplicant" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="被保人" keyName="insured" :val="formData.insured" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="被保人" :rules="{required:true}" prop="insured">
+                <el-input v-model="formData.insured" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="3" labelName="年检日期" keyName="annualInspectionDate" :val="formData.annualInspectionDate" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="年检日期" :rules="{required:true}" prop="annualInspectionDate">
+                <el-date-picker
+                  style="width: 180px;"
+                  v-model="formData.annualInspectionDate"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  placeholder="选择日期">
+                </el-date-picker>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <!--<SelfInput  type="3" labelName="保险有效日期" keyName="validDate" :val="formData.validDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>-->
               <el-form-item label="保险有效日期">
                 <el-date-picker
                   v-model="validDate"
@@ -306,33 +521,77 @@
               </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput labelName="公里数" keyName="km" :val="formData.km" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="8">
-              <SelfInput type="3" labelName="最新保养日期" keyName="lastMaintenance" :val="formData.lastMaintenance" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="8">
-              <el-form-item label="预计下次保养期">
-                <el-input v-show="visible" v-model="formData.nextMaintenance" disabled="disabled"></el-input>
+              <el-form-item  label="公里数" :rules="{required:true}" prop="km">
+                <el-input v-model="formData.km" ></el-input>
               </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput labelName="钥匙数量" keyName="noOfKeys" :val="formData.noOfKeys" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="最新保养日期" :rules="{required:true}" prop="lastMaintenance">
+                <el-date-picker
+                  style="width: 180px;"
+                  v-model="formData.lastMaintenance"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  placeholder="选择日期">
+                </el-date-picker>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="钥匙编号" keyName="keySerials" :val="formData.keySerials" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="预计下次保养期">
+                <el-input v-show="visible" v-model="formData.nextMaintenance" :disabled="true"></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="使用人" keyName="user" :val="formData.user" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="钥匙数量" :rules="{required:true}" prop="noOfKeys">
+                <el-input v-model="formData.noOfKeys" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput labelName="现使用机构" :selectList="typeList"  keyName="currentlyOwnedOrg" :val="formData.currentlyOwnedOrg"  @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="钥匙编号" :rules="{required:true}" prop="keySerials">
+                <el-input v-model="formData.keySerials" ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="1" labelName="使用人联系电话" keyName="userPhone" :val="formData.bill" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="使用人" :rules="{required:true}" prop="user">
+                <el-select v-model="formData.user" filterable placeholder="请选择">
+                  <el-option
+                    v-for="item in typeList"
+                    :key="item.id"
+                    :label="item.data"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="1" labelName="管理人" keyName="administrator" :val="formData.administrator" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item label="现使用机构" :rules="{required:true}" prop="currentlyOwnedOrg">
+                <el-select v-model="formData.currentlyOwnedOrg" filterable placeholder="请选择">
+                  <el-option
+                    v-for="item in typeList"
+                    :key="item.id"
+                    :label="item.data"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :sm="8">
+              <el-form-item  label="使用人联系电话" :rules="{required:true}" prop="userPhone">
+                <el-input v-model="formData.userPhone" ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :sm="8">
+              <el-form-item label="管理人" :rules="{required:true}" prop="administrator">
+                <el-select v-model="formData.administrator" filterable placeholder="请选择">
+                  <el-option
+                    v-for="item in typeList"
+                    :key="item.id"
+                    :label="item.data"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
             </el-col>
             <el-col :sm="24">
               <el-form-item label="被保人附件">
@@ -350,7 +609,14 @@
               </el-form-item>
             </el-col>
             <el-col :sm="24">
-              <SelfInput type="4" labelName="备注" keyName="vehicleMemo" :val="formData.vehicleMemo"  @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="备注"  :rules="{required:true}" prop="vehicleMemo">
+                <el-input
+                  rows="4"
+                  type="textarea"
+                  placeholder="请输入内容"
+                  v-model="formData.vehicleMemo">
+                </el-input>
+              </el-form-item>
             </el-col>
         </el-row>
         <!--默认-->
@@ -367,56 +633,128 @@
             </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput  labelName="资产名称" keyName="name" :val="formData.name" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item  label="资产名称" :rules="{required:true}" prop="name">
+              <el-input v-model="formData.name" ></el-input>
+            </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput  labelName="资产编码" keyName="assetNo" :val="formData.assetNo" :required="true" :disabled="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item  label="资产编码" :rules="{required:true}" prop="assetNo">
+              <el-input v-model="formData.assetNo" ></el-input>
+            </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput  labelName="规格型号" keyName="model" :val="formData.model" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item  label="规格型号" :rules="{required:true}" prop="model">
+              <el-input v-model="formData.model" ></el-input>
+            </el-form-item>
           </el-col>
           <el-col :sm="8" v-if="[3,4].indexOf(this.type)>=0">
-            <SelfInput  labelName="SN号" keyName="serialNo" :val="formData.serialNo" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item  label="SN号" :rules="{required:true}" prop="serialNo">
+              <el-input v-model="formData.serialNo" ></el-input>
+            </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput type="2" :selectList="sourceList"  labelName="资产来源" keyName="source" :val="formData.source" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item label="资产来源" :rules="{required:true}" prop="source">
+              <el-select v-model="formData.source" filterable placeholder="请选择">
+                <el-option
+                  v-for="item in sourceList"
+                  :key="item.id"
+                  :label="item.data"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput  type="3" labelName="购入/租用时间" keyName="purchaseDate" :val="formData.purchaseDate" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item  label="购入/租用时间" :rules="{required:true}" prop="purchaseDate">
+              <el-date-picker
+                style="width: 180px;"
+                v-model="formData.purchaseDate"
+                type="date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                placeholder="选择日期">
+              </el-date-picker>
+            </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput labelName="数量" keyName="number" :val="formData.number" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item  label="数量" :rules="{required:true}" prop="number">
+              <el-input v-model="formData.number" ></el-input>
+            </el-form-item>
           </el-col>
           <el-col :sm="8" v-show="this.type === 3">
-            <SelfInput labelName="品牌"  keyName="brand" :val="formData.brand" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item  label="品牌" :rules="{required:true}" prop="brand">
+              <el-input v-model="formData.brand" ></el-input>
+            </el-form-item>
           </el-col>
           <el-col :sm="8" v-show="this.type === 3">
-            <SelfInput labelName="配置" keyName="config" :val="formData.config" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item  label="配置" :rules="{required:true}" prop="config">
+              <el-input v-model="formData.config" ></el-input>
+            </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput labelName="发票号码" keyName="invoice" :val="formData.invoice" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item  label="发票号码" :rules="{required:true}" prop="invoice">
+              <el-input v-model="formData.invoice" ></el-input>
+            </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput type="5" labelName="实付金额" keyName="amount" :val="formData.amount" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item  label="实付金额" :rules="{required:true}" prop="amount">
+              <el-input v-model="formData.amount" ></el-input>
+            </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput type="2" labelName="所属部门" :selectList="orgList"  keyName="blongOrg" :val="formData.blongOrg" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item label="所属部门" :rules="{required:true}" prop="blongOrg">
+              <el-select v-model="formData.blongOrg" filterable placeholder="请选择">
+                <el-option
+                  v-for="item in orgList"
+                  :key="item.id"
+                  :label="item.data"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput type="2" labelName="使用部门" :selectList="orgList" keyName="useOrg" :val="formData.useOrg" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item label="使用部门" :rules="{required:true}" prop="useOrg">
+              <el-select v-model="formData.useOrg" filterable placeholder="请选择">
+                <el-option
+                  v-for="item in orgList"
+                  :key="item.id"
+                  :label="item.data"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput labelName="使用人" keyName="usePerson" :val="formData.usePerson" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item label="使用人" :rules="{required:true}" prop="usePerson">
+              <el-select v-model="formData.usePerson" filterable placeholder="请选择">
+                <el-option
+                  v-for="item in employeeList"
+                  :key="item.id"
+                  :label="item.data"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
           </el-col>
           <el-col :sm="8">
-            <SelfInput  labelName="存放地点"  keyName="storedPosition" :val="formData.storedPosition" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item  label="存放地点" :rules="{required:true}" prop="storedPosition">
+              <el-input v-model="formData.storedPosition" ></el-input>
+            </el-form-item>
           </el-col>
           <el-col :span="24">
-            <SelfInput type="4" labelName="备注"  keyName="memo" :val="formData.memo" @changeFormVal="changeFormVal"></SelfInput>
+            <el-form-item  label="备注"  :rules="{required:true}" prop="memo">
+              <el-input
+                rows="4"
+                type="textarea"
+                placeholder="请输入内容"
+                v-model="formData.memo">
+              </el-input>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row style="text-align:center">
-           <!--<el-button type="primary">重置</el-button>-->
+           <el-button type="primary" @click="reset">重置</el-button>
            <el-button type="primary" @click="confirmBtn" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
         </el-row>
       </el-form>
@@ -428,6 +766,11 @@
         width="960px"
         top="20px">
         <el-scrollbar class="dialogZone">
+           <el-row class="insurePage">
+             <el-col :sm="12" v-for="(value,name,index) in formData" :key="index" v-if="value">
+                {{ dictionary[name] }}:{{value}}
+             </el-col>
+           </el-row>
 
         </el-scrollbar>
         <div slot="footer" class="dialog-footer">
@@ -451,8 +794,79 @@
         return {
           validDate:[],
           formData: {
-            "editDate": '',
-            "category":''
+            serialNo:'',
+            InternetCharge: "1234",
+            Name: "name",
+            administrator: "",
+            amount: "",
+            amountPerSquareMeter: "",
+            annualInspection: "",
+            annualInspectionDate: "",
+            assetNo: "",
+            availableRegCompanyNo: "",
+            blongOrg: "",
+            branchArea: "",
+            branchCategory: "",
+            branchMemo: "",
+            brand: "",
+            brandhAddress: "",
+            cardNo: "",
+            category:"",
+            chTrademarkName: "",
+            company: "",
+            conferenceRoomNo: "",
+            config: "",
+            contractAmount: "",
+            contractEndDate: "",
+            contractStartDate: "",
+            currentlyOwnedOrg: "",
+            depositAmount: "",
+            editDate: "",
+            electricityCharge: "",
+            enTrademarkName: "",
+            icpMemo: "",
+            idCardNo: "",
+            initialRegDate: "",
+            insuranceApplicant: "",
+            insured: "",
+            invoice: "",
+            invoiceAmount: "",
+            invoiceCategory: "",
+            invoiceDate: "",
+            invoiceNo: "",
+            keySerials: "",
+            km: "",
+            lastMaintenance: "",
+            managementLicenseNo: "",
+            memo: "",
+            model: "",
+            name: "",
+            noOfKeys: "",
+            noPlate: "",
+            number: "",
+            org: "",
+            payWay: "",
+            paymentMethod: "",
+            phoneNo: "",
+            propertyFree: "",
+            purchaseDate: "",
+            regDate: "",
+            registeredCompanyNo: "",
+            rentAmount: "",
+            seats: "",
+            source: "",
+            storedPosition: "",
+            trademarkCategory: "",
+            trademarkMemo:"",
+            url: "",
+            useOrg: "",
+            usePerson: "",
+            user: "",
+            userPhone: "",
+            vehicleCompany: "",
+            vehicleMemo: "",
+            waterCharge: "",
+            websiteName: ""
           },
           categoryList: [],
           orgList: [],
@@ -542,15 +956,33 @@
               data:'佳禾集团'
             }
           ],
+          employeeList:[
+            {
+              id:1,
+              data:'张三'
+            },
+            {
+              id:2,
+              data:'李四'
+            }
+          ],
           type:1,   //0默认 1 家具类 2 发票 3 电子产品 4 其他类 5 门禁卡 6 商标  7 ICP 8 办公职场 9 车辆
           visible:true,
           formVisible:true,
-          dialogFormVisible:false
+          dialogFormVisible:true,
+          dictionary:{}
+
         }
       },
       methods:{
         init(){
+          this.dictionary = this.$Store.data.dictionary;
+          console.log(this.dictionary);
 
+        },
+        reset(){
+          this.$refs['storageInfo'].resetFields();
+          console.log(this.formData);
         },
         uploadSuccess(res){
           let key = res[1],
@@ -607,9 +1039,7 @@
 
             }
           })
-          for(let i in this.formData){
-            delete this.formData[i];
-          }
+          this.reset();
           this.formData.editDate = this.$Store.formatDate();
           this.$refs.editorInfo.updateDate(this.formData.editDate);
           console.log(this.formData);
@@ -667,6 +1097,12 @@
         Treeselect,
         UploadFile
       },
+      filters:{
+        nameFilter(key){
+
+        }
+
+      },
       created(){
         this.formData.editDate = this.$Store.formatDate();
         console.log(this.formData.editDate);
@@ -717,11 +1153,17 @@
           handler(val,oldval){
             this.formData.category = val;
           }
-
+        },
+        formData:{
+          handler(val,oldval){
+            console.log(val)
+          },
+          deep:true
         }
       },
       mounted(){
         this.$nextTick(()=>{
+          this.init();
 
         })
       }
@@ -742,6 +1184,10 @@
   }
   #storageId .el-col-sm-8{
     height: 64px;
+  }
+  .insurePage .el-col-sm-12{
+    font-size: 15px;
+    padding:7px 0;
   }
 
 </style>
