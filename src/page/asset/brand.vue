@@ -241,7 +241,7 @@
         uploadSuccess(res){
           let uuid = res[0].uuid;
           this.formData['attachment'] = uuid;
-          this.formData['tm_attachment_url'] = url;
+          this.formData['tm_attachment_url'] = res[0].url;
         },
         handleCommand(command){
           if(command == 'upload'){
