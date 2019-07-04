@@ -1,4 +1,6 @@
 //vue 简单的公用数据状态管理，如果复杂的话，必须使用vuex
+import Api from '../api/index'
+
 let Store = {
    data:{
      token:localStorage.getItem('token'),
@@ -7,7 +9,14 @@ let Store = {
        { text:'闲置', value:'闲置' },
        { text:'在用', value:'在用' },
        { text:'借用',value:'借用'}
-     ]
+     ],
+     assetTypeList:[],
+     departList:[],
+     userList:[],
+     invoiceList:[]
+
+
+
    },
    // 录入时间
    formatDate:()=>{
@@ -87,7 +96,102 @@ let Store = {
        data[i] = '';
      }
      return data;
-   }
+   },
+   //获取资产类型下拉列表选项
+   getAssetTypeList(){
+     if(Store.data.assetTypeList.length>0){
+       return Store.data.assetTypeList;
+     }
+     Api.Asset.asset_type('GET', {}).then(res => {
+       let _departList = res.data.tree;
+       let result = Store.transData2Tree(_departList);
+       Store.data.assetTypeList = result;
+       return Store.data.assetTypeList;
+     })
+   },
+   transData2Tree(list){
+      let retList = [];
+      list.forEach((item)=>{
+        let node = {};
+        node.id = item.id;
+        node.label = item.name;
+        let children = item.children;
+        if(typeof children != "undefined" && children.length>0){
+          Store.getChildData(node, children);
+        }
+        retList.push(node);
+      })
+      return retList;
+   },
+   getChildData(node, list) {
+      let retList = [];
+      list.forEach((item)=>{
+        let node = {};
+        node.id = item.id;
+        node.label = item.name;
+        let children = item.children;
+        if(typeof children != "undefined" && children.length>0){
+          Store.getChildData(node, children);
+        }
+        retList.push(node);
+      })
+      node.children = retList;
+   },
+   //获取公司架构下拉列表
+   getDepartmentList(){
+      if(Store.data.departList.length>0){
+       return Store.data.departList;
+      }
+      Api.Asset.department('GET',{}).then(res=>{
+        let _departList = res.data.tree;
+        let result = Store.transData2Tree(_departList);
+        Store.data.departList = result;
+        return Store.data.departList;
+      })
+   },
+   //获取员工下拉列表
+   getUserList() {
+    if(Store.data.userList.length>0){
+      return Store.data.userList;
+    }
+    Api.Asset.user('GET', {}).then(res => {
+      let _departList = res.data;
+      Store.data.userList = trasfer2ViewListofUser(_departList);
+      return Store.data.userList;
+    })
+    function trasfer2ViewListofUser(list){
+      let retList = [];
+      list.forEach((item)=>{
+        let node = {};
+        node.value = item.id;
+        node.label = item.name;
+        retList.push(node);
+      })
+      return retList;
+    }
+  },
+   //获取发票下拉列表
+   getInvoiceList() {
+      if(Store.data.invoiceList.length>0){
+        return Store.data.invoiceList;
+      }
+      Api.Asset.invoice('GET', {}).then(res => {
+        let _departList = res.data;
+        Store.data.invoiceList = trasfer2ViewListofVoice(_departList);
+        return Store.data.invoiceList
+      })
+
+      function trasfer2ViewListofVoice(list){
+        let retList = [];
+        list.forEach((item)=>{
+          let node = {};
+          node.value = item.id;
+          node.label = item.inv_number;
+          retList.push(node);
+        })
+        return retList;
+      }
+   },
 
 
 

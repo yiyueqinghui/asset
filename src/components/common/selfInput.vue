@@ -27,7 +27,7 @@
         </el-date-picker>
       </el-form-item>
       <!--备注-->
-      <el-form-item  v-else-if="this.type==4"  :label="labelName" :class="{labelStyle:labelStyle,remarks:true}" :rules="{required:required}" >
+      <el-form-item  v-else-if="this.type==4" :disabled="disabled"  :label="labelName" :class="{labelStyle:labelStyle,remarks:true}" :rules="{required:required}" >
         <el-input
           rows="4"
           type="textarea"
@@ -38,15 +38,26 @@
       </el-form-item>
       <!--金额-->
       <el-form-item v-else-if="this.type==5" :label="labelName" :class="{labelStyle:labelStyle,remarks:true,chineseMoney:true}" :rules="{required:required}">
-        <el-input  v-model="modelVal" @input="changeVal"></el-input>
+        <el-input  v-model="modelVal" :disabled="disabled" @input="changeVal"></el-input>
         <el-input  v-model="chineseMoney" :title="chineseMoney" :disabled="true"></el-input>
+      </el-form-item>
+      <!--树形下拉选择-->
+      <el-form-item v-else-if="this.type==6" :label="labelName" :rules="{required:required}">
+        <treeselect
+          v-model="modelVal"
+          @select="changeVal"
+          :multiple="false"
+          placeholder="请选择..."
+          :show-count="false"
+          :options="selectList" />
       </el-form-item>
 
     </div>
 </template>
 
 <script>
-
+    import Treeselect from '@riophae/vue-treeselect'
+    import '@riophae/vue-treeselect/dist/vue-treeselect.css'
     export default {
       props:{
         type:{
@@ -98,7 +109,10 @@
             let reg = /[0-9,'.']/;
             if(!reg.test(this.modelVal)) return;
             this.chineseMoney = this.toChinese(val);
+          }else if(this.type === '6'){
+            val = val.id;
           }
+
           this.$emit('changeFormVal',[this.keyName,val]);
         },
         toChinese(num){
@@ -107,6 +121,9 @@
           return chineseMoney;
         }
       },
+      components:{
+        Treeselect
+      },
       watch:{
         val:(newVal,oldVal)=>{
           this.modelVal = newVal;
@@ -114,7 +131,7 @@
       },
       mounted(){
         console.log(this.val);
-        this.modelVal = this.val;
+        this.modelVal = this.val ? this.val : null;
         if(this.labelName.length < 4){
           this.labelStyle = true;
         }

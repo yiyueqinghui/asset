@@ -96,7 +96,7 @@
       :visible.sync="dialogFormVisible"
       v-if="dialogFormVisible"
       width="960px"
-      top="80px">
+      top="30px">
       <el-scrollbar class="dialogZone">
         <EditorInfo v-if="dialogFormVisible" :edit-date="editDate"></EditorInfo>
         <el-form :model="formData"  label-width="auto"  class="demo-form-inline self-input">
@@ -106,17 +106,9 @@
               <SelfInput  labelName="资产名称" keyName="name" :val="formData.name" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <el-form-item label="资产类别">
-                <treeselect
-                  v-model="formData.asset_class"
-                  @select="funTreeSel3"
-                  :multiple="false"
-                  placeholder="Select..."
-                  :show-count="false"
-                  :options="assetTypeList" />
-              </el-form-item>
+              <SelfInput type="6" :select-list="assetTypeList"  labelName="资产类别" keyName="asset_class" :val="formData.asset_class" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
-            <el-col :sm="8">
+            <el-col :sm="8" >
               <SelfInput  labelName="资产编码" keyName="asset_number" :val="formData.asset_number" :required="false" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
             </el-col>
           </el-row>
@@ -133,37 +125,36 @@
           </el-row>
           <el-row>
             <el-col :sm="8">
-              <el-form-item label="所属机构">
-                <treeselect
-                  v-model="formData.dep_owner"
-                  @select="funTreeSel1"
-                  :multiple="false"
-                  placeholder="请选择"
-                  :show-count="false"
-                  :options="companyList" />
-              </el-form-item>
+              <!--<el-form-item label="所属机构">-->
+                <!--<treeselect-->
+                  <!--v-model="formData.dep_owner"-->
+                  <!--@select="funTreeSel1"-->
+                  <!--:multiple="false"-->
+                  <!--placeholder="请选择"-->
+                  <!--:show-count="false"-->
+                  <!--:options="companyList" />-->
+              <!--</el-form-item>-->
+              <SelfInput type="6" :select-list="companyList"  labelName="所属机构" keyName="dep_owner" :val="formData.dep_owner" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
               <SelfInput type="2" labelName="发票号码" :selectList="invoiceList"  keyName="invoice" :val="formData.invoice" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="5" labelName="实付金额" keyName="money" :val="formData.money" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-              <!--<el-form-item label="实付金额" :rules="{required:true}">-->
-              <!--<el-input type="number" v-model="formData.money" @blur="toChinese" @focus="toNum"></el-input>-->
-              <!--</el-form-item>-->
+              <SelfInput type="5" labelName="实付金额" keyName="money" :val="formData.money" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="8">
-              <el-form-item label="使用机构">
-                <treeselect
-                  v-model="formData.dep_to_use"
-                  @select="funTreeSel2"
-                  :multiple="false"
-                  placeholder="请选择"
-                  :show-count="false"
-                  :options="companyList" />
-              </el-form-item>
+              <!--<el-form-item label="使用机构">-->
+                <!--<treeselect-->
+                  <!--v-model="formData.dep_to_use"-->
+                  <!--@select="funTreeSel2"-->
+                  <!--:multiple="false"-->
+                  <!--placeholder="请选择"-->
+                  <!--:show-count="false"-->
+                  <!--:options="companyList" />-->
+              <!--</el-form-item>-->
+              <SelfInput type="6" :select-list="companyList"  labelName="使用机构" keyName="dep_to_use" :val="formData.dep_to_use" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
               <SelfInput type="2" labelName="使用人" :selectList="userList"  keyName="user_to_use" :val="formData.user_to_use" :required="true" @changeFormVal="changeFormVal"></SelfInput>
@@ -229,6 +220,8 @@
         total: 20,
         dialogFormVisible:false,
         formTitle: '新增',
+
+        asset_class:null,
         formData: {
           editDate:'',
           name: '',
@@ -254,10 +247,8 @@
         },
         dialogLoading: false,
         editDate: '2019-05-11',
-        companyList:[
-        ],
-        departList:[
-        ],
+        companyList:[],
+        departList:[],
         departmentList:[],
         uploadVisible:false
       }
@@ -265,10 +256,6 @@
     methods:{
       init(){
         this.fetchData();
-        this.getDepartmentList();
-        this.getInvoiceList();
-        this.getUserList();
-        this.getAssetTypeList();
       },
 
       getAssetTypeList() {
@@ -321,7 +308,7 @@
           node.id = item.id;
           node.label = item.name;
           let children = item.children;
-          if(typeof children != "undefined"){
+          if(typeof children != "undefined" && children.length>0){
             this.getChildData(node, children);
           }
           retList.push(node);
@@ -335,7 +322,7 @@
           node.id = item.id;
           node.label = item.name;
           let children = item.children;
-          if(typeof children != "undefined"){
+          if(typeof children != "undefined" && children.length>0){
             this.getChildData(node, children);
           }
           retList.push(node);
@@ -410,6 +397,12 @@
           this.wareData = res.data;
           this.total = res.meta.total
         })
+
+        //获取下拉数据
+        this.departList = this.$Store.getDepartmentList();
+        this.invoiceList = this.$Store.getInvoiceList();
+        this.userList = this.$Store.getUserList();
+        this.assetTypeList = this.$Store.getAssetTypeList();
       },
       // 新增,修改
       clickBtn(type){
@@ -420,7 +413,7 @@
           console.log(JSON.stringify(this.multipleSelection));
           if(this.multipleSelection.length === 1){
             this.formData = Object.assign({},this.multipleSelection[0]);
-            console.log(JSON.stringify(this.formData));
+            // console.log(JSON.stringify(this.formData));
             // this.validDate = this.formData.validDate.split('-');
           }else{
             this.$message({
@@ -513,6 +506,14 @@
       SelfInput,
       UploadExcel,
       Treeselect
+    },
+    watch:{
+      formData:{
+        handler(val,oldVal){
+          console.log(val);
+        },
+        deep:true
+      }
     },
     mounted(){
       this.init();

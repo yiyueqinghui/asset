@@ -245,63 +245,7 @@
       },
       methods:{
         init(){
-          this.getUserList();
           this.fetchData();
-          this.getDepartmentList();
-        },
-        getUserList() {
-          this.$axios.Asset.user('GET', {}).then(res => {
-            let _departList = res.data;
-            this.userList = trasfer2ViewListofUser(_departList);
-          })
-
-          function trasfer2ViewListofUser(list){
-            let retList = [];
-            list.forEach((item)=>{
-              let node = {};
-              node.value = item.id;
-              node.label = item.name;
-              retList.push(node);
-            })
-            return retList;
-          }
-        },
-        transData2Tree(list){
-          let retList = [];
-          list.forEach((item)=>{
-            let node = {};
-            node.id = item.id;
-            node.label = item.name;
-            let children = item.children;
-            if(typeof children != "undefined"){
-              this.getChildData(node, children);
-            }
-            retList.push(node);
-          })
-          return retList;
-        },
-        getChildData(node, list) {
-          let retList = [];
-          list.forEach((item)=>{
-            let node = {};
-            node.id = item.id;
-            node.label = item.name;
-            let children = item.children;
-            if(typeof children != "undefined"){
-              this.getChildData(node, children);
-            }
-            retList.push(node);
-          })
-          node.children = retList;
-        },
-        getDepartmentList(){
-          this.$axios.Asset.department('GET',{}).then(res=>{
-            // console.log(" result ==" + res.data.tree);
-            let _departList = res.data.tree;
-            let result = this.transData2Tree(_departList);
-            this.departList = result;
-            this.companyList = result;
-          })
         },
         funTreeSel1(node){
           console.log(JSON.stringify(node.id))
@@ -321,7 +265,6 @@
           this.choosedData.forEach((item,index)=>{
             if(deleteItem.indexOf(item.name)==-1){
               data.push(item);
-
               // 增加选择的资产id
               this.formData.asset_ids.push(item.id);
             }
@@ -375,6 +318,10 @@
             this.tabData = res.data;
             this.total = res.meta.total
           })
+
+          //获取下拉数据
+          this.departList = this.$Store.getDepartmentList();
+          this.userList = this.$Store.getUserList();
         },
         // 新增,修改
         clickBtn(type){
