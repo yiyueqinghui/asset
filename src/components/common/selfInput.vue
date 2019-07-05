@@ -100,7 +100,7 @@
            paddingSpace:0,
            showMoney:0,
            numMoney:0,
-           chineseMoney:''
+           chineseMoney:'零元'
         }
       },
       methods:{
@@ -135,7 +135,10 @@
         if(this.labelName.length < 4){
           this.labelStyle = true;
         }
-        if(this.type==='5'&& this.val) this.modelVal = this.toChinese(this.val);
+        if(this.type==='5') {
+          this.chineseMoney = this.toChinese(this.val);
+          // console.log(this.toChinese(10));
+        }
       }
     }
 </script>

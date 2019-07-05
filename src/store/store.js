@@ -97,16 +97,19 @@ let Store = {
      }
      return data;
    },
-   //获取资产类型下拉列表选项
+    //获取资产类型下拉列表选项
    getAssetTypeList(){
-     if(Store.data.assetTypeList.length>0){
-       return Store.data.assetTypeList;
-     }
-     Api.Asset.asset_type('GET', {}).then(res => {
-       let _departList = res.data.tree;
-       let result = Store.transData2Tree(_departList);
-       Store.data.assetTypeList = result;
-       return Store.data.assetTypeList;
+     return new Promise((success,fail)=>{
+       if(Store.data.assetTypeList.length>0){
+         success(Store.data.assetTypeList);
+       }else{
+         Api.Asset.asset_type('GET', {}).then(res => {
+           let _departList = res.data.tree;
+           let result = Store.transData2Tree(_departList);
+           Store.data.assetTypeList = result;
+           success(Store.data.assetTypeList);
+         })
+       }
      })
    },
    transData2Tree(list){
@@ -139,58 +142,72 @@ let Store = {
    },
    //获取公司架构下拉列表
    getDepartmentList(){
-      if(Store.data.departList.length>0){
-       return Store.data.departList;
-      }
-      Api.Asset.department('GET',{}).then(res=>{
-        let _departList = res.data.tree;
-        let result = Store.transData2Tree(_departList);
-        Store.data.departList = result;
-        return Store.data.departList;
-      })
+     return new Promise((success,fail)=>{
+       if(Store.data.departList.length>0){
+         success(Store.data.departList);
+       }else{
+        return Api.Asset.department('GET',{}).then(res=>{
+           let _departList = res.data.tree;
+           let result = Store.transData2Tree(_departList);
+           Store.data.departList = result;
+           success(Store.data.departList);
+         })
+
+       }
+     })
    },
    //获取员工下拉列表
    getUserList() {
-    if(Store.data.userList.length>0){
-      return Store.data.userList;
-    }
-    Api.Asset.user('GET', {}).then(res => {
-      let _departList = res.data;
-      Store.data.userList = trasfer2ViewListofUser(_departList);
-      return Store.data.userList;
-    })
-    function trasfer2ViewListofUser(list){
-      let retList = [];
-      list.forEach((item)=>{
-        let node = {};
-        node.value = item.id;
-        node.label = item.name;
-        retList.push(node);
-      })
-      return retList;
-    }
+     function trasfer2ViewListofUser(list){
+       let retList = [];
+       list.forEach((item)=>{
+         let node = {};
+         node.value = item.id;
+         node.label = item.name;
+         retList.push(node);
+       })
+       return retList;
+     }
+
+     return new Promise((success,fail)=>{
+       if(Store.data.userList.length>0){
+         success(Store.data.userList);
+       }else{
+         Api.Asset.user('GET', {}).then(res => {
+           let _departList = res.data;
+           Store.data.userList = trasfer2ViewListofUser(_departList);
+           success(Store.data.userList);
+         })
+       }
+     })
+
+
+
   },
    //获取发票下拉列表
    getInvoiceList() {
-      if(Store.data.invoiceList.length>0){
-        return Store.data.invoiceList;
-      }
-      Api.Asset.invoice('GET', {}).then(res => {
-        let _departList = res.data;
-        Store.data.invoiceList = trasfer2ViewListofVoice(_departList);
-        return Store.data.invoiceList
-      })
+     function trasfer2ViewListofVoice(list){
+       let retList = [];
+       list.forEach((item)=>{
+         let node = {};
+         node.value = item.id;
+         node.label = item.inv_number;
+         retList.push(node);
+       })
+       return retList;
+     }
 
-      function trasfer2ViewListofVoice(list){
-        let retList = [];
-        list.forEach((item)=>{
-          let node = {};
-          node.value = item.id;
-          node.label = item.inv_number;
-          retList.push(node);
-        })
-        return retList;
-      }
+     return new Promise((success,fail)=>{
+       if(Store.data.invoiceList.length>0){
+         success(Store.data.invoiceList);
+       }else{
+         Api.Asset.invoice('GET', {}).then(res => {
+           let _departList = res.data;
+           Store.data.invoiceList = trasfer2ViewListofVoice(_departList);
+           success(Store.data.invoiceList);
+         })
+       }
+     })
    },
 
 

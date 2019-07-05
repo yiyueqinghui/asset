@@ -1,15 +1,26 @@
 <template>
   <div id="storage">
     <!--查寻-->
-    <el-form :inline="true"  :model="searchData" >
-      <el-form-item label="使用公司部门">
-        <el-select v-model="searchData.department" filterable placeholder="请选择">
+    <el-form :inline="true">
+      <!--<el-form-item label="使用公司部门">-->
+        <!--<el-select v-model="searchData.department" filterable placeholder="请选择">-->
+          <!--<el-option-->
+            <!--v-for="item in departmentList"-->
+            <!--:key="item.value"-->
+            <!--:value="item.value">-->
+          <!--</el-option>-->
+        <!--</el-select>-->
+      <!--</el-form-item>-->
+      <el-form-item class="search">
+        <el-select  v-model="searchKey" placeholder="请选择" style="width: 110px;">
           <el-option
-            v-for="item in departmentList"
+            v-for="item in searchKeyList"
             :key="item.value"
+            :label="item.label"
             :value="item.value">
           </el-option>
         </el-select>
+        <el-input  style="left: -12px;width: 200px!important;" v-model="searchVal" placeholder="请输入搜索内容"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
@@ -33,18 +44,11 @@
       </el-table-column>
       <el-table-column type="index" label="序号" width="60" align="center">
       </el-table-column>
-      <!--<el-table-column  label="状态" prop="status" width="120" filterable :filters="this.$Store.data.statusList"
-                        :filter-method="filterStatus" filter-placement="bottom-end"  align="center">
-        <template slot-scope="scope">
-          {{scope.row.status | turnStatus }}
-        </template>
-      </el-table-column>-->
-
       <el-table-column  label="状态" width="100" prop="status_zh"  align="center">
       </el-table-column>
       <el-table-column  label="资产名称" width="100" prop="name"  align="center">
       </el-table-column>
-      <el-table-column  label="资产类别" prop="asset_class"  align="center">
+      <el-table-column  label="资产类别" prop="asset_class_zh"  align="center">
       </el-table-column>
       <el-table-column  label="资产编码" prop="asset_number"  align="center">
       </el-table-column>
@@ -58,9 +62,11 @@
       </el-table-column>
       <el-table-column  label="发票号码" width="100" prop="invoice_number"  align="center">
       </el-table-column>
+      <el-table-column  label="实付金额" width="100" prop="price"  align="center">
+      </el-table-column>
       <el-table-column  label="使用公司" prop="dep_to_use_zh"  align="center">
       </el-table-column>
-      <el-table-column  label="使用人" prop="user_to_use"  align="center">
+      <el-table-column  label="使用人" prop="user_to_use_zh"  align="center">
       </el-table-column>
       <el-table-column  label="供应商" prop="mt_supplier"  align="center">
       </el-table-column>
@@ -83,7 +89,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentPage"
         :current-page="currentPage"
-        :page-sizes="[5,10,30,50]"
+        :page-sizes="[5,30,50]"
         :page-size="5"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
@@ -134,13 +140,13 @@
                   <!--:show-count="false"-->
                   <!--:options="companyList" />-->
               <!--</el-form-item>-->
-              <SelfInput type="6" :select-list="companyList"  labelName="所属机构" keyName="dep_owner" :val="formData.dep_owner" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="6" :select-list="departList"  labelName="所属机构" keyName="dep_owner" :val="formData.dep_owner" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
               <SelfInput type="2" labelName="发票号码" :selectList="invoiceList"  keyName="invoice" :val="formData.invoice" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="5" labelName="实付金额" keyName="money" :val="formData.money" :required="true" @changeFormVal="changeFormVal" :disabled="true"></SelfInput>
+              <SelfInput type="5" labelName="实付金额" keyName="price" :val="formData.price" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
@@ -154,7 +160,7 @@
                   <!--:show-count="false"-->
                   <!--:options="companyList" />-->
               <!--</el-form-item>-->
-              <SelfInput type="6" :select-list="companyList"  labelName="使用机构" keyName="dep_to_use" :val="formData.dep_to_use" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="6" :select-list="departList"  labelName="使用机构" keyName="dep_to_use" :val="formData.dep_to_use" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
               <SelfInput type="2" labelName="使用人" :selectList="userList"  keyName="user_to_use" :val="formData.user_to_use" :required="true" @changeFormVal="changeFormVal"></SelfInput>
@@ -208,20 +214,33 @@
   export default {
     data: function () {
       return {
-        searchData: {
-          department: ''
-        },
+        searchKey:'status',
+        searchKeyList: [
+          {
+            value:'status',
+            label:'状态'
+          },
+          {
+            value:'name',
+            label:'资产名称'
+          },
+          {
+            value:'asset_class',
+            label:'资产类别'
+          }
+        ],
+        searchVal:'',
         userList: [],
         invoiceList:[],
         assetTypeList:[],
         wareData: [],
         multipleSelection: [],    //当前选中的行数据
         currentPage: 1,
+        currentPageSize:5,
         total: 20,
         dialogFormVisible:false,
         formTitle: '新增',
 
-        asset_class:null,
         formData: {
           editDate:'',
           name: '',
@@ -232,7 +251,7 @@
           buy_at: '',
           dep_owner:'',
           invoice: '',
-          money:0,
+          price:0,
           showMoney:0,
           chineseMoney:'',
           numMoney:'',
@@ -256,87 +275,6 @@
     methods:{
       init(){
         this.fetchData();
-      },
-
-      getAssetTypeList() {
-        this.$axios.Asset.asset_type('GET', {}).then(res => {
-          // console.log(" result ==" + res.data.tree);
-          let _departList = res.data.tree;
-          let result = this.transData2Tree(_departList);
-          this.assetTypeList = result;
-        })
-      },
-      getUserList() {
-        this.$axios.Asset.user('GET', {}).then(res => {
-          let _departList = res.data;
-          this.userList = trasfer2ViewListofUser(_departList);
-        })
-
-        function trasfer2ViewListofUser(list){
-          let retList = [];
-          list.forEach((item)=>{
-            let node = {};
-            node.value = item.id;
-            node.label = item.name;
-            retList.push(node);
-          })
-          return retList;
-        }
-      },
-      getInvoiceList() {
-        this.$axios.Asset.invoice('GET', {}).then(res => {
-          let _departList = res.data;
-          this.invoiceList = trasfer2ViewListofVoice(_departList);
-        })
-
-        function trasfer2ViewListofVoice(list){
-          let retList = [];
-          list.forEach((item)=>{
-            let node = {};
-            node.value = item.id;
-            node.label = item.inv_number;
-            retList.push(node);
-          })
-          return retList;
-        }
-      },
-
-      transData2Tree(list){
-        let retList = [];
-        list.forEach((item)=>{
-          let node = {};
-          node.id = item.id;
-          node.label = item.name;
-          let children = item.children;
-          if(typeof children != "undefined" && children.length>0){
-            this.getChildData(node, children);
-          }
-          retList.push(node);
-        })
-        return retList;
-      },
-      getChildData(node, list) {
-        let retList = [];
-        list.forEach((item)=>{
-          let node = {};
-          node.id = item.id;
-          node.label = item.name;
-          let children = item.children;
-          if(typeof children != "undefined" && children.length>0){
-            this.getChildData(node, children);
-          }
-          retList.push(node);
-        })
-        node.children = retList;
-      },
-      getDepartmentList(){
-        this.$axios.Asset.department('GET',{}).then(res=>{
-          // console.log(" result ==" + res.data.tree);
-          let _departList = res.data.tree;
-          let result = this.transData2Tree(_departList);
-          this.departList = result;
-          this.companyList = result;
-        })
       },
       funTreeSel1(node){
         console.log(JSON.stringify(node.id))
@@ -392,17 +330,14 @@
         this.formData.department = item.value;
       },
       fetchData(){
-        this.$axios.Asset.storage('GET',{}).then(res=>{
-          console.log(" result ==" + res.data);
+        this.wareData = [];
+        this.$axios.Asset.storage('GET',{
+          page:this.currentPage,
+          per_page:this.currentPageSize
+        }).then(res=>{
           this.wareData = res.data;
           this.total = res.meta.total
         })
-
-        //获取下拉数据
-        this.departList = this.$Store.getDepartmentList();
-        this.invoiceList = this.$Store.getInvoiceList();
-        this.userList = this.$Store.getUserList();
-        this.assetTypeList = this.$Store.getAssetTypeList();
       },
       // 新增,修改
       clickBtn(type){
@@ -431,10 +366,13 @@
       },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
+        this.currentPageSize = val;
+        this.fetchData();
       },
       handleCurrentPage(val) {
         console.log(`当前页: ${val}`);
         this.currentPage = val;
+        this.fetchData();
       },
       confirmBtn(){
         let id = this.formData.id;
@@ -513,19 +451,64 @@
           console.log(val);
         },
         deep:true
+      },
+      searchKey:{
+        handler(val,oldVal){
+          console.log(val);
+        }
       }
+    },
+    created(){
+      this.$Store.getAssetTypeList().then((data)=>{
+        this.assetTypeList = data;
+      })
+
+      this.$Store.getDepartmentList().then((data)=>{
+        this.departList = data;
+      })
+
+      this.$Store.getInvoiceList().then((data)=>{
+        this.invoiceList = data;
+      })
+
+      this.$Store.getUserList().then((data)=>{
+        this.userList = data;
+      })
+
+
     },
     mounted(){
       this.init();
       // let arr = new Array(5).fill(this.wareData[0]);
       // this.wareData = arr;
-      this.$Store.NumberToChinese(101.31);
-      console.log(this.$Store.data.statusList)
+      // this.$Store.NumberToChinese(101.31);
+      // console.log(this.$Store.data.statusList)
 
     }
   }
 </script>
 
-<style lang="less">
+<style>
+  .search .el-select .el-input__inner{
+    border-color:#ffffff!important;
+    /*background-color:#b4bccc!important;*/
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .search .el-select .el-input__inner:focus{
+    border-color:#ffffff!important;
+  }
+  .search .el-input__inner{
+    border-right:none!important;
+    border-top:none!important;
+    border-bottom:none!important;
+    border-left: #e4e5e9 !important;
+  }
+  .search .el-input__inner:focus{
+    border-right:none!important;
+    border-top:none!important;
+    border-bottom:none!important;
+    border-left: #e4e5e9 !important;
+  }
 
 </style>
