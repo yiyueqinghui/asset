@@ -68,35 +68,33 @@ function ApiAxios(method, url, params,config){
         if(code == 1){
           return resolve(res.data);
         }else{
-
           let msg = res.data.errors;
             if(typeof msg == "undefined"){
             msg = res.data.message;
           }
-
           Message({
             message:msg,
             type:'warning'
           })
         }
       }else{
-        let retStatus = res.status;
-        if(typeof retStatus == "undefined"){
-          res = res.response;
-        }
-
-        let retcode = res.data.code;
-        if(retcode != 1){
-          let msg = res.data.errors;
-          if(typeof msg == "undefined"){
-            msg = res.data.message;
-          }
-          Message({
-            message:msg,
-            type:'warning'
-          })
-        }
-        return;
+        // let retStatus = res.status;
+        // if(typeof retStatus == "undefined"){
+        //   res = res.response;
+        // }
+        // console.log(res);
+        // let retcode = res.data.code;
+        // if(retcode != 1){
+        //   let msg = res.data.errors;
+        //   if(typeof msg == "undefined"){
+        //     msg = res.data.message;
+        //   }
+        //   Message({
+        //     message:msg,
+        //     type:'warning'
+        //   })
+        // }
+        // return;
       }
     }).catch(res=>{
       Message({

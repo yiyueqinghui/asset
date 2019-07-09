@@ -39,6 +39,9 @@ function initPhpApi(data,method,url){
 }
 
 const URLS = {
+  STAFF:'/api-1.0/staff',
+  STAFF_CANCEL:'/api-1.0/staff/cancel',
+  STAFF_CHECK:'/api-1.0/staff/check',
   ICP:'/api-1.0/icp/',
   CAR:'/api-1.0/vehicle/',
   ASSET:'/api-1.0/asset/',
@@ -56,18 +59,31 @@ const URLS = {
   DEPARTMENT:'/api-1.0/department/',
   UPLOAD:'/api-1.0/upload/',
   ASSET_TYPE:'/api-1.0/asset-class/',
-  BACK_CONFIRM:'/api-1.0/cancel-confirm/',
+  BACK:'/api-1.0/cancel-confirm/',
   RECEIVE:'/api-1.0/recipient/',
   CARD:'/api-1.0/access-card/',
   MAINTENANCE:'/api-1.0/maintenance/',
   RENT:'/api-1.0/lease/'
+
 }
 
 
 
 const Home = {
 	detail:(data)=>{ return	Get('/api/1.0/page/flight',data) },
-  getToken:(data)=>{ return Post('/Token',data,{headers:{"Content-Type":"application/x-www-form-urlencoded"}})}
+  getToken:(data)=>{ return Post('/Token',data,{headers:{"Content-Type":"application/x-www-form-urlencoded"}})},
+  staff:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.STAFF);
+    return ApiAxios(res.method,res.url,res.data);
+  },
+  staffCancel:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.STAFF_CANCEL);
+    return ApiAxios(res.method,res.url,res.data);
+  },
+  staffCheck:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.STAFF_CHECK);
+    return ApiAxios(res.method,res.url,res.data);
+  },
 }
 const Asset = {
   icp:(method,data)=>{
@@ -139,8 +155,8 @@ const Asset = {
     let res = initPhpApi(data,method,URLS.RECEIVE);
     return ApiAxios(res.method,res.url,res.data)
   },
-  backconfirm:(method,data)=>{
-    let res = initPhpApi(data,method,URLS.BACK_CONFIRM);
+  back:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.BACK);
     return ApiAxios(res.method,res.url,res.data)
   },
   card:(method,data)=>{

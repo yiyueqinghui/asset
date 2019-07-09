@@ -1,21 +1,70 @@
 //vue 简单的公用数据状态管理，如果复杂的话，必须使用vuex
 import Api from '../api/index'
+// import Dictionary from '../utils/dictionary'
 
 let Store = {
    data:{
      token:localStorage.getItem('token'),
      baseApi:localStorage.getItem('baseApi'),
-     statusList:[
-       { text:'闲置', value:'闲置' },
-       { text:'在用', value:'在用' },
-       { text:'借用',value:'借用'}
-     ],
      assetTypeList:[],
      departList:[],
      userList:[],
-     invoiceList:[]
-
-
+     invoiceList:[],
+     dictionary:{
+       status:[
+         {
+           value:'1',
+           label:'闲置'
+         },
+         {
+           value:'2',
+           label:'在用'
+         },
+         {
+           value:'3',
+           label:'借用'
+         },
+         {
+           value:'4',
+           label:'调拨中'
+         },
+         {
+           value:'5',
+           label:'维修中'
+         },
+         {
+           value:'6',
+           label:'退库'
+         },
+         {
+           value:'7',
+           label:'报废'
+         },
+         {
+           value:'8',
+           label:'退租'
+         }],
+       checkStatus:[
+         {
+           value:'1',
+           label:'存在'
+         },
+         {
+           value:'2',
+           label:'不在'
+         }
+       ],
+       backStatus:[
+         {
+           value:'1',
+           label:'退库中'
+         },
+         {
+           value:'2',
+           label:'已确认'
+         },
+       ]
+     }
 
    },
    // 录入时间
@@ -209,8 +258,34 @@ let Store = {
        }
      })
    },
-
-
+  //一对多资产数据格式调整
+   formateAsset(data){
+     let formateData = [];
+     let mergeRow = [];
+     let id = -1;
+     data.forEach((item,index)=>{
+       let itemObj = Object.assign({},item);
+       let assets = item.related_assets;
+       itemObj['order'] = index + 1;
+       if(assets.length>0){
+         mergeRow.push(id+1);
+         assets.forEach(list=>{
+           Object.keys(list).forEach((key)=>{
+             itemObj['related_'+key] = list[key];
+           })
+           id++;
+           formateData.push(itemObj);
+         })
+       }else{
+         id++;
+         formateData.push(itemObj);
+       }
+     })
+     return {
+       formateData:formateData,
+       mergeRow:mergeRow
+     }
+   }
 
 }
 

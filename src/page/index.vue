@@ -66,9 +66,22 @@
       init(){
         this.adjustScreen();
         window.onresize = this.adjustScreen;
+
+        //调整头部导航
+        let navArr = this.$route.matched;
+        this.titleNav = this. adjustNav(navArr);
       },
       foldSlider(){
         this.collapse = !this.collapse;
+      },
+      adjustNav(navArr){
+        let arr = [];
+        navArr.forEach(item=>{
+          if(item.meta && typeof item.meta == 'string'){
+            arr.push(item.meta);
+          }
+        })
+        return arr;
       }
 
     },
@@ -79,13 +92,7 @@
       },
       $route: {
         handler:function(val, oldVal){
-          let arr = [];
-          val.matched.forEach(item=>{
-            if(item.meta && typeof item.meta == 'string'){
-              arr.push(item.meta);
-            }
-          })
-          this.titleNav = arr;
+          this.titleNav = this. adjustNav(val.matched);
         },
         deep: true
       }

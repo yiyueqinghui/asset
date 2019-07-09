@@ -2,17 +2,8 @@
   <div id="storage">
     <!--查寻-->
     <el-form :inline="true">
-      <!--<el-form-item label="使用公司部门">-->
-        <!--<el-select v-model="searchData.department" filterable placeholder="请选择">-->
-          <!--<el-option-->
-            <!--v-for="item in departmentList"-->
-            <!--:key="item.value"-->
-            <!--:value="item.value">-->
-          <!--</el-option>-->
-        <!--</el-select>-->
-      <!--</el-form-item>-->
       <el-form-item class="search">
-        <el-select  v-model="searchKey" placeholder="请选择" style="width: 110px;">
+        <el-select  v-model="searchKey" placeholder="" style="width: 110px;">
           <el-option
             v-for="item in searchKeyList"
             :key="item.value"
@@ -20,13 +11,47 @@
             :value="item.value">
           </el-option>
         </el-select>
-        <el-input  style="left: -12px;width: 200px!important;" v-model="searchVal" placeholder="请输入搜索内容"></el-input>
+        <!--输入框-->
+        <el-input v-if="this.inputArr.indexOf(this.searchKey)>=0" style="left: -12px;width: 200px!important;" v-model="searchVal" placeholder="请输入搜索内容"></el-input>
+        <!--下拉选择 -->
+        <el-select v-if="this.selectArr.indexOf(this.searchKey)>=0" :clearable="true" v-model="searchVal" placeholder="请选择" style="width:200px;left: -12px;">
+          <el-option
+            v-for="(item,index) in searchValList"
+            :key="index"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <!--机构以及资产类别选择-->
+        <treeselect v-if="this.searchKey === 'asset_class' "
+          v-model="searchVal"
+          :multiple="false"
+          placeholder="请选择..."
+          :show-count="false"
+          :options="assetTypeList" />
+        <treeselect v-if="this.searchKey === 'dep_owner' || this.searchKey === 'dep_to_use' "
+                    v-model="searchVal"
+                    :multiple="false"
+                    placeholder="请选择..."
+                    :show-count="false"
+                    :options="departList" />
+        <!--日期范围选择-->
+        <el-date-picker v-if="this.searchKey === 'buy_at'"
+          v-model="searchVal"
+          type="daterange"
+          range-separator="|"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          value-format="yyyy-MM-dd"
+          style="position: relative;left: -12px;">
+        </el-date-picker>
+
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
         <el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>
         <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
-        <el-dropdown trigger="hover" style="margin-left: 10px;" @command="handleCommand">
+        <el-dropdown trigger="hover" style="margin-left: 10px;display: none;" @command="handleCommand">
           <el-button type="primary" icon="el-icon-document-add">
             导入/导出
           </el-button>
@@ -80,7 +105,6 @@
       </el-table-column>
       <el-table-column  label="备注" prop="mt_comment"  align="center">
       </el-table-column>
-
     </el-table>
     <!--分页-->
     <el-row>
@@ -214,7 +238,7 @@
   export default {
     data: function () {
       return {
-        searchKey:'status',
+        searchKey:'name',
         searchKeyList: [
           {
             value:'status',
@@ -227,9 +251,25 @@
           {
             value:'asset_class',
             label:'资产类别'
+          },
+          {
+            value:'dep_owner',
+            label:'所属公司'
+          },
+          {
+            value:'dep_to_use',
+            label:'使用公司'
+          },
+          {
+            value:'buy_at',
+            label:'购入时间'
           }
         ],
         searchVal:'',
+        searchValList:[],
+        inputArr:['name'],
+        selectArr:['status'],
+        treeArr:['asset_class'],
         userList: [],
         invoiceList:[],
         assetTypeList:[],
@@ -240,7 +280,6 @@
         total: 20,
         dialogFormVisible:false,
         formTitle: '新增',
-
         formData: {
           editDate:'',
           name: '',
@@ -330,11 +369,20 @@
         this.formData.department = item.value;
       },
       fetchData(){
-        this.wareData = [];
-        this.$axios.Asset.storage('GET',{
+        // console.log(this.searchVal,this.searchKey);
+        let data = {
           page:this.currentPage,
           per_page:this.currentPageSize
-        }).then(res=>{
+        };
+
+        if(this.searchVal instanceof Array){
+           data[this.searchKey+'[start]'] = this.searchVal[0];
+           data[this.searchKey+'[end]'] = this.searchVal[1];
+        }else if(typeof this.searchVal === 'string' || typeof this.searchVal === 'number'){
+           data[this.searchKey] = this.searchVal;
+        }
+        this.$axios.Asset.storage('GET',data).then(res=>{
+          // this.wareData = [];
           this.wareData = res.data;
           this.total = res.meta.total
         })
@@ -455,6 +503,13 @@
       searchKey:{
         handler(val,oldVal){
           console.log(val);
+          this.searchVal = '';
+          let dictionary = this.$Store.data.dictionary;
+          let selectListArr = ['status'];
+          let treeListArr = ['dep_owner','dep_to_use','asset_class'];
+          if(selectListArr.indexOf(val)>=0) this.searchValList =  dictionary[val];
+          else if(treeListArr.indexOf(val)>=0) this.searchVal = null;
+          console.log(this.searchValList);
         }
       }
     },
@@ -489,26 +544,6 @@
 </script>
 
 <style>
-  .search .el-select .el-input__inner{
-    border-color:#ffffff!important;
-    /*background-color:#b4bccc!important;*/
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-  .search .el-select .el-input__inner:focus{
-    border-color:#ffffff!important;
-  }
-  .search .el-input__inner{
-    border-right:none!important;
-    border-top:none!important;
-    border-bottom:none!important;
-    border-left: #e4e5e9 !important;
-  }
-  .search .el-input__inner:focus{
-    border-right:none!important;
-    border-top:none!important;
-    border-bottom:none!important;
-    border-left: #e4e5e9 !important;
-  }
+
 
 </style>

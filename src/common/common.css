@@ -96,6 +96,41 @@ html,body{
   width: 180px;
 }
 
+/* 搜索框样式*/
+.search .el-select .el-input__inner{
+  border-color:#ffffff!important;
+  /*background-color:#b4bccc!important;*/
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.search .el-select .el-input__inner:focus{
+  border-color:#ffffff!important;
+}
+.search .el-input__inner{
+  border-right:none!important;
+  border-top:none!important;
+  border-bottom:none!important;
+  border-left: #e4e5e9 !important;
+}
+.search .el-input__inner:focus{
+  border-right:none!important;
+  border-top:none!important;
+  border-bottom:none!important;
+  border-left: #e4e5e9 !important;
+}
+.search .vue-treeselect{
+  display: inline-block;
+  width: 200px;
+  vertical-align: top;
+  left: -12px;
+}
+.search .vue-treeselect__single-value{
+  line-height: 40px!important;
+}
+.search .vue-treeselect__control{
+  border: none;
+}
+
 
 
 
