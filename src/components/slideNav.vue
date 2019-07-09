@@ -155,10 +155,10 @@
             title: '系统管理',
             icon: '',
             nav: [
-              {
-                title: '系统首页',
-                url: '/system'
-              },
+              // {
+              //   title: '系统首页',
+              //   url: '/system'
+              // },
               {
                 title: '组织结构',
                 url: '/system/organization'

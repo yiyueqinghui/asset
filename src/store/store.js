@@ -63,7 +63,25 @@ let Store = {
            value:'2',
            label:'已确认'
          },
-       ]
+       ],
+       borrowStatus:[
+         {
+           value:'1',
+           label:'借出中'
+         },
+         {
+           value:'2',
+           label:'已借出'
+         },
+         {
+           value:'3',
+           label:'归还中'
+         },
+         {
+           value:'4',
+           label:'已归还'
+         }
+       ],
      }
 
    },

@@ -58,7 +58,6 @@
         this.screenHeight = document.documentElement.clientHeight;
         this.containerHeight = this.screenHeight - this.headerHeight;
         let screenWidth = document.documentElement.clientWidth;
-        console.log(screenWidth);
         this.collapse = screenWidth>=768? false:true;
 
         localStorage.setItem('baseApi',process.env.API_ROOT)
