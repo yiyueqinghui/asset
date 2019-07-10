@@ -2,62 +2,96 @@
   <div id="wareHousing">
     <!--查寻-->
     <el-form :inline="true"  :model="searchData" >
-      <el-form-item label="调出日期">
-        <el-date-picker
-          v-model="searchData.startDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择开始日期">
-        </el-date-picker>
-        <span>一</span>
-        <el-date-picker
-          v-model="searchData.endDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择结束日期">
+      <el-form-item class="search">
+        <el-select  v-model="searchKey" placeholder="" style="width: 110px;">
+          <el-option
+            v-for="item in searchKeyList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <!--下拉选择 -->
+        <el-select v-if="this.selectArr.indexOf(this.searchKey)>=0" :clearable="true" v-model="searchVal" placeholder="请选择" style="width:200px;left: -12px;">
+          <el-option
+            v-for="(item,index) in searchValList"
+            :key="index"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <!--机构以及资产类别选择-->
+        <treeselect v-if="this.treeArr.indexOf(this.searchKey)>=0"
+                    v-model="searchVal"
+                    :multiple="false"
+                    placeholder="请选择..."
+                    :show-count="false"
+                    :options="departList" />
+        <!--日期范围选择-->
+        <el-date-picker v-if="this.searchKey === 'confirm_time_in'"
+                        v-model="searchVal"
+                        type="daterange"
+                        range-separator="|"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        value-format="yyyy-MM-dd"
+                        style="position: relative;left: -12px;">
         </el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
         <el-button  style="margin-left: 10px;" @click="clickBtn" type="primary" icon="el-icon-edit">新增</el-button>
         <el-button  style="margin-left: 10px;" @click="confirmAllot" icon="el-icon-edit" type="primary" >调入确认</el-button>
       </el-form-item>
     </el-form>
     <!--表格-->
-    <el-table :data="tabData"  @selection-change="handleSelectionChange" ref="multipleTable"  border stripe fit style="overflow-x: auto">
+    <el-table :data="tabData" :span-method="arraySpanMethod"  @selection-change="handleSelectionChange" ref="multipleTable"  border fit style="overflow-x: auto">
       <el-table-column type="selection" width="55">
       </el-table-column>
-      <el-table-column type="index" label="序号" width="60" align="center">
+      <el-table-column  label="序号" width="60" align="center">
+        <template slot-scope="scope">{{scope.row.order + (currentPage - 1) * currentPageSize}}</template>
       </el-table-column>
       <el-table-column  label="状态" prop="status_zh"  align="center">
       </el-table-column>
       <el-table-column  label="调拨单号" prop="allot_number"  align="center">
       </el-table-column>
-      <el-table-column  label="调出公司" prop="company_out"  align="center">
+      <el-table-column  label="调出公司" prop="company_out_name"  align="center">
       </el-table-column>
-      <el-table-column  label="调入公司"  prop="company_in"  align="center">
+      <el-table-column  label="调入公司"  prop="company_in_name"  align="center">
       </el-table-column>
-      <el-table-column  label="调入管理员" width="120" prop="user_id_in"  align="center">
+      <el-table-column  label="调入管理员" width="120" prop="user_id_in_zh"  align="center">
       </el-table-column>
       <el-table-column  label="调入确定时间" width="120" prop="confirm_time_in"  align="center">
       </el-table-column>
       <el-table-column  label="备注" prop="comment"  align="center">
       </el-table-column>
       <el-table-column  label="资产明细"  align="center">
-        <el-table-column label="资产名称" width="100" prop="name" align="center"></el-table-column>
-        <el-table-column label="资产类别" prop="type" align="center"></el-table-column>
-        <el-table-column label="资产编码" prop="code" align="center"></el-table-column>
-        <el-table-column label="资产型号" prop="size" align="center"></el-table-column>
-        <el-table-column label="SN号" width="150" prop="SN" align="center"></el-table-column>
-        <el-table-column label="购入时间" prop="purchaseDate" align="center"></el-table-column>
-        <el-table-column label="所属公司" prop="blong" align="center"></el-table-column>
-        <el-table-column label="发票号码" width="100" prop="bill" align="center"></el-table-column>
-        <el-table-column label="金额" prop="money" align="center"></el-table-column>
-        <el-table-column label="使用公司" prop="useCompany" align="center"></el-table-column>
-        <el-table-column label="使用部门" prop="useDepart" align="center"></el-table-column>
-        <el-table-column label="使用人" prop="usePerson" align="center"></el-table-column>
-        <el-table-column label="存放地点" prop="site" align="center"></el-table-column>
-        <el-table-column label="备注" prop="remarks" align="center"></el-table-column>
+        <el-table-column  label="资产名称" width="100" prop="related_name"  align="center">
+        </el-table-column>
+        <el-table-column  label="资产类别" width="120" prop="related_asset_class_zh"  align="center">
+        </el-table-column>
+        <el-table-column  label="资产编码" prop="related_asset_number"  align="center">
+        </el-table-column>
+        <el-table-column  label="规格型号" prop="related_asset_spec"  align="center">
+        </el-table-column>
+        <el-table-column  label="SN号" width="130" prop="related_asset_sn"  align="center">
+        </el-table-column>
+        <el-table-column  label="购入时间" width="160" sortable prop="related_buy_at"  align="center">
+        </el-table-column>
+        <el-table-column  label="所属公司" prop="related_dep_owner_zh"  align="center">
+        </el-table-column>
+        <el-table-column  label="发票号码" width="100" prop="related_invoice_number"  align="center">
+        </el-table-column>
+        <el-table-column  label="金额" width="100" prop="related_price"  align="center">
+        </el-table-column>
+        <el-table-column  label="使用部门" prop="related_dep_to_use_zh"  align="center">
+        </el-table-column>
+        <el-table-column  label="使用人" width="120" prop="related_user_to_use_zh"  align="center">
+        </el-table-column>
+        <el-table-column  label="存放地点" prop="related_store_at"  align="center">
+        </el-table-column>
+        <el-table-column  label="备注" prop="related_mt_comment"  align="center">
+        </el-table-column>
       </el-table-column>
 
     </el-table>
@@ -67,7 +101,6 @@
         background
         @size-change="handleSizeChange"
         @current-change="handleCurrentPage"
-        :current-page="currentPage"
         :page-sizes="[5,10,30,50]"
         :page-size="5"
         layout="total, sizes, prev, pager, next, jumper"
@@ -93,7 +126,7 @@
                 :multiple="false"
                 placeholder="请选择"
                 :show-count="false"
-                :options="companyList" />
+                :options="departList" />
             </el-form-item>
 
           </el-col>
@@ -105,7 +138,7 @@
                 :multiple="false"
                 placeholder="请选择"
                 :show-count="false"
-                :options="companyList" />
+                :options="departList" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -113,9 +146,9 @@
           <el-col :sm="12">
             <SelfInput type="2" labelName="调入管理员" :selectList="userList"  keyName="user_id_in" :val="formData.user_id_in" :required="true" @changeFormVal="changeFormVal"></SelfInput>
           </el-col>
-            <el-col :sm="12">
-              <SelfInput type="3" labelName="调入确认时间"  keyName="confirm_time_in" :val="formData.confirm_time_in" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
+          <el-col :sm="12">
+            <SelfInput type="3" labelName="调入确认时间"  keyName="confirm_time_in" :val="formData.confirm_time_in" @changeFormVal="changeFormVal"></SelfInput>
+          </el-col>
         </el-row>
         <el-row>
           <el-col :sm="12">
@@ -144,7 +177,7 @@
         </el-table-column>
         <el-table-column  label="资产名称" width="100" prop="name"  align="center">
         </el-table-column>
-        <el-table-column  label="资产类别" prop="asset_class"  align="center">
+        <el-table-column  label="资产类别" prop="asset_class_zh"  align="center">
         </el-table-column>
         <el-table-column  label="资产编码" prop="asset_number"  align="center">
         </el-table-column>
@@ -152,15 +185,17 @@
         </el-table-column>
         <el-table-column  label="SN号" width="130" prop="asset_sn"  align="center">
         </el-table-column>
-        <el-table-column  label="购入时间" width="120" sortable prop="buy_at"  align="center">
+        <el-table-column  label="购入时间" width="160" sortable prop="buy_at"  align="center">
         </el-table-column>
-        <el-table-column  label="所属公司" prop="dep_owner"  align="center">
+        <el-table-column  label="所属公司" prop="dep_owner_zh"  align="center">
         </el-table-column>
-        <el-table-column  label="发票号码" width="100" prop="invoice"  align="center">
+        <el-table-column  label="发票号码" width="100" prop="invoice_number"  align="center">
         </el-table-column>
-        <el-table-column  label="使用公司" prop="dep_to_use"  align="center">
+        <el-table-column  label="实付金额" width="100" prop="price"  align="center">
         </el-table-column>
-        <el-table-column  label="使用人" prop="user_to_use"  align="center">
+        <el-table-column  label="使用公司" prop="dep_to_use_zh"  align="center">
+        </el-table-column>
+        <el-table-column  label="使用人" prop="user_to_use_zh"  align="center">
         </el-table-column>
         <el-table-column  label="供应商" prop="mt_supplier"  align="center">
         </el-table-column>
@@ -175,13 +210,11 @@
         <el-table-column  label="备注" prop="mt_comment"  align="center">
         </el-table-column>
       </el-table>
-
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="confirmBtn">确 定</el-button>
       </div>
     </el-dialog>
-
     <!--选择资产-->
     <AssetList :visible="allAssetVisible" @hideDialog="hideDialog"></AssetList>
   </div>
@@ -198,15 +231,42 @@
     data: function () {
       return {
         userList: [],
-        companyList:[],
+        departList:[],
+        searchKey:'status',
+        searchKeyList:[
+          {
+            value:'status',
+            label:'状态'
+          },
+          {
+            value:'company_out',
+            label:'调出公司'
+          },
+          {
+            value:'company_in',
+            label:'调入公司'
+          },
+          {
+            value:'create_by',
+            label:'调入管理员'
+          },
+          {
+            value:'confirm_time_in',
+            label:'调入时间'
+          }
+        ],
+        searchVal:'',
+        searchValList:[],
+        treeArr:['company_out','company_in'],
+        selectArr:['status','create_by'],
         searchData: {
           startDate:'',
           endDate:''
         },
-        tabData: [
-        ],
+        tabData: [],
         multipleSelection: [],    //当前选中的行数据
         currentPage: 1,
+        currentPageSize:5,
         total: 20,
         dialogFormVisible:false,
         textObj:{
@@ -242,68 +302,13 @@
           outCompany:'',
           inCompany:'',
           allotRemarks:''
-        }
+        },
+        mergeRow:[]  //要合并在行rowIndex
       }
     },
     methods:{
       init(){
         this.fetchData();
-        this.getDepartmentList();
-        this.getUserList();
-      },
-      getUserList() {
-        this.$axios.Asset.user('GET', {}).then(res => {
-          let _departList = res.data;
-          this.userList = trasfer2ViewListofUser(_departList);
-        })
-
-        function trasfer2ViewListofUser(list){
-          let retList = [];
-          list.forEach((item)=>{
-            let node = {};
-            node.value = item.id;
-            node.label = item.name;
-            retList.push(node);
-          })
-          return retList;
-        }
-      },
-      transData2Tree(list){
-        let retList = [];
-        list.forEach((item)=>{
-          let node = {};
-          node.id = item.id;
-          node.label = item.name;
-          let children = item.children;
-          if(typeof children != "undefined"){
-            this.getChildData(node, children);
-          }
-          retList.push(node);
-        })
-        return retList;
-      },
-      getChildData(node, list) {
-        let retList = [];
-        list.forEach((item)=>{
-          let node = {};
-          node.id = item.id;
-          node.label = item.name;
-          let children = item.children;
-          if(typeof children != "undefined"){
-            this.getChildData(node, children);
-          }
-          retList.push(node);
-        })
-        node.children = retList;
-      },
-      getDepartmentList(){
-        this.$axios.Asset.department('GET',{}).then(res=>{
-          // console.log(" result ==" + res.data.tree);
-          let _departList = res.data.tree;
-          let result = this.transData2Tree(_departList);
-          this.departList = result;
-          this.companyList = result;
-        })
       },
       funTreeSel1(node){
         console.log(JSON.stringify(node.id))
@@ -390,10 +395,6 @@
           })
         }
       },
-
-
-
-
       handleCommand(command){
         if(command == 'upload'){
           this.uploadVisible = true;
@@ -460,18 +461,14 @@
         this.choosedAsset = val;
       },
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+        // console.log(`每页 ${val} 条`);
+        this.currentPageSize = val;
+        this.fetchData();
       },
       handleCurrentPage(val) {
-        console.log(`当前页: ${val}`);
+        // console.log(`当前页: ${val}`);
         this.currentPage = val;
-      },
-      handleAdjustSize(val) {
-        console.log(`每页 ${val} 条`);
-      },
-      handleAdjustPage(val){
-        console.log(`当前页: ${val}`);
-        this.newCurrentPage = val;
+        this.fetchData();
       },
       changeFormVal([key,val]){
         console.log(val);
@@ -489,11 +486,47 @@
       fetchAssetData(){
 
       },
-      fetchData(){
-        this.$axios.Asset.allot('GET',{}).then(res=>{
-          this.tabData = res.data;
-          this.total = res.meta.total
+      fetchData(data){
+        data = data?data:{};
+        let defaultData = {
+          page:this.currentPage,
+          per_page:this.currentPageSize
+        }
+        data = Object.assign(defaultData,data);
+
+        this.$axios.Asset.allot('GET',data).then(res=>{
+          let data = res.data;
+          let adjustData = this.$Store.formateAsset(data);   //调整数据格式为一对一
+          this.tabData = adjustData.formateData;
+          this.mergeRow = adjustData.mergeRow;
+          this.total = res.meta.total;
+
         })
+      },
+      //查寻
+      search(){
+        let data = {};
+        if(this.searchVal instanceof Array){
+          data[this.searchKey+'[start]'] = this.searchVal[0];
+          data[this.searchKey+'[end]'] = this.searchVal[1];
+        }else{
+          data[this.searchKey] = this.searchVal;
+        }
+        this.fetchData(data);
+      },
+
+      //合并行
+      arraySpanMethod({ row, column, rowIndex, columnIndex }) {
+        if(columnIndex >= 0 && columnIndex <= 8){
+          let colNum = row.related_assets.length;
+          if(colNum>0){
+            if(this.mergeRow.indexOf(rowIndex)>=0){
+              return [colNum,1];
+            }else{
+              return [0,0]
+            }
+          }
+        }
       },
       // 新增,修改
       clickBtn(){
@@ -564,7 +597,6 @@
           duration:1500
         })
       },
-
       filterStatus(value,row){
         console.log(value);
         console.log(row);
@@ -584,12 +616,31 @@
           console.log(newval);
         },
         deep:true
+      },
+      searchKey: {
+        handler(val, oldVal) {
+          this.searchVal = '';
+          let list = this.$Store.data;
+          if (val === 'status' ) this.searchValList = list.dictionary.allotStatus ;
+          else if(val === 'create_by') this.searchValList = this.userList;
+          else this.searchVal = null;
+        }
       }
     },
+    created(){
+      this.$Store.getDepartmentList().then((data)=>{
+        this.departList = data;
+      })
+
+      this.$Store.getUserList().then((data)=>{
+        this.userList = data;
+      })
+
+      this.searchValList = this.$Store.data.dictionary.allotStatus;
+    },
+
     mounted(){
       this.init();
-      // this.codeData = new Array(10).fill(this.codeData[0]);
-
     }
   }
 </script>

@@ -116,7 +116,7 @@
       :visible.sync="dialogFormVisible"
       v-if="dialogFormVisible"
       width="960px"
-      top="80px">
+      top="30px">
       <EditorInfo v-if="dialogFormVisible" :textObj="textObj" :edit-date="editDate" ></EditorInfo>
       <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input border">
         <el-row>
@@ -178,13 +178,14 @@
       <el-table v-show="choosedData.length > 0"  :data="choosedData" :max-height="400"  @selection-change="handleSelection"  border stripe fit style="overflow-x: auto">
         <el-table-column type="selection" width="55">
         </el-table-column>
-        <el-table-column type="index" label="序号" width="60" align="center">
+        <el-table-column label="序号" width="60" align="center">
+          <template slot-scope="scope">{{scope.$index+1+(currentPage-1)*currentPageSize}}</template>
         </el-table-column>
         <el-table-column  label="状态" width="100" prop="status_zh"  align="center">
         </el-table-column>
         <el-table-column  label="资产名称" width="100" prop="name"  align="center">
         </el-table-column>
-        <el-table-column  label="资产类别" prop="asset_class"  align="center">
+        <el-table-column  label="资产类别" prop="asset_class_zh"  align="center">
         </el-table-column>
         <el-table-column  label="资产编码" prop="asset_number"  align="center">
         </el-table-column>
@@ -192,15 +193,17 @@
         </el-table-column>
         <el-table-column  label="SN号" width="130" prop="asset_sn"  align="center">
         </el-table-column>
-        <el-table-column  label="购入时间" width="120" sortable prop="buy_at"  align="center">
+        <el-table-column  label="购入时间" width="160" sortable prop="buy_at"  align="center">
         </el-table-column>
-        <el-table-column  label="所属公司" prop="dep_owner"  align="center">
+        <el-table-column  label="所属公司" prop="dep_owner_zh"  align="center">
         </el-table-column>
-        <el-table-column  label="发票号码" width="100" prop="invoice"  align="center">
+        <el-table-column  label="发票号码" width="100" prop="invoice_number"  align="center">
         </el-table-column>
-        <el-table-column  label="使用公司" prop="dep_to_use"  align="center">
+        <el-table-column  label="实付金额" width="100" prop="price"  align="center">
         </el-table-column>
-        <el-table-column  label="使用人" prop="user_to_use"  align="center">
+        <el-table-column  label="使用公司" prop="dep_to_use_zh"  align="center">
+        </el-table-column>
+        <el-table-column  label="使用人" prop="user_to_use_zh"  align="center">
         </el-table-column>
         <el-table-column  label="供应商" prop="mt_supplier"  align="center">
         </el-table-column>

@@ -82,6 +82,16 @@ let Store = {
            label:'已归还'
          }
        ],
+       allotStatus:[
+         {
+           value:'1',
+           label:'调拨中'
+         },
+         {
+           value:'2',
+           label:'已接收'
+         }
+       ]
      }
 
    },

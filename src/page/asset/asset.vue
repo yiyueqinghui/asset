@@ -64,10 +64,11 @@
       </el-form-item>
     </el-form>
     <!--表格-->
-    <el-table :data="wareData"  @selection-change="handleSelectionChange" ref="multipleTable"  border stripe fit stripe style="overflow-x: auto">
+    <el-table :data="wareData"  @selection-change="handleSelectionChange" ref="multipleTable"  border stripe fit style="overflow-x: auto">
       <el-table-column type="selection" width="55">
       </el-table-column>
-      <el-table-column type="index" label="序号" width="60" align="center">
+      <el-table-column label="序号" width="60" align="center">
+        <template slot-scope="scope">{{scope.$index+1+(currentPage-1)*currentPageSize}}</template>
       </el-table-column>
       <el-table-column  label="状态" width="100" prop="status_zh"  align="center">
       </el-table-column>
@@ -534,11 +535,6 @@
     },
     mounted(){
       this.init();
-      // let arr = new Array(5).fill(this.wareData[0]);
-      // this.wareData = arr;
-      // this.$Store.NumberToChinese(101.31);
-      // console.log(this.$Store.data.statusList)
-
     }
   }
 </script>
