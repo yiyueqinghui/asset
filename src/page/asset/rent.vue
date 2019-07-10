@@ -126,7 +126,7 @@
       :visible.sync="dialogFormVisible"
       v-if="dialogFormVisible"
       width="960px"
-      top="80px">
+      top="30px">
       <el-scrollbar class="dialogZone">
         <EditorInfo v-if="dialogFormVisible" :edit-date="editDate"></EditorInfo>
         <el-form :model="formData"  label-width="auto"  class="demo-form-inline self-input">
@@ -368,7 +368,6 @@
         }
         this.fetchData(data);
       },
-
 
       // 新增,修改
       clickBtn(type){

@@ -91,6 +91,20 @@ let Store = {
            value:'2',
            label:'已接收'
          }
+       ],
+       officeType:[
+         {"value": 1, "label": "自有"},
+         {"value": 2, "label": "租赁"}
+       ],
+       payType:[
+         {"value": 1, "label": "预付"},
+         {"value": 2, "label": "银行托收"},
+         {"value": 3, "label": "公对公转账"}
+       ],
+       payWay:[
+         {"value": 1, "label": "年付"},
+         {"value": 2, "label": "季付"},
+         {"value": 3, "label": "月付"}
        ]
      }
 

@@ -37,14 +37,13 @@
       },
       methods:{
         uploadSuccess(res){
-           console.log(res);
            if(res.code == '1'){
              this.uploadStatus = '0';
              this.$emit('uploadSuccess',[res,this.uploadData.name]);
            }else{
              this.uploadStatus = '1';
              this.$message({
-               message:'上传失败！',
+               message:res.message,
                type:'warning'
              })
            }

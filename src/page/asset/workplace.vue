@@ -2,17 +2,41 @@
     <div id="workplace">
       <!--查寻-->
       <el-form :inline="true"  :model="searchData" >
-         <el-form-item label="使用公司部门">
-           <el-select v-model="searchData.department" filterable placeholder="请选择">
-             <el-option
-               v-for="item in departmentList"
-               :key="item.value"
-               :value="item.value">
-             </el-option>
-           </el-select>
-         </el-form-item>
+        <el-form-item class="search">
+          <el-select  v-model="searchKey" placeholder="" style="width: 110px;">
+            <el-option
+              v-for="item in searchKeyList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <!--输入框-->
+          <el-input v-if="this.inputArr.indexOf(this.searchKey)>=0" style="left: -12px;width: 200px!important;" v-model="searchVal" placeholder="请输入搜索内容"></el-input>
+          <!--下拉选择 -->
+          <el-select v-if="this.selectArr.indexOf(this.searchKey)>=0" :clearable="true" v-model="searchVal" placeholder="请选择" style="width:200px;left: -12px;">
+            <el-option
+              v-for="(item,index) in searchValList"
+              :key="index"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <!--日期范围选择-->
+          <el-date-picker v-if="this.searchKey === 'contract_end'"
+                          v-model="searchVal"
+                          type="daterange"
+                          range-separator="|"
+                          start-placeholder="开始日期"
+                          end-placeholder="结束日期"
+                          value-format="yyyy-MM-dd"
+                          style="position: relative;left: -12px;">
+          </el-date-picker>
+
+        </el-form-item>
+
          <el-form-item>
-           <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
+           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
          </el-form-item>
@@ -25,7 +49,7 @@
         </el-table-column>
         <el-table-column  label="公司名称" prop="company"  align="center">
         </el-table-column>
-        <el-table-column  label="职场类型" prop="use_type"  align="center">
+        <el-table-column  label="职场类型" prop="use_type_zh"  align="center">
         </el-table-column>
         <el-table-column  label="职场地址" prop="address"  align="center">
         </el-table-column>
@@ -47,9 +71,9 @@
         </el-table-column>
         <el-table-column  label="合同总金额" prop="contract_money"  align="center">
         </el-table-column>
-        <el-table-column  label="支付方式" prop="pay_mode"  align="center">
+        <el-table-column  label="支付方式" prop="pay_mode_zh"  align="center">
         </el-table-column>
-        <el-table-column  label="支付类型" prop="pay_interval"  align="center">
+        <el-table-column  label="支付类型" prop="pay_interval_zh"  align="center">
         </el-table-column>
         <el-table-column  label="租金金额" prop="rent_money"  align="center">
         </el-table-column>
@@ -73,7 +97,6 @@
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentPage"
-          :current-page="currentPage"
           :page-sizes="[5,10,30,50]"
           :page-size="5"
           layout="total, sizes, prev, pager, next, jumper"
@@ -86,104 +109,107 @@
         :title="formTitle"
         :visible.sync="dialogFormVisible"
         v-if="dialogFormVisible"
-        width="960px">
-        <EditorInfo v-if="dialogFormVisible" :edit-date="editDate"></EditorInfo>
-        <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input">
-          <el-row class="dialog_subtitle">基本信息</el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput  labelName="公司名称" keyName="company" :val="formData.company" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput type="2"  labelName="职场类型" :selectList="useTypeList"  keyName="use_type" :required="true" :val="formData.use_type"  @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput  labelName="职场地址" keyName="address" :val="formData.address" :required="true" @changeFormVal="changeFormVal" :disabled="false"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput  labelName="租赁面积" keyName="area_num" :val="formData.area_num" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput  labelName="金额/平米" keyName="area_charge_unit" :val="formData.area_charge_unit" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput  labelName="工位数" keyName="station_num" :val="formData.station_num" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput  type="1" labelName="会议室数量" keyName="meeting_room_num" :val="formData.meeting_room_num" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput type="1" labelName="可注册公司数" :selectList="typeList"  keyName="registerable_company_num" :val="formData.registerable_company_num" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput labelName="已注册公司名称" keyName="registered_companies" :val="formData.registered_companies" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput type="3"  labelName="合同起始日期" :selectList="companyList"  keyName="contract_start" :val="formData.contract_start" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput type="3" labelName="合同终止日期" :selectList="departList" keyName="contract_end" :val="formData.contract_end" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput labelName="合同总金额" keyName="contract_money" :val="formData.contract_money" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput  type="2" labelName="支付方式"  :selectList="payModeList" keyName="pay_mode" :val="formData.pay_mode" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput  type="2" labelName="支付类型"  :selectList="payIntervalList" keyName="pay_interval" :val="formData.pay_interval" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput  type="1" labelName="租金金额"  :selectList="companyList" keyName="rent_money" :val="formData.rent_money" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput  type="1" labelName="保证金"  :selectList="companyList" keyName="deposit_money" :val="formData.deposit_money" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput  type="1" labelName="物业费/月"  :selectList="companyList" keyName="property_charge" :val="formData.property_charge" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput  type="1" labelName="水费/立方米"  :selectList="companyList" keyName="water_charge" :val="formData.water_charge" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <SelfInput  type="1" labelName="电费/度"  :selectList="companyList" keyName="energy_charge" :val="formData.energy_charge" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-            <el-col :sm="12">
-              <SelfInput  type="1" labelName="网费/月"  :selectList="companyList" keyName="internet_charge" :val="formData.internet_charge" :required="true" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="12">
-              <SelfInput type="4" labelName="备注"  keyName="comment" :val="formData.comment" @changeFormVal="changeFormVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <el-form-item label="合同附件">
-                <UploadFile :upload-data="uploadData" v-on:uploadSuccess="uploadSuccess"></UploadFile>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-
+        width="960px"
+        top="30px">
+        <el-scrollbar class="dialogZone">
+          <EditorInfo v-if="dialogFormVisible" :edit-date="editDate"></EditorInfo>
+          <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline self-input">
+            <el-row class="dialog_subtitle">基本信息</el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput  labelName="公司名称" keyName="company" :val="formData.company" :required="true"  @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput type="2"  labelName="职场类型" :selectList="useTypeList"  keyName="use_type" :required="true" :val="formData.use_type"  @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput  labelName="职场地址" keyName="address" :val="formData.address" :required="true" @changeFormVal="changeFormVal" :disabled="false"></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput  labelName="租赁面积" keyName="area_num" :val="formData.area_num" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput  labelName="金额/平米" keyName="area_charge_unit" :val="formData.area_charge_unit" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput  labelName="工位数" keyName="station_num" :val="formData.station_num" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput  type="1" labelName="会议室数量" keyName="meeting_room_num" :val="formData.meeting_room_num" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput type="1" labelName="可注册公司数" :selectList="typeList"  keyName="registerable_company_num" :val="formData.registerable_company_num" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput labelName="已注册公司名称" keyName="registered_companies" :val="formData.registered_companies" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput type="3"  labelName="合同起始日期" :selectList="companyList"  keyName="contract_start" :val="formData.contract_start" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput type="3" labelName="合同终止日期" keyName="contract_end" :val="formData.contract_end" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput labelName="合同总金额" keyName="contract_money" :val="formData.contract_money" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput  type="2" labelName="支付方式"  :selectList="payModeList" keyName="pay_mode" :val="formData.pay_mode" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput  type="2" labelName="支付类型"  :selectList="payIntervalList" keyName="pay_interval" :val="formData.pay_interval" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput  type="1" labelName="租金金额"  keyName="rent_money" :val="formData.rent_money" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput  type="1" labelName="保证金" keyName="deposit_money" :val="formData.deposit_money" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput  type="1" labelName="物业费/月"   keyName="property_charge" :val="formData.property_charge" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput  type="1" labelName="水费/立方米"   keyName="water_charge" :val="formData.water_charge" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <SelfInput  type="1" labelName="电费/度"   keyName="energy_charge" :val="formData.energy_charge" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+              <el-col :sm="12">
+                <SelfInput  type="1" labelName="网费/月"   keyName="internet_charge" :val="formData.internet_charge" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <SelfInput type="4" labelName="备注"  keyName="comment" :val="formData.comment" @changeFormVal="changeFormVal"></SelfInput>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :sm="12">
+                <el-form-item label="合同附件">
+                  <UploadFile :upload-data="uploadData" v-on:uploadSuccess="uploadSuccess"></UploadFile>
+                  <a  v-if="this.editStatus==2" :href="formData.contract_attachment_url" class="lookFile">查看附件</a>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+        </el-scrollbar>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
           <el-button type="primary" @click="confirmBtn">确 定</el-button>
@@ -199,34 +225,42 @@
     export default {
       data: function () {
         return {
+          searchKey:'company',
+          searchKeyList: [
+            {
+              value:'company',
+              label:'公司名称'
+            },
+            {
+              value:'use_type',
+              label:'职场类型'
+            },
+            {
+              value:'address',
+              label:'职场场地'
+            },
+            {
+              value:'contract_end',
+              label:'合同终止日期'
+            }
+          ],
+          searchVal:'',
+          searchValList:[],
+          inputArr:['address','company'],
+          selectArr:['use_type'],
           searchData: {
             department: ''
           },
           uploadData:{
             name:'file'
           },
-          departmentList: [
-            {"value": "佳禾集团", "en": "JHJT"},
-            {"value": "中恒信", "en": "ZHX"},
-            {"value": "黄鱼儿", "en": "HYR"}
-          ],
-          useTypeList: [
-            {"value": 1, "label": "自有"},
-            {"value": 2, "label": "租赁"}
-          ],
-          payModeList: [
-            {"value": 1, "label": "预付"},
-            {"value": 2, "label": "银行托收"},
-            {"value": 3, "label": "公对公转账"}
-          ],
-          payIntervalList:[
-            {"value": 1, "label": "年付"},
-            {"value": 2, "label": "季付"},
-            {"value": 3, "label": "月付"}
-          ],
+          useTypeList:this.$Store.data.dictionary.officeType,
+          payModeList:this.$Store.data.dictionary.payType,
+          payIntervalList:this.$Store.data.dictionary.payWay,
           wareData: [],
           multipleSelection: [],    //当前选中的行数据
           currentPage: 1,
+          currentPageSize:5,
           total: 20,
           dialogFormVisible:false,
           formTitle: '新增',
@@ -255,36 +289,8 @@
             comment:''
           },
           dialogLoading: false,
-          editDate: '2019-05-11',
-          typeList:[
-            {
-              value:'类别一'
-            },
-            {
-              value:'类别二'
-            },
-            {
-              value:'类别三'
-            }
-          ],
-          companyList:[
-            {
-              value:'公司一'
-            },
-            {
-              value:'公司二'
-            }
-          ],
-          departList:[
-            {
-              value:'部门一'
-            },
-            {
-              value:'部门二'
-            }
-          ],
-
-
+          editDate: '',
+          editStatus:'0'
         }
       },
       methods:{
@@ -314,24 +320,45 @@
           // console.log(this.multipleSelection);
         },
         handleSizeChange(val) {
-          console.log(`每页 ${val} 条`);
+          this.currentPageSize = val;
+          this.fetchData();
         },
         handleCurrentPage(val) {
-          console.log(`当前页: ${val}`);
           this.currentPage = val;
+          this.fetchData();
         },
-        fetchData(){
-          this.$axios.Asset.workplace('GET',{}).then(res=>{
-            console.log(" result ==++++====" + JSON.stringify(res.data));
+        fetchData(data){
+          data = data?data:{};
+          let defaultData = {
+            page:this.currentPage,
+            per_page:this.currentPageSize
+          }
+          data = Object.assign(defaultData,data);
+
+          this.$axios.Asset.workplace('GET',data).then(res=>{
             this.wareData = res.data;
             this.total = res.meta.total
           })
         },
+
+        //查寻
+        search(){
+          let data = {};
+          if(this.searchVal instanceof Array){
+            data[this.searchKey+'[start]'] = this.searchVal[0];
+            data[this.searchKey+'[end]'] = this.searchVal[1];
+          }else if(typeof this.searchVal === 'string' || typeof this.searchVal === 'number'){
+            data[this.searchKey] = this.searchVal;
+          }
+          this.fetchData(data);
+        },
+
         // 新增,修改
         clickBtn(type){
           this.formTitle = type == 1 ? '新增':'修改';
           this.editDate = this.$Store.formatDate();
           this.formData = this.$Store.resetForm(this.formData);
+          this.editStatus = type;
           if(type === 2){
             console.log(JSON.stringify(this.multipleSelection));
             if(this.multipleSelection.length === 1){
@@ -409,17 +436,15 @@
           this.formData[key] = val;
         }
       },
-      filters:{
-        turnStatus:(val)=>{
-          let status;
-          if(val == 1){
-            status = '闲置'
-          }else if(val == 2){
-            status = '在用'
-          }else if(val == 3){
-            status = '调拨中'
+      watch:{
+        searchKey:{
+          handler(val,oldVal){
+            console.log(val);
+            this.searchVal = '';
+            if(val === 'use_type') this.searchValList =  this.$Store.data.dictionary.officeType;
+            else this.searchVal = null;
+            console.log(this.searchValList);
           }
-          return status
         }
       },
       components:{
@@ -433,6 +458,10 @@
     }
 </script>
 
-<style lang="less">
+<style scoped>
+  .lookFile{
+    line-height: 30px;
+    color:gray;
+  }
 
 </style>
