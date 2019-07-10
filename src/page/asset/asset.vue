@@ -531,7 +531,6 @@
         this.userList = data;
       })
 
-
     },
     mounted(){
       this.init();

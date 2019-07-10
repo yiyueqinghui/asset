@@ -1,30 +1,35 @@
 <template>
     <div id="car">
       <!--查寻-->
-      <el-form :inline="true"  :model="searchData" >
-        <el-form-item label="">
-          <el-input v-model="searchData.department" filterable placeholder="请选择">
-          </el-input>
+      <el-form :inline="true" >
+         <el-form-item class="search">
+          <el-select  v-model="searchKey" placeholder="" style="width: 110px;">
+            <el-option
+              v-for="item in searchKeyList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <!--输入框-->
+          <el-input v-if="this.inputArr.indexOf(this.searchKey)>=0" style="left: -12px;width: 200px!important;" v-model="searchVal" placeholder="请输入搜索内容"></el-input>
+          <!--日期范围选择-->
+          <el-date-picker v-if="this.searchKey === 'annual_inspection_time'"
+                          v-model="searchVal"
+                          type="daterange"
+                          range-separator="|"
+                          start-placeholder="开始日期"
+                          end-placeholder="结束日期"
+                          value-format="yyyy-MM-dd"
+                          style="position: relative;left: -12px;">
+          </el-date-picker>
+
         </el-form-item>
          <el-form-item>
-           <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
+           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
            <el-button  style="margin-left: 10px;" @click="deleteData" type="primary" icon="el-icon-edit">删除</el-button>
-
-           <!--<el-dropdown trigger="hover" style="margin-left: 10px;" @command="handleCommand">-->
-             <!--<el-button type="primary" icon="el-icon-document-add">-->
-               <!--导入/导出-->
-             <!--</el-button>-->
-             <!--<el-dropdown-menu slot="dropdown">-->
-               <!--<el-dropdown-item icon="el-icon-download" command="module">下载导入模板</el-dropdown-item>-->
-               <!--<el-dropdown-item icon="el-icon-upload" command="upload" >批量导入资产</el-dropdown-item>-->
-               <!--<el-dropdown-item icon="el-icon-download" command="download">导出资产数据</el-dropdown-item>-->
-             <!--</el-dropdown-menu>-->
-           <!--</el-dropdown>-->
-         </el-form-item>
-         <el-form-item label="" style="float: right;">
-           <el-input v-model="searchData.val"  suffix-icon="el-icon-search" @blur="fetchData"  placeholder="请输入内容进行查寻"/>
          </el-form-item>
       </el-form>
       <!--表格-->
@@ -73,9 +78,8 @@
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentPage"
-          :current-page="currentPage"
-          :page-sizes="[5,10,30,50]"
-          :page-size="5"
+          :page-sizes="[10,30,50]"
+          :page-size="10"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total">
         </el-pagination>
@@ -90,7 +94,7 @@
         top="20px">
         <el-scrollbar class="dialogZone">
           <EditorInfo :edit-date="editDate"></EditorInfo>
-          <el-form :inline="true" :model="formData"  ref="formData" label-width="auto"  class="demo-form-inline date-range-input">
+          <el-form :inline="true" :model="formData"  ref="formData" label-width="auto"  class="demo-form-inline self-input">
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="12">
@@ -102,10 +106,10 @@
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput  labelName="投保人" keyName="proposer" :val="formData.proposer" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput   labelName="投保人" keyName="proposer" :val="formData.proposer" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput  labelName="被保人" keyName="recognizee" :val="formData.recognizee" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput   labelName="被保人" keyName="recognizee" :val="formData.recognizee" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
@@ -134,10 +138,11 @@
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput labelName="现使用机构" :selectList="typeList"  keyName="useby_dep" :val="formData.useby_dep"  @changeFormVal="changeFormVal"></SelfInput>
+              <!--<SelfInput type="6" labelName="现使用机构" :selectList="departList"  keyName="useby_dep" :val="formData.useby_dep"  @changeFormVal="changeFormVal"></SelfInput>-->
+              <SelfInput labelName="现使用机构" keyName="useby_dep" :val="formData.useby_dep"  @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput type="1" labelName="管理人" keyName="manager" :val="formData.manager" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  labelName="管理人"  keyName="manager" :val="formData.manager" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
@@ -158,6 +163,7 @@
             <el-col :sm="12">
               <el-form-item label="被保人附件">
                 <UploadFile :upload-data="uploadData" v-on:uploadSuccess="uploadSuccess1"></UploadFile>
+                <a  v-if="this.editStatus==2" :href="formData.recognizee_detail_attachment_url" class="lookFile">查看附件</a>
               </el-form-item>
             </el-col>
           </el-row>
@@ -165,6 +171,7 @@
             <el-col :sm="12">
               <el-form-item label="行驶本附件">
                 <UploadFile :upload-data="uploadData" v-on:uploadSuccess="uploadSuccess2"></UploadFile>
+                <a  v-if="this.editStatus==2" :href="formData.driving_detail_attachment_url" class="lookFile">查看附件</a>
               </el-form-item>
             </el-col>
           </el-row>
@@ -172,6 +179,7 @@
             <el-col :sm="12">
               <el-form-item label="车辆保养附件">
                 <UploadFile :upload-data="uploadData" v-on:uploadSuccess="uploadSuccess3"></UploadFile>
+                <a  v-if="this.editStatus==2" :href="formData.maintain_detail_attachment_url" class="lookFile">查看附件</a>
               </el-form-item>
             </el-col>
           </el-row>
@@ -196,17 +204,28 @@
     export default {
       data: function () {
         return {
-          searchData: {
-            department: ''
-          },
-          departmentList: [
-            {"value": "佳禾集团", "en": "JHJT"},
-            {"value": "中恒信", "en": "ZHX"},
-            {"value": "黄鱼儿", "en": "HYR"}
+          searchKey:'company',
+          searchKeyList: [
+            {
+              value:'company',
+              label:'公司名称'
+            },
+            {
+              value:'car_number',
+              label:'车辆牌照'
+            },
+            {
+              value:'annual_inspection_time',
+              label:'年检日期'
+            }
           ],
+          searchVal:'',
+          searchValList:[],
+          inputArr:['company','car_number'],
           wareData: [],
           multipleSelection: [],    //当前选中的行数据
           currentPage: 1,
+          currentPageSize:10,
           total: 20,
           dialogFormVisible:false,
           formTitle: 1,
@@ -232,7 +251,7 @@
             "comment": "",
           },
           dialogLoading: false,
-          editDate: '2019-5-14',
+          editDate: '',
           typeList:[
             {
               value:'类别一'
@@ -248,7 +267,9 @@
           uploadData:{
             name:'file'
           },
-          validDate:[]
+          validDate:[],
+          userList:[],
+          departList:[]
         }
       },
       methods:{
@@ -303,29 +324,43 @@
         },
         handleSelectionChange(val) {
           this.multipleSelection = val;
-          console.log(this.multipleSelection);
         },
         handleSizeChange(val) {
-          console.log(`每页 ${val} 条`);
+          this.currentPageSize = val;
         },
         handleCurrentPage(val) {
-          console.log(`当前页: ${val}`);
           this.currentPage = val;
         },
-        fetchData(){
-          this.$axios.Asset.car('GET',{}).then(res=>{
-            // console.log(" result ==++++====" + JSON.stringify(res.data));
+        fetchData(data){
+          data = data?data:{};
+          let defaultData = {
+            page:this.currentPage,
+            per_page:this.currentPageSize
+          }
+          data = Object.assign(defaultData,data);
+          this.$axios.Asset.car('GET',data).then(res=>{
             this.wareData = res.data;
             this.total = res.meta.total
           })
         },
+
+        //查寻
+        search(){
+          let data = {};
+          if(this.searchVal instanceof Array){
+            data[this.searchKey+'[start]'] = this.searchVal[0];
+            data[this.searchKey+'[end]'] = this.searchVal[1];
+          }else if(typeof this.searchVal === 'string' || typeof this.searchVal === 'number'){
+            data[this.searchKey] = this.searchVal;
+          }
+          this.fetchData(data);
+        },
+
         // 新增,修改
         clickBtn(type){
           let _this = this;
+          this.editStatus = type;
           _this.formTitle = type;
-          // 重置数据为空值
-          // this.editDate = this.$Store.formatDate();
-          // _this.formData = this.$Store.formData(this.formData);
 
           // 清空操作
           Object.keys(_this.formData).forEach(name => {
@@ -338,14 +373,6 @@
             if(_this.multipleSelection.length === 1){
               // 修改，抓取列表数据赋值
               _this.formData = Object.assign({},this.multipleSelection[0]);
-              /*let obj = this.multipleSelection[0];
-              // setValue(_this, _this.multipleSelection[0]);
-              Object.keys(_this.formData).forEach(name => {
-                console.log('name = ' + name + '=== value = ' + obj[name]);
-                _this.$set(_this.formData, name, obj[name])
-              });*/
-
-
             }else{
               this.$message({
                 message:'请选择一条要修改的数据',
@@ -354,9 +381,7 @@
               return;
             }
           }
-
           this.dialogFormVisible = true;
-
         },
         confirmBtn(){
           let id = this.formData.id;
@@ -445,12 +470,15 @@
             this.formData.validDate = val.join('-');
           },
           deep:true
+        },
+        searchKey:{
+          handler(val,oldVal){
+            this.searchVal = '';
+          }
         }
       },
       mounted(){
          this.init();
-
-
       }
     }
 </script>

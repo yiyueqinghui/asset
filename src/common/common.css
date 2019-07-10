@@ -132,5 +132,11 @@ html,body{
 }
 
 
+/*查看文件*/
+.lookFile{
+  line-height: 30px;
+  color:gray;
+}
+
 
 
