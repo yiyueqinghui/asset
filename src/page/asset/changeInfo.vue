@@ -3,22 +3,33 @@
       <!--查寻-->
       <el-form :inline="true"  :model="searchData" >
          <el-form-item>
-           <!--<el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>-->
-           <!--<el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>-->
-           <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
-           <el-dropdown trigger="hover" style="margin-left: 10px;" @command="handleCommand">
-             <el-button type="primary" icon="el-icon-document-add">
-               导入/导出
-             </el-button>
-             <el-dropdown-menu slot="dropdown">
-               <el-dropdown-item icon="el-icon-download" command="module">下载导入模板</el-dropdown-item>
-               <el-dropdown-item icon="el-icon-upload" command="upload" >批量导入资产</el-dropdown-item>
-               <el-dropdown-item icon="el-icon-download" command="download">导出资产数据</el-dropdown-item>
-             </el-dropdown-menu>
-           </el-dropdown>
-         </el-form-item>
-         <el-form-item label="" style="float: right;">
-           <el-input v-model="searchData.val"  suffix-icon="el-icon-search" @blur="fetchData"  placeholder="请输入内容进行查寻"/>
+           <el-form-item class="search">
+             <el-select  v-model="searchKey" placeholder="" style="width: 110px;">
+               <el-option
+                 v-for="item in searchKeyList"
+                 :key="item.value"
+                 :label="item.label"
+                 :value="item.value">
+               </el-option>
+             </el-select>
+             <!--日期范围选择-->
+             <el-date-picker v-if="this.searchKey === 'annual_inspection_time'"
+                             v-model="searchVal"
+                             type="daterange"
+                             range-separator="|"
+                             start-placeholder="开始日期"
+                             end-placeholder="结束日期"
+                             value-format="yyyy-MM-dd"
+                             style="position: relative;left: -12px;">
+             </el-date-picker>
+             <!--输入框-->
+             <el-input v-if="this.inputArr.indexOf(this.searchKey)>=0" style="left: -12px;width: 200px!important;" v-model="searchVal" placeholder="请输入搜索内容"></el-input>
+           </el-form-item>
+
+           <el-form-item>
+             <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
+             <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
+           </el-form-item>
          </el-form-item>
       </el-form>
       <!--表格-->
@@ -75,7 +86,6 @@
           <el-row class="dialog_subtitle">基本信息</el-row>
           <el-row>
             <el-col :sm="12">
-              <!--<SelfInput type="2" labelName="资产编号" :selectList="assetList" keyName="asset_id" :val="formData.asset_id" :required="true" @changeFormVal="changeFormVal"></SelfInput>-->
               <SelfInput labelName="资产编号"  :disabled="true" keyName="as_asset_number" :val="formData.as_asset_number" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
@@ -131,19 +141,32 @@
     export default {
       data: function () {
         return {
+          searchKey:'as_asset_number',
+          searchKeyList: [
+            {
+              value:'as_asset_number',
+              label:'资产编号'
+            },
+            {
+              value:'as_name',
+              label:'资产名称'
+            }
+          ],
+          searchVal:'',
+          searchValList:[],
+          selectArr:['user_id'],
+          inputArr:['as_asset_number','as_name'],
           searchData: {
             department: ''
           },
           assetList:[],
           departmentList: [
-            {"value": "佳禾集团", "en": "JHJT"},
-            {"value": "中恒信", "en": "ZHX"},
-            {"value": "黄鱼儿", "en": "HYR"}
           ],
           wareData: [
           ],
           multipleSelection: [],    //当前选中的行数据
           currentPage: 1,
+          currentPageSize:10,
           total: 20,
           dialogFormVisible:false,
           formTitle: '新增',
@@ -152,18 +175,11 @@
           dialogLoading: false,
           editDate: '2019-5-14',
           typeList:[
-            {
-              value:'类别一'
-            },
-            {
-              value:'类别二'
-            },
-            {
-              value:'类别三'
-            }
           ],
           uploadVisible:false
         }
+      },
+      created(){
       },
       methods:{
         init(){
@@ -214,6 +230,17 @@
         closeUpload(){
           this.uploadVisible = false;
         },
+        //查寻
+        search(){
+          let data = {};
+          if(this.searchVal instanceof Array){
+            data[this.searchKey+'[start]'] = this.searchVal[0];
+            data[this.searchKey+'[end]'] = this.searchVal[1];
+          }else if(typeof this.searchVal === 'string' || typeof this.searchVal === 'number'){
+            data[this.searchKey] = this.searchVal;
+          }
+          this.fetchData(data);
+        },
         querySearch(queryString, cb) {
           var departmentList = this.departmentList;
           var results = queryString ? departmentList.filter(this.createFilter(queryString)) : departmentList;
@@ -228,9 +255,15 @@
         handleSelect(item) {
           this.formData.department = item.value;
         },
-        fetchData(){
-          this.$axios.Asset.maintenance('GET',{}).then(res=>{
-            console.log(" result ==++++====" + JSON.stringify(res.data));
+        fetchData(data){
+          data = data?data:{};
+          let defaultData = {
+            page:this.currentPage,
+            per_page:this.currentPageSize
+          }
+          data = Object.assign(defaultData,data);
+
+          this.$axios.Asset.maintenance('GET',data).then(res=>{
             this.wareData = res.data;
             this.total = res.meta.total
           })
@@ -290,10 +323,13 @@
         },
         handleSizeChange(val) {
           console.log(`每页 ${val} 条`);
+          this.currentPageSize = val;
+          this.search();
         },
         handleCurrentPage(val) {
           console.log(`当前页: ${val}`);
           this.currentPage = val;
+          this.search();
         },
         changeFormVal([key,val]){
           this.formData[key] = val;
@@ -321,6 +357,18 @@
       },
       mounted(){
          this.init();
+      },
+      watch:{
+        searchKey:{
+          handler(val,oldVal){
+            this.searchVal = '';
+            let list = this.$Store.data;
+
+            if (val === 'user_id' ) this.searchValList = list.userList;
+            else this.searchVal = null;
+            console.log(this.searchValList);
+          }
+        }
       }
     }
 </script>

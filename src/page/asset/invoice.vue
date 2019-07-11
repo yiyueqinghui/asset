@@ -2,12 +2,47 @@
     <div id="invoice">
       <!--查寻-->
       <el-form :inline="true"  :model="searchData" >
-         <el-form-item label="">
-           <el-input v-model="searchData.department" filterable placeholder="请选择">
-           </el-input>
-         </el-form-item>
+        <el-form-item class="search">
+          <el-select  v-model="searchKey" placeholder="" style="width: 110px;">
+            <el-option
+              v-for="item in searchKeyList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <!--日期范围选择-->
+          <el-date-picker v-if="this.searchKey === 'annual_inspection_time'"
+                          v-model="searchVal"
+                          type="daterange"
+                          range-separator="|"
+                          start-placeholder="开始日期"
+                          end-placeholder="结束日期"
+                          value-format="yyyy-MM-dd"
+                          style="position: relative;left: -12px;">
+          </el-date-picker>
+          <!--输入框-->
+          <el-input v-if="this.inputArr.indexOf(this.searchKey)>=0" style="left: -12px;width: 200px!important;" v-model="searchVal" placeholder="请输入搜索内容"></el-input>
+          <!--下拉选择 -->
+          <el-select v-if="this.selectArr.indexOf(this.searchKey)>=0" :clearable="true" v-model="searchVal" placeholder="请选择" style="width:200px;left: -12px;">
+            <el-option
+              v-for="(item,index) in searchValList"
+              :key="index"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <!--机构以及资产类别选择-->
+          <treeselect v-if="this.searchKey === 'asset_class' "
+                      v-model="searchVal"
+                      :multiple="false"
+                      placeholder="请选择..."
+                      :show-count="false"
+                      :options="assetTypeList" />
+
+        </el-form-item>
          <el-form-item>
-           <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
+           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
            <el-dropdown trigger="hover" style="margin-left: 10px;" @command="handleCommand">
@@ -30,7 +65,7 @@
         </el-table-column>
         <el-table-column  label="资产类型" prop="asset_class"  align="center">
         </el-table-column>
-        <el-table-column  label="发票类型" prop="inv_type"  align="center">
+        <el-table-column  label="发票类型" prop="inv_type_zh"  align="center">
         </el-table-column>
         <el-table-column  label="发票号码" prop="inv_number"  align="center">
         </el-table-column>
@@ -128,18 +163,30 @@
     export default {
       data: function () {
         return {
+          searchKey:'inv_number',
+          searchKeyList: [
+            {
+              value:'inv_number',
+              label:'发票号码'
+            },
+            {
+              value:'inv_type',
+              label:'发票类型'
+            },
+            {
+              value:'asset_class',
+              label:'资产类型'
+            }
+          ],
+          searchVal:'',
+          searchValList:[],
+          selectArr:['inv_type'],
+          inputArr:['inv_number'],
           searchData: {
             department: ''
           },
           invoiceData:{},
-          departmentList: [
-            {"value": "佳禾集团", "en": "JHJT"},
-            {"value": "中恒信", "en": "ZHX"},
-            {"value": "黄鱼儿", "en": "HYR"}
-          ],
           invoiceTypeList: [
-            {"value": 1, "label": "普通发票"},
-            {"value": 2, "label": "增值税专用发票"}
           ],
           assetTypeList:[
           ],
@@ -147,6 +194,7 @@
           ],
           multipleSelection: [],    //当前选中的行数据
           currentPage: 1,
+          currentPageSize:10,
           total: 20,
           dialogFormVisible:false,
           formTitle: '新增',
@@ -168,46 +216,27 @@
 
         }
       },
+      created(){
+        this.$Store.getAssetTypeList().then((data)=>{
+          this.assetTypeList = data;
+        })
+
+        this.searchValList = this.$Store.data.dictionary.invoiceTypeList;
+      },
       methods:{
         init(){
           this.fetchData();
-          this.getAssetTypeList();
         },
-        transData2Tree(list){
-          let retList = [];
-          list.forEach((item)=>{
-            let node = {};
-            node.id = item.id;
-            node.label = item.name;
-            let children = item.children;
-            if(typeof children != "undefined"){
-              this.getChildData(node, children);
-            }
-            retList.push(node);
-          })
-          return retList;
-        },
-        getChildData(node, list) {
-          let retList = [];
-          list.forEach((item)=>{
-            let node = {};
-            node.id = item.id;
-            node.label = item.name;
-            let children = item.children;
-            if(typeof children != "undefined"){
-              this.getChildData(node, children);
-            }
-            retList.push(node);
-          })
-          node.children = retList;
-        },
-        getAssetTypeList() {
-          this.$axios.Asset.asset_type('GET', {}).then(res => {
-            // console.log(" result ==" + res.data.tree);
-            let _departList = res.data.tree;
-            let result = this.transData2Tree(_departList);
-            this.assetTypeList = result;
-          })
+        //查寻
+        search(){
+          let data = {};
+          if(this.searchVal instanceof Array){
+            data[this.searchKey+'[start]'] = this.searchVal[0];
+            data[this.searchKey+'[end]'] = this.searchVal[1];
+          }else if(typeof this.searchVal === 'string' || typeof this.searchVal === 'number'){
+            data[this.searchKey] = this.searchVal;
+          }
+          this.fetchData(data);
         },
         funTreeSel(node){
           console.log(JSON.stringify(node.id))
@@ -258,14 +287,23 @@
         },
         handleSizeChange(val) {
           console.log(`每页 ${val} 条`);
+          this.currentPageSize = val;
+          this.search();
         },
         handleCurrentPage(val) {
           console.log(`当前页: ${val}`);
           this.currentPage = val;
+          this.search();
         },
-        fetchData(){
-          this.$axios.Asset.invoice('GET',{}).then(res=>{
-            console.log(" result ==++++====" + JSON.stringify(res.data));
+        fetchData(data){
+          data = data?data:{};
+          let defaultData = {
+            page:this.currentPage,
+            per_page:this.currentPageSize
+          }
+          data = Object.assign(defaultData,data);
+
+          this.$axios.Asset.invoice('GET',data).then(res=>{
             this.wareData = res.data;
             this.total = res.meta.total
           })
@@ -356,17 +394,6 @@
         }
       },
       filters:{
-        turnStatus:(val)=>{
-          let status;
-          if(val == 1){
-            status = '闲置'
-          }else if(val == 2){
-            status = '在用'
-          }else if(val == 3){
-            status = '调拨中'
-          }
-          return status
-        }
       },
       components:{
         EditorInfo,
@@ -377,6 +404,18 @@
       },
       mounted(){
          this.init();
+      },
+      watch:{
+        searchKey:{
+          handler(val,oldVal){
+            this.searchVal = '';
+            let list = this.$Store.data;
+
+            if (val === 'inv_type' ) this.searchValList = list.dictionary.invoiceTypeList;
+            else this.searchVal = null;
+            console.log(this.searchValList);
+          }
+        }
       }
     }
 </script>

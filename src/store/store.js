@@ -105,6 +105,10 @@ let Store = {
          {"value": 1, "label": "年付"},
          {"value": 2, "label": "季付"},
          {"value": 3, "label": "月付"}
+       ],
+       invoiceTypeList: [
+         {"value": 1, "label": "普通发票"},
+         {"value": 2, "label": "增值税专用发票"}
        ]
      }
 

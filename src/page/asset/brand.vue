@@ -2,12 +2,47 @@
     <div id="brand">
       <!--查寻-->
       <el-form :inline="true"  :model="searchData" >
-         <el-form-item label="">
-           <el-input v-model="searchData.department" filterable placeholder="请选择">
-           </el-input>
-         </el-form-item>
+        <el-form-item class="search">
+          <el-select  v-model="searchKey" placeholder="" style="width: 110px;">
+            <el-option
+              v-for="item in searchKeyList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <!--日期范围选择-->
+          <el-date-picker v-if="this.searchKey === 'reg_time'"
+                          v-model="searchVal"
+                          type="daterange"
+                          range-separator="|"
+                          start-placeholder="开始日期"
+                          end-placeholder="结束日期"
+                          value-format="yyyy-MM-dd"
+                          style="position: relative;left: -12px;">
+          </el-date-picker>
+          <!--输入框-->
+          <el-input v-if="this.inputArr.indexOf(this.searchKey)>=0" style="left: -12px;width: 200px!important;" v-model="searchVal" placeholder="请输入搜索内容"></el-input>
+          <!--下拉选择 -->
+          <el-select v-if="this.selectArr.indexOf(this.searchKey)>=0" :clearable="true" v-model="searchVal" placeholder="请选择" style="width:200px;left: -12px;">
+            <el-option
+              v-for="(item,index) in searchValList"
+              :key="index"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <!--机构以及资产类别选择-->
+          <treeselect v-if="this.searchKey === 'company' "
+                      v-model="searchVal"
+                      :multiple="false"
+                      placeholder="请选择..."
+                      :show-count="false"
+                      :options="companyList" />
+
+        </el-form-item>
          <el-form-item>
-           <el-button type="primary" icon="el-icon-search" @click="fetchData">查询</el-button>
+           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
            <el-dropdown trigger="hover" style="margin-left: 10px;" @command="handleCommand">
@@ -28,7 +63,7 @@
         </el-table-column>
         <el-table-column type="index" label="序号" width="60" align="center">
         </el-table-column>
-        <el-table-column  label="公司名称" prop="company"  align="center">
+        <el-table-column  label="公司名称" prop="tm_company_name"  align="center">
         </el-table-column>
         <el-table-column  label="中文名称" prop="name_zh"  align="center">
         </el-table-column>
@@ -143,20 +178,35 @@
     export default {
       data: function () {
         return {
+          searchKey:'name_zh',
+          searchKeyList: [
+            {
+              value:'company',
+              label:'公司名称'
+            },
+            {
+              value:'reg_time',
+              label:'注册日期'
+            },
+            {
+              value:'name_zh',
+              label:'中文名称'
+            }
+          ],
+          searchVal:'',
+          searchValList:[],
+          selectArr:['inv_type'],
+          inputArr:['name_zh'],
           companyList:[
           ],
           searchData: {
             department: ''
           },
-          departmentList: [
-            {"value": "佳禾集团", "en": "JHJT"},
-            {"value": "中恒信", "en": "ZHX"},
-            {"value": "黄鱼儿", "en": "HYR"}
-          ],
           wareData: [
           ],
           multipleSelection: [],    //当前选中的行数据
           currentPage: 1,
+          currentPageSize:10,
           total: 20,
           dialogFormVisible:false,
           formTitle: '新增',
@@ -174,15 +224,6 @@
           dialogLoading: false,
           editDate: '2019-5-14',
           typeList:[
-            {
-              value:'类别一'
-            },
-            {
-              value:'类别二'
-            },
-            {
-              value:'类别三'
-            }
           ],
           fileData:{
             name:'brandFile'
@@ -191,52 +232,22 @@
 
         }
       },
+      created(){
+        this.$Store.getUserList().then((data)=>{
+          this.userList = data;
+        })
+        this.$Store.getDepartmentList().then((data)=>{
+          this.companyList = data;
+        })
+      },
       methods:{
         init(){
           this.fetchData();
-          this.getDepartmentList();
         },
         funTreeSel1(node){
           console.log(JSON.stringify(node.id))
           let val = node.id;
           this.formData.company = val;
-        },
-        transData2Tree(list){
-          let retList = [];
-          list.forEach((item)=>{
-            let node = {};
-            node.id = item.id;
-            node.label = item.name;
-            let children = item.children;
-            if(typeof children != "undefined"){
-              this.getChildData(node, children);
-            }
-            retList.push(node);
-          })
-          return retList;
-        },
-        getChildData(node, list) {
-          let retList = [];
-          list.forEach((item)=>{
-            let node = {};
-            node.id = item.id;
-            node.label = item.name;
-            let children = item.children;
-            if(typeof children != "undefined"){
-              this.getChildData(node, children);
-            }
-            retList.push(node);
-          })
-          node.children = retList;
-        },
-        getDepartmentList(){
-          this.$axios.Asset.department('GET',{}).then(res=>{
-            // console.log(" result ==" + res.data.tree);
-            let _departList = res.data.tree;
-            let result = this.transData2Tree(_departList);
-            // this.departList = result;
-            this.companyList = result;
-          })
         },
         uploadSuccess(res){
           let uuid = res[0].uuid;
@@ -251,6 +262,17 @@
           }else if(command == 'module'){
             downloadModule('','模板');
           }
+        },
+        //查寻
+        search(){
+          let data = {};
+          if(this.searchVal instanceof Array){
+            data[this.searchKey+'[start]'] = this.searchVal[0];
+            data[this.searchKey+'[end]'] = this.searchVal[1];
+          }else if(typeof this.searchVal === 'string' || typeof this.searchVal === 'number'){
+            data[this.searchKey] = this.searchVal;
+          }
+          this.fetchData(data);
         },
         querySearch(queryString, cb) {
           var departmentList = this.departmentList;
@@ -272,14 +294,23 @@
         },
         handleSizeChange(val) {
           console.log(`每页 ${val} 条`);
+          this.currentPageSize = val;
+          this.search();
         },
         handleCurrentPage(val) {
           console.log(`当前页: ${val}`);
           this.currentPage = val;
+          this.search();
         },
-        fetchData(){
-          this.$axios.Asset.brand('GET',{}).then(res=>{
-            console.log(" result ==++++====" + JSON.stringify(res.data));
+        fetchData(data){
+          data = data?data:{};
+          let defaultData = {
+            page:this.currentPage,
+            per_page:this.currentPageSize
+          }
+          data = Object.assign(defaultData,data);
+
+          this.$axios.Asset.brand('GET',data).then(res=>{
             this.wareData = res.data;
             this.total = res.meta.total
           })
@@ -397,11 +428,18 @@
       },
       mounted(){
         this.init();
-        // let arr = new Array(5).fill(this.wareData[0]);
-        // this.wareData = arr;
-        // this.$Store.NumberToChinese(101.31);
-        // console.log(this.$Store.data.statusList)
+      },
+      watch:{
+        searchKey:{
+          handler(val,oldVal){
+            this.searchVal = '';
+            let list = this.$Store.data;
 
+            if (val === 'user_id' ) this.searchValList = list.userList;
+            else this.searchVal = null;
+            console.log(this.searchValList);
+          }
+        }
       }
     }
 </script>

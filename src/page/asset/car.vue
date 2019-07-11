@@ -327,9 +327,11 @@
         },
         handleSizeChange(val) {
           this.currentPageSize = val;
+          this.search();
         },
         handleCurrentPage(val) {
           this.currentPage = val;
+          this.search();
         },
         fetchData(data){
           data = data?data:{};
