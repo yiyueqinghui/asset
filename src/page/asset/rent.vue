@@ -48,7 +48,7 @@
 
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
+        <el-button   type="primary" icon="el-icon-search" @click="search">查询</el-button>
         <el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>
         <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
         <el-dropdown v-if="false" trigger="hover" style="margin-left: 10px;" @command="handleCommand">
