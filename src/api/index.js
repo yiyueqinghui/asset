@@ -63,7 +63,9 @@ const URLS = {
   RECEIVE:'/api-1.0/recipient/',
   CARD:'/api-1.0/access-card/',
   MAINTENANCE:'/api-1.0/maintenance/',
-  RENT:'/api-1.0/lease/'
+  RENT:'/api-1.0/lease/',
+
+  ORG:'/api-1.0/department',
 
 }
 
@@ -173,11 +175,19 @@ const Asset = {
   }
 }
 
+const System = {
+  org:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.ORG);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+}
+
 
 
 export default {
 	Home,
-  Asset
+  Asset,
+  System
 }
 
 

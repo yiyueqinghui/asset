@@ -1,14 +1,16 @@
 <template>
     <div id="organization">
-       <el-row style="height: 100%;">
+       <el-row style="height: 100%;" v-if="treeShow">
          <el-col :span="4" :sm="4">
-           <el-tree v-if="treeShow"
+           <el-tree
              ref="tree"
              :data="data"
              node-key="id"
              highlight-current
              :current-node-key="currentKey"
-             @node-click="checkedNode">
+             :default-expanded-keys="defaultExpandIds"
+             @node-click="checkedNode"
+             :props="{label:'name'}">
            </el-tree>
          </el-col>
          <el-col  :span="18" :sm="18" class="detail">
@@ -35,12 +37,12 @@
            </el-row>
             <table class="basicTab">
               <tr>
-                <td>部门编码</td>
-                <td>{{ basicInfo.code }}</td>
+                <td>{{this.changeName}}编码</td>
+                <td>{{ basicInfo.dep_number }}</td>
               </tr>
               <tr>
-                <td>部门编码</td>
-                <td>{{ basicInfo.code }}</td>
+                <td>{{this.changeName}}名称</td>
+                <td>{{ basicInfo.name }}</td>
               </tr>
             </table>
          </el-col>
@@ -77,14 +79,14 @@
       </el-dialog>
 
       <!--修改-->
-      <el-dialog title="修改" width="960px" :visible.sync="visible">
+      <el-dialog v-if="visible" title="修改" width="960px" :visible.sync="visible">
         <el-form :inline="true" :model="form" label-width="auto" v-if="visible"  class="demo-form-inline self-input border">
           <el-row>
             <el-col :sm="12">
-              <SelfInput  :labelName="this.changeName+'编码'"   keyName="code" :val="form.code"  @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  :labelName="this.changeName+'编码'"   keyName="dep_number" :val="form.dep_number"  @changeFormVal="changeModifyForm"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput  :labelName="this.changeName+'全称'"   keyName="label" :val="form.label"  @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput  :labelName="this.changeName+'全称'"   keyName="name" :val="form.name"  @changeFormVal="changeModifyForm"></SelfInput>
             </el-col>
           </el-row>
         </el-form>
@@ -93,7 +95,6 @@
           <el-button type="primary" @click="confirmChange">确 定</el-button>
         </div>
       </el-dialog>
-
 
     </div>
 </template>
@@ -106,45 +107,13 @@
          return {
            // type 1 公司   2 部门
            treeShow:false,
-           data: [
-             {
-               id: 1,
-               label: '一级公司 1',
-               code:'001',
-               type:'1',
-               children: [{
-                 id: 4,
-                 label: '二级部门 1-1',
-                 code:'002',
-                 type:'2',
-                 children: [{
-                   id: 9,
-                   label: '三级部门 1-1-1',
-                   code:'003',
-                   type:'2',
-                 }, {
-                   id: 10,
-                   label: '三级部门 1-1-2',
-                   code:'004',
-                   type:'2',
-                 }]
-               }]
-             }
-
-           ],
+           data: [ ],
            treeNav:'',
-           treeDetail:{
-
-           },
+           treeDetail:{ },
            currentKey:'',
+           defaultExpandIds:[],
            firstLevelId:[],
-           basicInfo:{
-             code:'001',
-             name:'管理层',
-             blongCompany:'xxxx',
-             upDepart:'xxxx',
-             employee:100
-           },
+           basicInfo:{},
            type:1,
            formData:{
               type:'',
@@ -153,23 +122,13 @@
               blongCompany:'',
               blongDepart:''
            },
-           form:{
-             code:'',
-             label:''
-           },
+           form:{},
            visible:false,
            createType:0,
            dialogFormVisible:false
-
          }
       },
       methods:{
-        init(){
-          this.currentKey = this.data[0].id;
-          this.treeNav = this.data[0].label;
-          console.log(this.treeNav);
-          this.treeShow = true;
-        },
         addBtn(type){
           this.resetData();
           let firstLevelId = [];
@@ -183,16 +142,24 @@
           let currentKey = this.$refs.tree.getCurrentKey();
           console.log('当前节点',currentKey);
           this.currentKey = currentKey;
-
           if(currentKey){
             let currentData = this.$refs.tree.getCurrentNode();
-            if(this.firstLevelId.indexOf(currentKey) == -1){
+            this.formData.id = currentData.id;
+            if(this.firstLevelId.indexOf(currentKey) == -1){   //非顶级
               let parentData = this.getParentData(currentKey);
               this.formData.blongCompany = parentData.blongCompany;
               this.formData.blongDepart = parentData.blongDepart;
+
+              if(this.createType == 2 || this.createType ==4 ){
+                this.formData.parent_id = currentData.id;
+              }else{
+                this.formData.parent_id = currentData.parent_id;
+              }
+
             }else{
-              if(this.createType == 2 || this.createType ==4){
-                this.formData.blongCompany = this.$refs.tree.getCurrentNode().label;
+              if(this.createType == 2 || this.createType ==4){   //顶级
+                this.formData.blongCompany = this.$refs.tree.getCurrentNode().name;
+                this.formData.parent_id = currentData.id;
               }
             }
           }else{
@@ -261,29 +228,22 @@
         changeFormVal([key,val]){
           this.formData[key] = val;
         },
+        changeModifyForm([key,val]){
+          this.form[key] = val;
+        },
         confirm(){
           let data = {
-            id:parseInt(Math.random()*1000),
-            code:this.formData.code,
-            label: this.formData.label,
-            type:this.formData.type
+            dep_number:this.formData.code,
+            name: this.formData.label,
+            group_type:this.formData.type
           }
-          console.log(this.currentKey);
-          if(this.currentKey === ''){
-            this.data.push(data);
-            this.dialogFormVisible = false;
-            return;
-          }
+          if(this.formData.parent_id) data['parent_id'] = this.formData.parent_id
 
-          if(this.createType == '2' || this.createType == '4'){
-            console.log('下级')
-            this.$refs.tree.append(data,this.currentKey);
-          }else{
-            console.log('同级',this.currentKey)
-            this.$refs.tree.insertAfter(data,this.currentKey);
-          }
+          this.$axios.System.org('POST',data).then(res=>{
+            this.$message.success('新增成功！')
+            this.getTreeData(this.formData.id);
+          })
 
-          console.log(this.data);
           this.dialogFormVisible = false;
         },
         changeTree(){
@@ -296,28 +256,47 @@
             return;
           }
           this.form = Object.assign({},checkedData)
+          console.log(this.form);
           this.visible = true;
         },
         confirmChange(){
-          this.visible = false;
+          if(this.form.parent_id == 0) delete this.form.parent_id;
+          this.$axios.System.org('PUT',this.form).then(res=>{
+            this.$message.success('修改成功！')
+            this.getTreeData(this.form.id);
+            this.visible = false;
+          })
         },
         deleteTree(){
           let checkedData = this.$refs.tree.getCurrentNode();
           if(!checkedData){
-            this.$message({
-              message: '请先选择一个公司或部门！',
-              type: 'warning'
-            });
+            this.$message.warning('请先选择一个公司或部门！');
             return;
           }else{
-            this.$message({
-              message: '删除成功！',
-              type: 'success'
-            });
+            if(checkedData.parent_id == 0) delete checkedData.parent_id;
+            this.$axios.System.org('DELETE',checkedData).then(res=>{
+              this.$message.success('删除成功！')
+              console.log(checkedData);
+              this.getTreeData(checkedData.parent_id);
+            })
           }
         },
         checkedNode(data){
           this.currentKey = data.id;
+          this.type = data.type;
+        },
+        getTreeData(current_id){
+          this.$axios.System.org('GET',{}).then((res)=>{
+            this.data = res.data.tree;
+            this.basicInfo = {...this.data[0]};
+            this.treeNav = this.data[0].name;
+            if(!current_id) current_id = this.data[0].id;   //默认展开第一个
+            // this.currentKey = current_id;
+            this.defaultExpandIds = [];
+            this.defaultExpandIds.push(current_id);
+            this.treeShow = true;
+          })
+
         }
       },
       computed:{
@@ -336,6 +315,7 @@
           }else{
             return '部门'
           }
+          console.log(this.type);
         },
         dialogTitle:function(){
           let type = this.createType;
@@ -352,9 +332,7 @@
       },
       watch:{
         currentKey(val,oldVal){
-          console.log(val,oldVal);
           if(oldVal === '') return;
-          console.log(val);
           this.treeNav = '';
           let firstLev = [];
           this.data.forEach(item=>{
@@ -362,12 +340,16 @@
           })
           let arr = [];
           let data = this.$refs.tree.getCurrentNode();
+          console.log(data);
+          this.basicInfo = Object.assign({},data);
+          this.type = data.group_type;
           while (data){
-            arr.unshift(data.label);
+            arr.unshift(data.name);
             if(firstLev.indexOf(data.id)>=0)  break;
             data = this.$refs.tree.getNode(data.id).parent.data;
           }
           this.treeNav = arr.join('/');
+          console.log(this.treeNav);
         }
       },
       components:{
@@ -375,7 +357,7 @@
       },
       mounted(){
         this.$nextTick(()=>{
-          this.init();
+          this.getTreeData();
         })
       }
     }
