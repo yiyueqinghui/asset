@@ -141,6 +141,7 @@
               <el-col :sm="15">
                 <el-form-item label="附件上传">
                   <UploadFile :upload-data="icpFile" @uploadSuccess="uploadSuccess"></UploadFile>
+                  <a  v-if="this.formTitle == 2" :href="formData.icp_attachment_url" class="lookFile">查看附件</a>
                 </el-form-item>
               </el-col>
             </el-row>

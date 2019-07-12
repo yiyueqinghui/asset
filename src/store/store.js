@@ -101,14 +101,43 @@ let Store = {
          {"value": 2, "label": "银行托收"},
          {"value": 3, "label": "公对公转账"}
        ],
-       payWay:[
-         {"value": 1, "label": "年付"},
+       payWay:[{"value": 1, "label": "年付"},
          {"value": 2, "label": "季付"},
          {"value": 3, "label": "月付"}
        ],
        invoiceTypeList: [
          {"value": 1, "label": "普通发票"},
          {"value": 2, "label": "增值税专用发票"}
+       ],
+       genderList:[
+         {
+          "value": 1,
+          "label": "男"
+         },
+         {
+           "value": 2,
+           "label": "女"
+         }
+       ],
+       jobStatusList:[
+         {
+           "value": 1,
+           "label": "在职"
+         },
+         {
+           "value": 2,
+           "label": "离职"
+         }
+       ],
+       activeStatusList:[
+         {
+           "value": 1,
+           "label": "激活"
+         },
+         {
+           "value": 2,
+           "label": "未激活"
+         }
        ]
      }
 
@@ -258,7 +287,7 @@ let Store = {
        list.forEach((item)=>{
          let node = {};
          node.value = item.id;
-         node.label = item.name;
+         node.label = item.name+'  '+item.job_number;
          retList.push(node);
        })
        return retList;

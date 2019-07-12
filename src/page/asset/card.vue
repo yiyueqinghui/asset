@@ -55,7 +55,7 @@
         </el-table-column>
         <el-table-column  label="用户" prop="user_id_zh"  align="center">
         </el-table-column>
-        <el-table-column  label="所属机构" prop="dep_id"  align="center">
+        <el-table-column  label="所属机构" prop="dep_id_zh"  align="center">
         </el-table-column>
         <el-table-column  label="门禁卡号" prop="card_number"  align="center">
         </el-table-column>
@@ -107,7 +107,9 @@
           </el-row>
           <el-row>
             <el-col :sm="8">
-              <SelfInput type="1" :disabled="false" labelName="身份证号" keyName="id_card" :val="formData.id_card" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="身份证号" prop="id_card" :required="true">
+                <el-input v-model="formData.id_card" placeholder="身份证号以身份证附件上为准"></el-input>
+              </el-form-item>
             </el-col>
             <el-col :sm="8">
               <el-form-item label="所属机构">
@@ -126,6 +128,7 @@
             <el-col :sm="16">
               <el-form-item label="身份证复印件">
                 <UploadFile :upload-data="identifyFile" @uploadSuccess="uploadSuccess"></UploadFile>
+                <a  v-if="this.type==2" :href="formData.id_card_file_attachment_url" class="lookFile">查看附件</a>
               </el-form-item>
             </el-col>
           </el-row>
@@ -208,6 +211,18 @@
         uploadSuccess(res){
           let uuid = res[0].uuid;
           this.formData['id_card_file'] = uuid;
+          let data = { uuid:uuid,type:1 };
+
+          this.$axios.Asset.ocr('POST',data).then(res=>{
+            console.log(res.data);
+            this.formData.id_card = res.data.cardid;
+            console.log(this.formData.id_card)
+          })
+        },
+        funTreeSel1(node){
+          console.log(JSON.stringify(node.id))
+          let val = node.id;
+          this.formData.dep_id = val;
         },
         //查寻
         search(){
@@ -250,6 +265,7 @@
         // 新增,修改
         clickBtn(type){
           this.formTitle = type == 1 ? '新增':'修改';
+          this.type = type;
           this.editDate = this.$Store.formatDate();
           this.formData = this.$Store.resetForm(this.formData);
           if(type === 2){

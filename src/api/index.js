@@ -64,8 +64,11 @@ const URLS = {
   CARD:'/api-1.0/access-card/',
   MAINTENANCE:'/api-1.0/maintenance/',
   RENT:'/api-1.0/lease/',
+  OCR:'/api-1.0/ocr/',
 
-  ORG:'/api-1.0/department',
+  ORG:'/api-1.0/department/',
+  GRANT:'/api-1.0/rbac/perms/',
+  RBACGRANT:'/api-1.0/rbac/grant/',
 
 }
 
@@ -172,6 +175,10 @@ const Asset = {
   rent:(method,data)=>{
     let res = initPhpApi(data,method,URLS.RENT);
     return ApiAxios(res.method,res.url,res.data)
+  },
+  ocr:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.OCR);
+    return ApiAxios(res.method,res.url,res.data)
   }
 }
 
@@ -180,6 +187,15 @@ const System = {
     let res = initPhpApi(data,method,URLS.ORG);
     return ApiAxios(res.method,res.url,res.data)
   },
+  grant:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.GRANT);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+  rbacGrant:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.RBACGRANT);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+
 }
 
 

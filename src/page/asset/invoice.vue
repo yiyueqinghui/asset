@@ -33,7 +33,7 @@
             </el-option>
           </el-select>
           <!--机构以及资产类别选择-->
-          <treeselect v-if="this.searchKey === 'asset_class' "
+          <treeselect v-if="this.searchKey === 'asset_classes' "
                       v-model="searchVal"
                       :multiple="false"
                       placeholder="请选择..."
@@ -45,7 +45,7 @@
            <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
-           <el-dropdown trigger="hover" style="margin-left: 10px;" @command="handleCommand">
+           <el-dropdown trigger="hover" v-if="false" style="margin-left: 10px;" @command="handleCommand">
              <el-button type="primary" icon="el-icon-document-add">
                导入/导出
              </el-button>
@@ -63,7 +63,10 @@
         </el-table-column>
         <el-table-column type="index" label="序号" width="60" align="center">
         </el-table-column>
-        <el-table-column  label="资产类型" prop="asset_class"  align="center">
+        <el-table-column  label="资产类型"  align="center">
+          <template slot-scope="scope">
+             {{scope.row.asset_classes_name | asset_classes}}
+          </template>
         </el-table-column>
         <el-table-column  label="发票类型" prop="inv_type_zh"  align="center">
         </el-table-column>
@@ -121,15 +124,30 @@
               <SelfInput type="2"  labelName="发票类型" :selectList="invoiceTypeList"  keyName="inv_type" :val="formData.inv_type" :required="true" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="8">
-              <SelfInput  labelName="发票号码" keyName="inv_number" :val="formData.inv_number" :required="true" @changeFormVal="changeFormVal" :disabled="false"></SelfInput>
+              <el-form-item  label="发票号码" prop="inv_number" :required="true">
+                <el-input v-model="formData.inv_number" placeholder="发票号码以附件上为准"></el-input>
+              </el-form-item>
+              <!--<SelfInput  labelName="发票号码" keyName="inv_number" :val="formData.inv_number" :required="true" @changeFormVal="changeFormVal" :disabled="false"></SelfInput>-->
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="8">
-              <SelfInput type="3" labelName="开票日期" keyName="inv_time" :val="formData.inv_time" :required="true" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="开票日期" prop="inv_time" :required="true">
+                <el-date-picker style="width: 180px;"
+                  v-model="formData.inv_time"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  placeholder="选择日期">
+                </el-date-picker>
+              </el-form-item>
+              <!--<SelfInput type="3" labelName="开票日期" keyName="inv_time" :val="formData.inv_time" :required="true" @changeFormVal="changeFormVal"></SelfInput>-->
             </el-col>
             <el-col :sm="8">
-              <SelfInput type="5" labelName="发票金额" keyName="inv_money" :val="formData.inv_money" @changeFormVal="changeFormVal"></SelfInput>
+              <el-form-item  label="发票金额" prop="inv_money" :required="true">
+                <el-input v-model="formData.inv_money" placeholder="发票金额以附件上为准"></el-input>
+              </el-form-item>
+              <!--<SelfInput type="5" labelName="发票金额" keyName="inv_money" :val="formData.inv_money" @changeFormVal="changeFormVal"></SelfInput>-->
             </el-col>
             <el-col :sm="8">
               <SelfInput  type="4" labelName="开票备注" keyName="comment" :val="formData.comment" :required="true" @changeFormVal="changeFormVal"></SelfInput>
@@ -139,6 +157,7 @@
             <el-col :sm="16">
               <el-form-item label="发票附件">
                 <UploadFile :upload-data="invoiceFile" @uploadSuccess="uploadSuccess"></UploadFile>
+                <a  v-if="this.type==2" :href="formData.image_attachment_url" class="lookFile">查看附件</a>
               </el-form-item>
             </el-col>
           </el-row>
@@ -174,7 +193,7 @@
               label:'发票类型'
             },
             {
-              value:'asset_class',
+              value:'asset_classes',
               label:'资产类型'
             }
           ],
@@ -246,6 +265,17 @@
         uploadSuccess(res){
           let uuid = res[0].uuid;
           this.formData['attachment'] = uuid;
+
+          let data = { uuid:uuid,type:2 };
+          this.$axios.Asset.ocr('POST',data).then(res=>{
+            let invData = res.data;
+            this.formData.inv_number = invData.InvoiceNum;
+            this.formData.inv_money = invData.raw.words_result.AmountInFiguers;
+            let inv_dis_time = invData.raw.words_result.InvoiceDate;
+            inv_dis_time = inv_dis_time.replace(/[年月]/g,'-');
+            inv_dis_time = inv_dis_time.replace(/[日]/g,'');
+            this.formData.inv_time = inv_dis_time;
+          })
         },
         handleCommand(command){
           if(command == 'upload'){
@@ -286,12 +316,10 @@
           console.log(this.multipleSelection);
         },
         handleSizeChange(val) {
-          console.log(`每页 ${val} 条`);
           this.currentPageSize = val;
           this.search();
         },
         handleCurrentPage(val) {
-          console.log(`当前页: ${val}`);
           this.currentPage = val;
           this.search();
         },
@@ -311,6 +339,7 @@
         // 新增,修改
         clickBtn(type){
           this.formTitle = type == 1 ? '新增':'修改';
+          this.type = type;
           this.editDate = this.$Store.formatDate();
           this.formData = this.$Store.resetForm(this.formData);
           if(typeof this.formData.asset_class != "undefined"){
@@ -394,6 +423,13 @@
         }
       },
       filters:{
+        asset_classes(assetObj){
+          let valueArr = [];
+          for(let key in assetObj){
+            valueArr.push(assetObj[key]);
+          }
+          return valueArr.join('/');
+        }
       },
       components:{
         EditorInfo,

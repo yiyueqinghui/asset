@@ -1,42 +1,60 @@
 <template>
     <div id="user">
-       <el-row style="height: 100%;" class="userManage">
-         <el-col :span="4" :sm="4" class="treeColumn">
-           <el-tree
-             ref="tree"
-             :data="data"
-             node-key="id"
-             highlight-current
-             :current-node-key="currentKey"
-             @node-click="checkedNode">
-           </el-tree>
-         </el-col>
-         <el-col :span="20" :sm="20" class="employeeZone">
-           <el-row>
-             <el-button   type="primary" @click="edit(1)"  icon="el-icon-plus">新增</el-button>
-             <el-button  type="primary" @click="edit(2)" icon="el-icon-edit"  >修改</el-button>
-             <el-button  type="primary" @click="deleteData()" icon="el-icon-edit"  >删除</el-button>
-             <el-button  type="primary"  icon="el-icon-download"  >导出</el-button>
-           </el-row>
-
+      <el-form :inline="true">
+        <el-form-item class="search">
+            <el-select  v-model="searchKey" placeholder="" style="width: 110px;">
+              <el-option
+                v-for="item in searchKeyList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <!--下拉选择 -->
+            <el-select v-if="this.selectArr.indexOf(this.searchKey)>=0" :clearable="true" v-model="searchVal" placeholder="请选择" style="width:200px;left: -12px;">
+              <el-option
+                v-for="(item,index) in searchValList"
+                :key="index"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <!--机构以及资产类别选择-->
+            <treeselect v-if="this.searchKey === 'dep_group_type' "
+                        v-model="searchVal"
+                        :multiple="false"
+                        placeholder="请选择..."
+                        :show-count="false"
+                        :options="departList" />
+      </el-form-item>
+        <el-form-item>
+          <el-button  type="primary" @click="search"  icon="el-icon-search">查寻</el-button>
+          <el-button  type="primary" @click="edit(1)"  icon="el-icon-plus">新增</el-button>
+          <el-button  type="primary" @click="edit(2)" icon="el-icon-edit"  >修改</el-button>
+          <el-button  type="primary" @click="deleteData()" icon="el-icon-edit"  >删除</el-button>
+          <el-button  type="primary" @click="batchAuth" icon="el-icon-edit"  >批量授权</el-button>
+          <el-button  type="primary" @click="authUser" icon="el-icon-edit"  >修改权限</el-button>
+          <el-button v-if="false" type="primary"  icon="el-icon-download"  >导出</el-button>
+        </el-form-item>
+      </el-form>
+      <el-col :span="24" :sm="24" >
            <el-table :data="employeeList"  @selection-change="handleSelectionChange" ref="multipleTable"  border stripe fit style="overflow-x: auto;margin-top: 20px;">
              <el-table-column type="selection" width="55">
              </el-table-column>
              <el-table-column type="index" label="序号" width="60" align="center">
              </el-table-column>
-             <el-table-column  label="登录名称" prop="username"  align="center">
-             </el-table-column>
              <el-table-column  label="员工姓名"  prop="name"  align="center">
              </el-table-column>
              <el-table-column  label="工号" prop="job_number"  align="center">
              </el-table-column>
-             <el-table-column  label="头像" prop="avatar"  align="center">
+             <el-table-column  label="头像"  align="center">
+               <template slot-scope="scope">
+                  <img v-if="scope.row.avatar_attachment_url"  class="avatar_pic" :src="scope.row.avatar_attachment_url"    />
+               </template>
              </el-table-column>
-             <el-table-column  label="性别" prop="gender"  align="center">
+             <el-table-column  label="性别" prop="gender_zh"  align="center">
              </el-table-column>
-             <el-table-column  label="所属公司" prop="blongCompany"  align="center">
-             </el-table-column>
-             <el-table-column  label="所属部门" prop="blongDepart"  align="center">
+             <el-table-column  label="所属部门" prop="dep_group_type_zh"  align="center">
              </el-table-column>
              <el-table-column  label="移动电话" width="120" prop="mobile"  align="center">
              </el-table-column>
@@ -50,11 +68,12 @@
              </el-table-column>
              <el-table-column  label="办公地点" prop="office"  align="center">
              </el-table-column>
-             <el-table-column  label="在职状态" prop="job_status"  align="center">
+             <el-table-column  label="在职状态" prop="job_status_zh"  align="center">
              </el-table-column>
-             <el-table-column  label="是否启用" prop="active"  align="center">
+             <el-table-column  label="是否启用" prop="active_zh"  align="center">
              </el-table-column>
            </el-table>
+
            <!--分页-->
            <el-row>
              <el-pagination
@@ -62,72 +81,66 @@
                @size-change="handleSizeChange"
                @current-change="handleCurrentPage"
                :current-page="currentPage"
-               :page-sizes="[5,10,30,50]"
-               :page-size="5"
+               :page-sizes="[10,30,50]"
+               :page-size="currentPageSize"
                layout="total, sizes, prev, pager, next, jumper"
                :total="total">
              </el-pagination>
            </el-row>
          </el-col>
-       </el-row>
-      <el-dialog
+      <el-dialog v-if="dialogVisible"
         :close-on-click-modal="false" :close-on-press-escape="false"
         :title="title"
         :visible.sync="dialogVisible"
         width="960px"
         top="80px">
-        <el-form :inline="true" v-if="dialogVisible" :model="employeeInfo"  label-width="auto"  class="demo-form-inline self-input border">
+        <el-form :inline="true"  :model="employeeInfo"  label-width="auto"  class="demo-form-inline self-input border">
           <el-row>
             <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" labelName="员工编号" :required="true"  keyName="job_number" :val="employeeInfo.job_number" @changeFormVal="changeAllotVal"></SelfInput>
+              <SelfInput  labelName="员工编号" :required="true"  keyName="job_number" :val="employeeInfo.job_number" @changeFormVal="changeAllotVal"></SelfInput>
             </el-col>
-            <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" labelName="员工姓名" :required="true"  keyName="name" :val="employeeInfo.name" @changeFormVal="changeAllotVal"></SelfInput>
+            <el-col :sm="12" v-if="dialogVisible">
+              <SelfInput  labelName="员工姓名" :required="true"  keyName="name" :val="employeeInfo.name" @changeFormVal="changeAllotVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" type="1" :selectList="sexList" labelName="性别" :required="true"  keyName="gender" :val="employeeInfo.gender" @changeFormVal="changeAllotVal"></SelfInput>
+              <SelfInput  type="2" :selectList="grenderList" labelName="性别" :required="true"  keyName="gender" :val="employeeInfo.gender" @changeFormVal="changeAllotVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" type="1" :selectList="companyList" labelName="在职状态" :required="true"  keyName="job_status" :val="employeeInfo.job_status" @changeFormVal="changeAllotVal"></SelfInput>
+              <SelfInput  type="2" :selectList="jobStatusList" labelName="在职状态" :required="true"  keyName="job_status" :val="employeeInfo.job_status" @changeFormVal="changeAllotVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" type="1" :selectList="departList" labelName="是否启用" :required="true"  keyName="active" :val="employeeInfo.active" @changeFormVal="changeAllotVal"></SelfInput>
+              <SelfInput  type="2" :selectList="activeStatusList" labelName="是否启用" :required="true"  keyName="active" :val="employeeInfo.active" @changeFormVal="changeAllotVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" labelName="移动电话" :required="true"  keyName="mobile" :val="employeeInfo.mobile" @changeFormVal="changeAllotVal"></SelfInput>
+              <SelfInput  labelName="移动电话" :required="true"  keyName="mobile" :val="employeeInfo.mobile" @changeFormVal="changeAllotVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" labelName="身份证号"   keyName="id_card" :val="employeeInfo.id_card" @changeFormVal="changeAllotVal"></SelfInput>
+              <SelfInput  labelName="身份证号"   keyName="id_card" :val="employeeInfo.id_card" @changeFormVal="changeAllotVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" labelName="个人邮箱"   keyName="email" :val="employeeInfo.email" @changeFormVal="changeAllotVal"></SelfInput>
+              <SelfInput  labelName="个人邮箱"   keyName="email" :val="employeeInfo.email" @changeFormVal="changeAllotVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" labelName="集团邮箱" :required="true"  keyName="company_email" :val="employeeInfo.company_email" @changeFormVal="changeAllotVal"></SelfInput>
+              <SelfInput  labelName="集团邮箱" :required="true"  keyName="company_email" :val="employeeInfo.company_email" @changeFormVal="changeAllotVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" labelName="职位名称"  keyName="job_title" :val="employeeInfo.job_title" @changeFormVal="changeAllotVal"></SelfInput>
+              <SelfInput  labelName="职位名称"  keyName="job_title" :val="employeeInfo.job_title" @changeFormVal="changeAllotVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
             <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" labelName="办公地点" keyName="office" :val="employeeInfo.office" @changeFormVal="changeAllotVal"></SelfInput>
+              <SelfInput  labelName="办公地点" keyName="office" :val="employeeInfo.office" @changeFormVal="changeAllotVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput v-if="dialogVisible" labelName="登录姓名" keyName="username" :val="employeeInfo.username" @changeFormVal="changeAllotVal"></SelfInput>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="10">
-              <SelfInput v-if="dialogVisible" labelName="部门" keyName="dep_id" :val="employeeInfo.dep_id" @changeFormVal="changeAllotVal"></SelfInput>
+              <SelfInput type="6" :select-list="departList"  labelName="所在部门" keyName="dep_id" :val="employeeInfo.dep_id" @changeFormVal="changeAllotVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
@@ -149,43 +162,37 @@
 <script>
     import SelfInput from '../../components/common/selfInput'
     import Avatar from '../../components/common/avatar'
+    import Treeselect from '@riophae/vue-treeselect'
+    import '@riophae/vue-treeselect/dist/vue-treeselect.css'
     export default {
       name: "user",
       data(){
         return {
-          data: [
+          searchKey:'name',
+          searchKeyList: [
             {
-              id: 1,
-              label: '一级公司 1',
-              code:'001',
-              type:'1',
-              children: [{
-                id: 4,
-                label: '二级部门 1-1',
-                code:'002',
-                type:'2',
-                children: [{
-                  id: 9,
-                  label: '三级部门 1-1-1',
-                  code:'003',
-                  type:'2',
-                }, {
-                  id: 10,
-                  label: '三级部门 1-1-2',
-                  code:'004',
-                  type:'2',
-                }]
-              }]
+              value:'name',
+              label:'员工姓名'
+            },
+            {
+              value:'dep_group_type',
+              label:'所属部门'
             }
-
           ],
+          searchVal:'',
+          searchValList:[],
+          selectArr:['name'],
+          treeArr:['dep_group_type'],
+
+          data: [],
+          defaultProps:{ label:'name' },
+          treeShow:false,
           currentKey:1,
           multipleSelection:[],
           currentPage:1,
+          currentPageSize:10,
           total:50,
-          employeeList:[
-
-          ],
+          employeeList:[],
           dialogVisible:false,
           employeeInfo:{
             avatar:'',
@@ -204,36 +211,8 @@
             dep_id:''
           },
           title:'新增',
-          sexList:[
-            {
-              code:1,
-              value:'男'
-            },
-            {
-              code:2,
-              value:'女'
-            }
-          ],
-          companyList:[
-            {
-              code:1,
-              value:'公司一'
-            },
-            {
-              code:2,
-              value:'公司二'
-            }
-          ],
-          departList:[
-            {
-              code:1,
-              value:'部门一'
-            },
-            {
-              code:2,
-              value:'部门二'
-            }
-          ],
+          genderList:[],
+          departList:[],
           uploadData:{
             name:'file'
           }
@@ -245,7 +224,6 @@
         },
         uploadSuccess(res){
           let uuid = res[0].uuid;
-          console.log('uuid == ' + uuid);
           this.employeeInfo['avatar'] = uuid;
         },
         handleSelectionChange(val) {
@@ -254,13 +232,16 @@
         },
         handleSizeChange(val) {
           console.log(`每页 ${val} 条`);
+          this.currentPageSize = val;
+          this.fetchData();
         },
         handleCurrentPage(val) {
           console.log(`当前页: ${val}`);
           this.currentPage = val;
+          this.fetchData();
         },
         checkedNode(data){
-          console.log(data);
+          this.employeeInfo.dep_id = data.id;
         },
         confirm(){
           this.dialogVisible = false;
@@ -268,13 +249,26 @@
         changeAllotVal([key,val]){
           this.employeeInfo[key] = val;
         },
-        fetchData(){
-          this.$axios.Asset.user('GET',{}).then(res=>{
-            console.log(" result ==++++====" + JSON.stringify(res.data));
+        fetchData(data){
+          data = data || {};
+          let defaultData = {
+            page:this.currentPage,
+            per_page:this.currentPageSize
+          }
+          data = Object.assign(defaultData,data);
+
+          this.$axios.Asset.user('GET',data).then(res=>{
             this.employeeList = res.data;
             this.total = res.meta.total
           })
         },
+
+        search(){
+          let data = {}
+          data[this.searchKey] = this.searchVal;
+          this.fetchData(data);
+        },
+
         // 新增,修改
         edit(type){
           this.title = type == 1 ? '新增':'修改';
@@ -352,24 +346,60 @@
             type:type,
             duration:1500
           })
+        },
+        authUser(){
+          this.$message.info('修改用户权限！')
+        },
+        batchAuth(){
+          this.$message.info('批量授权！')
         }
       },
       watch:{
-        employeeInfo:{
-          handler:function(val,oldVal){
+        searchKey:{
+          handler(val,oldVal){
             console.log(val);
-          },
-          deep:true
+            this.searchVal = '';
+            let dictionary = this.$Store.data.dictionary;
+            if(val === 'name') this.searchValList = this.userList;
+            else this.searchVal = null;
+          }
         }
-      },
-      mounted(){
-        this.init();
-
       },
       components:{
         SelfInput,
-        Avatar
+        Avatar,
+        Treeselect
+      },
+      created(){
+        this.$Store.getDepartmentList().then((data)=>{
+          this.departList = data;
+        })
+
+        this.$Store.getUserList().then((data)=>{
+          this.userList = data;
+          this.searchValList = data;
+        })
+
+        this.$axios.System.org('GET',{}).then((res)=>{
+          this.data = res.data.tree;
+          this.treeShow = true;
+          this.employeeInfo.dep_id = this.data[0].id;
+        })
+
+        this.grenderList = this.$Store.data.dictionary.genderList;
+
+        this.jobStatusList = this.$Store.data.dictionary.jobStatusList;
+
+        this.activeStatusList = this.$Store.data.dictionary.activeStatusList;
+
+
+
+
+      },
+      mounted(){
+        this.init();
       }
+
 
     }
 </script>
@@ -399,6 +429,13 @@
     padding-left: 20px;
     border-left: 1px solid #bed3cf;
 
+  }
+  .avatar_pic{
+    width: 30px;
+    height: 30px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
   }
 
 </style>

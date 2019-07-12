@@ -7,7 +7,8 @@
       </el-row>
       <!--表格-->
       <el-table :data="personAsset"  border stripe fit style="overflow-x: auto">
-        <el-table-column type="index" label="序列" width="60" align="center">
+        <el-table-column label="序列" width="60" align="center">
+          <template slot-scope="scope">{{scope.$index+1+(currentPage-1)*currentPageSize}}</template>
         </el-table-column>
         <el-table-column label="资产状态" width="120" prop="status_zh"  align="center">
         </el-table-column>

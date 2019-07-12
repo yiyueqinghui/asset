@@ -1,12 +1,15 @@
 <template>
     <div id="roles">
+      <!--功能区域-->
       <el-row>
         <el-button  type="primary" icon="el-icon-plus" @click="editRole(1)">新建角色</el-button>
-        <el-button  type="primary" icon="el-icon-edit"  @click="editRole(2)">修改</el-button>
-        <el-button  type="primary" icon="el-icon-edit"  @click="deleteRole">删除</el-button>
+        <el-button  v-if="false" type="primary" icon="el-icon-edit"  @click="editRole(2)">修改</el-button>
+        <el-button  type="primary" icon="el-icon-edit"  @click="deleteRole">删除角色</el-button>
         <el-button  type="primary" icon="el-icon-plus" @click="authRole">角色授权</el-button>
-        <el-button  type="primary" icon="el-icon-s-custom" @click="assignUser" >分配用户</el-button>
+        <el-button  v-if="false" type="primary" icon="el-icon-s-custom" @click="assignUser" >分配用户</el-button>
       </el-row>
+
+      <!--角色列表-->
       <el-row>
         <el-table :data="roleData" class="roleTab"  @selection-change="handleSelectionChange" ref="multipleTable"  border stripe fit style="overflow-x: auto">
           <el-table-column type="selection" width="55">
@@ -41,8 +44,9 @@
           <el-button type="primary" @click="confirmBtn">确 定</el-button>
         </div>
       </el-dialog>
+
       <!--编辑角色-->
-      <el-dialog
+      <el-dialog v-if="false"
         class="editDialog"
         :close-on-click-modal="false" :close-on-press-escape="false"
         title="修改角色"
@@ -105,45 +109,46 @@
           <el-button type="primary" @click="confirmBtn">确 定</el-button>
         </div>
       </el-dialog>
+
       <!--角色授权-->
-      <el-dialog
+      <el-dialog v-if="authVisible"
         :close-on-click-modal="false" :close-on-press-escape="false"
         title="角色授权"
         :visible.sync="authVisible"
         width="560px"
-        top="80px">
-        <el-form  :inline="true" :model="authForm"  label-width="auto"  class="demo-form-inline self-input">
-          <el-row>
-            <el-form-item label="角色名称">
-              <el-input disabled="disabled" v-model="authForm.roleName"></el-input>
-            </el-form-item>
-          </el-row>
-          <el-row>
-            <el-form-item label="授权">
-              <el-tree
-                highlight-current
-                :data="roleAuth"
-                show-checkbox
-                node-key="id"
-                :default-expanded-keys="expandedKeys"
-                :default-checked-keys="checkedKeys"
-                :current-node-key="currentKey"
-                @check="checkedChange"
-                :props="defaultProps">
-              </el-tree>
-            </el-form-item>
-          </el-row>
-
-
+        top="30px">
+        <el-scrollbar class="dialogZone">
+           <el-form  :inline="true" :model="authForm"  label-width="auto"  class="demo-form-inline self-input">
+              <el-row>
+                <el-form-item label="角色名称">
+                  <el-input disabled="disabled" v-model="authForm.name"></el-input>
+                </el-form-item>
+              </el-row>
+              <el-row>
+                <el-form-item label="角色授权">
+                  <el-tree
+                    highlight-current
+                    :data="roleAuth"
+                    show-checkbox
+                    node-key="id"
+                    :default-expanded-keys="expandedKeys"
+                    :default-checked-keys="checkedKeys"
+                    :current-node-key="currentKey"
+                    @check="checkedChange"
+                    :props="defaultProps">
+                  </el-tree>
+                </el-form-item>
+              </el-row>
         </el-form>
-
+        </el-scrollbar>
         <div slot="footer" class="dialog-footer">
           <el-button @click="authVisible = false">取 消</el-button>
           <el-button type="primary" @click="confirmAuth">确 定</el-button>
         </div>
       </el-dialog>
+
       <!--分配用户-->
-      <el-dialog
+      <el-dialog v-if="false"
         :close-on-click-modal="false" :close-on-press-escape="false"
         title="分配用户"
         :visible.sync="userVisible"
@@ -174,9 +179,6 @@
           <el-button type="primary" @click="confirmAssign">确 定</el-button>
         </div>
       </el-dialog>
-
-
-
     </div>
 </template>
 
@@ -186,8 +188,7 @@
       data(){
         return {
           propsData: { multiple: true, expandTrigger: 'hover'},
-          roleData:[
-          ],
+          roleData:[],
           multipleSelection:[],
           createVisible:false,
           createForm:{
@@ -196,72 +197,13 @@
           },
           editVisible:false,
           currentIndex:1,
-          roleAuth:[
-            {
-            id: 1,
-            label: '一级 1',
-            children: [{
-              id: 4,
-              label: '二级 1-1',
-              children: [{
-                id: 9,
-                label: '三级 1-1-1'
-              }, {
-                id: 10,
-                label: '三级 1-1-2'
-              }]
-            }]
-          },
-            {
-            id: 2,
-            label: '一级 2',
-            children: [{
-              id: 5,
-              label: '二级 2-1'
-            }, {
-              id: 6,
-              label: '二级 2-2'
-            }]
-          },
-            {
-            id: 3,
-            label: '一级 3',
-            children: [{
-              id: 7,
-              label: '二级 3-1'
-            }, {
-              id: 8,
-              label: '二级 3-2'
-            }]
-          }],
-          expandedKeys:[1,3],
-          checkedKeys:[7,9,5,6],
-          defaultProps: {
-            children: 'children',
-            label: 'label'
-          },
+          roleAuth:[ ],
+          expandedKeys:[],
+          checkedKeys:[],
+          defaultProps:{label:'name'},
           currentKey:'',
           searchVal:'',
-          personData:[
-            {
-              id:1,
-              name:'张三',
-              blongDepart:'总部',
-              employee:'经理'
-            },
-            {
-              id:2,
-              name:'张三',
-              blongDepart:'总部',
-              employee:'经理'
-            },
-            {
-              id:3,
-              name:'张三',
-              blongDepart:'总部',
-              employee:'经理'
-            }
-          ],
+          personData:[],
           personSelection:[],
           authVisible:false,
           authForm:{
@@ -272,58 +214,7 @@
             userList:[]
           },
           userVisible:false,
-          options: [
-            {
-              value: 1,
-              label: '东南',
-              children: [{
-                value: 2,
-                label: '上海',
-                children: [
-                  { value: 3, label: '普陀' },
-                  { value: 4, label: '黄埔' },
-                  { value: 5, label: '徐汇' }
-                ]
-              }, {
-                value: 7,
-                label: '江苏',
-                children: [
-                  { value: 8, label: '南京' },
-                  { value: 9, label: '苏州' },
-                  { value: 10, label: '无锡' }
-                ]
-              }, {
-                value: 12,
-                label: '浙江',
-                children: [
-                  { value: 13, label: '杭州' },
-                  { value: 14, label: '宁波' },
-                  { value: 15, label: '嘉兴' }
-                ]
-              }]
-            },
-            {
-              value: 17,
-              label: '西北',
-              children: [{
-                value: 18,
-                label: '陕西',
-                children: [
-                  { value: 19, label: '西安' },
-                  { value: 20, label: '延安' }
-                ]
-              }, {
-                value: 21,
-                label: '新疆维吾尔族自治区',
-                children: [
-                  { value: 22, label: '乌鲁木齐' },
-                  { value: 23, label: '克拉玛依' }
-                ]
-              }]
-            }]
-
-
-
+          options: []
 
         }
       },
@@ -333,59 +224,23 @@
         },
         fetchData(){
           this.$axios.Asset.role('GET',{}).then(res=>{
-            console.log(" result ==++++====" + JSON.stringify(res.data));
             this.roleData = res.data;
-            this.total = res.meta.total
           })
         },
-        // 新增,修改
+        // 新增
         editRole(type){
-          this.title = type == 1 ? '新增':'修改';
+          this.title = '新增';
           this.createForm = this.$Store.resetForm(this.createForm);
-          if(type === 2){
-            console.log(JSON.stringify(this.multipleSelection));
-            if(this.multipleSelection.length === 1){
-              this.createForm = Object.assign({},this.multipleSelection[0]);
-              console.log(JSON.stringify(this.createForm));
-              // this.validDate = this.formData.validDate.split('-');
-            }else{
-              this.$message({
-                message:'请选择一条要修改的数据',
-                type:'warning'
-              })
-              return;
-            }
-            this.editVisible = true;
-          }else{
-            this.createVisible = true;
-          }
+          this.createVisible = true;
         },
         confirmBtn(){
           let id = this.createForm.id;
           let data = this.createForm;
-          if(this.title == '新增'){
-            this.$axios.Asset.role('POST',data).then(res=>{
-              // this.tipMessage('新增成功！');
-              this.$message({
-                message:'新增成功！',
-                type:'success'
-              })
-              this.fetchData();
-              this.createVisible = false;
-            })
-          }else{
-            this.$axios.Asset.role('PUT',data).then(res=>{
-              console.log(res);
-              this.$message({
-                message:'修改成功！',
-                type:'success'
-              })
-              this.fetchData();
-              this.editVisible = false;
-            }).catch(error=>{
-              // TODO error result
-            })
-          }
+          this.$axios.Asset.role('POST',data).then(res=>{
+            this.$message.success('新增成功！')
+            this.fetchData();
+            this.createVisible = false;
+          })
         },
         deleteRole(){
           if(this.multipleSelection.length === 0){
@@ -416,38 +271,6 @@
             duration:1500
           })
         },
-
-        /*editRole(type){
-          if(type === 1){
-            this.createForm = this.$Store.resetForm(this.createForm);
-            this.createVisible = true;
-          }else if(type === 2){
-            if(this.multipleSelection.length === 1){
-              this.createForm = Object.assign({},this.multipleSelection[0]);
-              this.editVisible = true;
-            }else{
-              this.$message({
-                type:'warning',
-                message:'请选择一条要操作的数据'
-              })
-            }
-
-          }else if(type === 3){
-            if(this.multipleSelection.length >= 1){
-              this.$message({
-                type:'success',
-                message:'删除成功！'
-              })
-            }else{
-              this.$message({
-                type:'warning',
-                message:'请至少选择一条要删除的数据'
-              })
-            }
-
-          }
-
-        },*/
         handleSelectionChange(val) {
           this.multipleSelection = val;
           console.log(this.multipleSelection);
@@ -466,6 +289,7 @@
           console.log(key);
         },
         checkedChange(data,status){
+          console.log(status);
           this.checkedKeys = status.checkedKeys;
         },
         addPerson(){
@@ -478,14 +302,18 @@
 
         },
         authRole(){
+          this.authForm = Object.assign({},this.multipleSelection[0]);
+          let data = {id:this.authForm.id};
+
           if(this.multipleSelection.length === 1){
-            this.authForm = Object.assign({},this.multipleSelection[0]);
-            this.authVisible = true;
-          }else{
-            this.$message({
-              type:'warning',
-              message:'请选择一个要授权的角色'
+            this.$axios.System.rbacGrant('GET',data).then(res=>{
+                this.roleAuth = res.data.permissions.tree;
+                this.checkedKeys = res.data.checked_keys;
+                this.expandedKeys = res.data.checked_keys;
+                this.authVisible = true;
             })
+          }else{
+            this.$message.warning('请选择一个要授权的角色');
           }
 
         },
@@ -501,7 +329,14 @@
           }
         },
         confirmAuth(){
-          this.authVisible = false;
+          let data = {
+            id:this.authForm.id,
+            ids:this.checkedKeys
+          }
+          this.$axios.System.rbacGrant('POST',data).then(res=>{
+            this.$message.success('授权成功！');
+            this.authVisible = false;
+          })
         },
         confirmAssign(){
           this.userVisible = false;
@@ -510,9 +345,15 @@
 
       },
       watch:{
-        userForm:{
-          handler:function(val,oldval){
+        userForm: {
+          handler: function (val, oldval) {
             console.log(typeof val)
+            console.log(val)
+          },
+          deep: true
+        },
+        checkedKeys:{
+          handler(val,oldVal){
             console.log(val)
           },
           deep:true

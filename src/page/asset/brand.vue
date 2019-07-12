@@ -45,7 +45,7 @@
            <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(1)" type="primary" icon="el-icon-edit">新增</el-button>
            <el-button  style="margin-left: 10px;" @click="clickBtn(2)" type="primary" icon="el-icon-edit">修改</el-button>
-           <el-dropdown trigger="hover" style="margin-left: 10px;" @command="handleCommand">
+           <el-dropdown trigger="hover" v-if="false" style="margin-left: 10px;" @command="handleCommand">
              <el-button type="primary" icon="el-icon-document-add">
                导入/导出
              </el-button>
@@ -94,8 +94,8 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentPage"
           :current-page="currentPage"
-          :page-sizes="[5,10,30,50]"
-          :page-size="5"
+          :page-sizes="[10,30,50]"
+          :page-size="10"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total">
         </el-pagination>
@@ -106,7 +106,8 @@
         :title="formTitle"
         :visible.sync="dialogFormVisible"
         v-if="dialogFormVisible"
-        width="960px">
+        width="960px"
+        top="30px">
         <EditorInfo :edit-date="editDate"></EditorInfo>
         <el-form :inline="true" :model="formData"  label-width="auto"  class="demo-form-inline date-range-input">
           <el-row class="dialog_subtitle">基本信息</el-row>
@@ -139,7 +140,7 @@
               <SelfInput type="3" labelName="注册日期" keyName="reg_time" :val="formData.reg_time" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
             <el-col :sm="12">
-              <SelfInput type="3" labelName="有效期" keyName="end_time" :val="formData.end_time" @changeFormVal="changeFormVal"></SelfInput>
+              <SelfInput type="3" labelName="有效期至" keyName="end_time" :val="formData.end_time" @changeFormVal="changeFormVal"></SelfInput>
             </el-col>
           </el-row>
           <el-row>
@@ -149,12 +150,10 @@
           </el-row>
           <el-row>
             <el-col :sm="16">
-              <el-form-item label="（商标）附件上传">
+              <el-form-item label="附件上传">
                 <UploadFile @uploadSuccess="uploadSuccess"></UploadFile>
+                <a  v-if="this.type == 2" :href="formData.tm_attachment_url" class="lookFile">查看附件</a>
               </el-form-item>
-            </el-col>
-            <el-col :sm="16">
-              <img :src="formData.tm_attachment_url" width="120" height="120"/>
             </el-col>
           </el-row>
         </el-form>
@@ -318,6 +317,7 @@
         // 新增,修改
         clickBtn(type){
           this.formTitle = type == 1 ? '新增':'修改';
+          this.type = type;
           this.editDate = this.$Store.formatDate();
           this.formData = this.$Store.resetForm(this.formData);
           if(type === 2){
