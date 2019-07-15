@@ -360,7 +360,6 @@
         }
       },
       mounted(){
-        this.personData = new Array(20).fill(this.personData[0]);
         this.init();
       }
 

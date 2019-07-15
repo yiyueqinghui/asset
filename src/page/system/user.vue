@@ -32,8 +32,7 @@
           <el-button  type="primary" @click="edit(1)"  icon="el-icon-plus">新增</el-button>
           <el-button  type="primary" @click="edit(2)" icon="el-icon-edit"  >修改</el-button>
           <el-button  type="primary" @click="deleteData()" icon="el-icon-edit"  >删除</el-button>
-          <el-button  type="primary" @click="batchAuth" icon="el-icon-edit"  >批量授权</el-button>
-          <el-button  type="primary" @click="authUser" icon="el-icon-edit"  >修改权限</el-button>
+          <el-button  type="primary" @click="batchAuth" icon="el-icon-edit"  >用户授权</el-button>
           <el-button v-if="false" type="primary"  icon="el-icon-download"  >导出</el-button>
         </el-form-item>
       </el-form>
@@ -93,7 +92,7 @@
         :title="title"
         :visible.sync="dialogVisible"
         width="960px"
-        top="80px">
+        top="30px">
         <el-form :inline="true"  :model="employeeInfo"  label-width="auto"  class="demo-form-inline self-input border">
           <el-row>
             <el-col :sm="12">
@@ -156,6 +155,38 @@
           <el-button type="primary" @click="confirmBtn">确 定</el-button>
         </div>
       </el-dialog>
+      <!--授权、修改权限-->
+      <el-dialog v-if="dialogAuthVisible" :close-on-click-modal="false" :close-on-press-escape="false"
+       title="用户授权"
+       :visible.sync="dialogAuthVisible"
+       width="960px"
+       top="30px">
+        <el-form :model="userAuthData" :inline="true">
+          <el-row>
+            <el-form-item label="授权员工">
+              <el-input type="text" :value="userAuthData.idNames" :disabled="true"/>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="成员权限" class="transfer">
+              <el-transfer
+                v-model="userAuthData.RoleIdParam"
+                :data="roleList"
+                :titles="['角色列表', '已授权角色']"
+                :props="{
+                  key: 'id',
+                  label: 'name'
+                }">
+              </el-transfer>
+            </el-form-item>
+          </el-row>
+
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogAuthVisible = false">取 消</el-button>
+          <el-button type="primary" @click="confirmAuth">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
 </template>
 
@@ -215,7 +246,14 @@
           departList:[],
           uploadData:{
             name:'file'
-          }
+          },
+          dialogAuthVisible:false,
+          userAuthData:{
+            RoleIdParam:[],
+            idNames:'',
+            ids:[]
+          },
+          roleList:[]
         }
       },
       methods:{
@@ -257,6 +295,7 @@
           }
           data = Object.assign(defaultData,data);
 
+          console.log(data);
           this.$axios.Asset.user('GET',data).then(res=>{
             this.employeeList = res.data;
             this.total = res.meta.total
@@ -347,11 +386,48 @@
             duration:1500
           })
         },
-        authUser(){
-          this.$message.info('修改用户权限！')
-        },
         batchAuth(){
-          this.$message.info('批量授权！')
+          this.userAuthData = this.$Store.resetForm(this.userAuthData);
+
+          //传递用户数据
+          let selectedUsers = this.multipleSelection;
+          if(selectedUsers.length === 0){
+            this.$message.warning('请选择一个用户进行授权！')
+            return;
+          }else if(selectedUsers.length === 1){
+            let names = [];
+            selectedUsers.forEach(item=>{
+              this.userAuthData.ids.push(item.id);
+              names.push(item.name);
+            })
+            this.userAuthData.idNames = names.join(' 、');
+          }else{
+            this.$message.warning('每次只能对一个用户进行授权！')
+            return;
+          }
+
+          // 角色列表
+          let userData = {id:selectedUsers[0].id};
+          this.$axios.System.userRole('GET',userData).then(res=>{
+            let data = res.data;
+            data.forEach(item=>{
+              this.userAuthData.RoleIdParam.push(item.id);
+            })
+            this.dialogAuthVisible = true;
+          })
+
+        },
+        confirmAuth(){
+          this.userAuthData.ids.forEach(item=>{
+            let data = {
+              ids:this.userAuthData.RoleIdParam,
+              id:item
+            }
+            this.$axios.System.userRole('POST',data).then(res=>{
+              this.$message.success('授权成功！')
+              this.dialogAuthVisible = false;
+            })
+          })
         }
       },
       watch:{
@@ -363,6 +439,12 @@
             if(val === 'name') this.searchValList = this.userList;
             else this.searchVal = null;
           }
+        },
+        userAuthData:{
+          handler(val,oldVal){
+            console.log(val);
+          },
+          deep:true
         }
       },
       components:{
@@ -386,6 +468,11 @@
           this.employeeInfo.dep_id = this.data[0].id;
         })
 
+        //角色列表
+        this.$axios.Asset.role('GET',{}).then(res=>{
+          this.roleList = res.data;
+        })
+
         this.grenderList = this.$Store.data.dictionary.genderList;
 
         this.jobStatusList = this.$Store.data.dictionary.jobStatusList;
@@ -404,7 +491,7 @@
     }
 </script>
 
-<style>
+<style >
   #user{
     height: 100%;
   }
@@ -436,6 +523,9 @@
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
     border-radius: 50%;
+  }
+  .transfer .el-checkbox{
+    display: block;
   }
 
 </style>

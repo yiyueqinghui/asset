@@ -69,6 +69,7 @@ const URLS = {
   ORG:'/api-1.0/department/',
   GRANT:'/api-1.0/rbac/perms/',
   RBACGRANT:'/api-1.0/rbac/grant/',
+  USERROLE:'/api-1.0/rbac/user-role'
 
 }
 
@@ -193,6 +194,10 @@ const System = {
   },
   rbacGrant:(method,data)=>{
     let res = initPhpApi(data,method,URLS.RBACGRANT);
+    return ApiAxios(res.method,res.url,res.data)
+  },
+  userRole:(method,data)=>{
+    let res = initPhpApi(data,method,URLS.USERROLE);
     return ApiAxios(res.method,res.url,res.data)
   },
 

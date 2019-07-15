@@ -170,14 +170,6 @@
               {
                 title: '用户管理',
                 url: '/system/user'
-              },
-              {
-                title: '新版用户管理',
-                url: '/system/new-user'
-              },
-              {
-                title: '新版角色管理',
-                url: '/system/new-role'
               }
             ]
           }

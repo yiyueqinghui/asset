@@ -1,8 +1,10 @@
 //vue 简单的公用数据状态管理，如果复杂的话，必须使用vuex
 import Api from '../api/index'
-// import Dictionary from '../utils/dictionary'
+import Dictionary from '../utils/dictionary'
+import Permission from '../utils/permissions'
 
 let Store = {
+   //公共数据
    data:{
      token:localStorage.getItem('token'),
      baseApi:localStorage.getItem('baseApi'),
@@ -10,138 +12,11 @@ let Store = {
      departList:[],
      userList:[],
      invoiceList:[],
-     dictionary:{
-       status:[
-         {
-           value:'1',
-           label:'闲置'
-         },
-         {
-           value:'2',
-           label:'在用'
-         },
-         {
-           value:'3',
-           label:'借用'
-         },
-         {
-           value:'4',
-           label:'调拨中'
-         },
-         {
-           value:'5',
-           label:'维修中'
-         },
-         {
-           value:'6',
-           label:'退库'
-         },
-         {
-           value:'7',
-           label:'报废'
-         },
-         {
-           value:'8',
-           label:'退租'
-         }],
-       checkStatus:[
-         {
-           value:'1',
-           label:'存在'
-         },
-         {
-           value:'2',
-           label:'不在'
-         }
-       ],
-       backStatus:[
-         {
-           value:'1',
-           label:'退库中'
-         },
-         {
-           value:'2',
-           label:'已确认'
-         },
-       ],
-       borrowStatus:[
-         {
-           value:'1',
-           label:'借出中'
-         },
-         {
-           value:'2',
-           label:'已借出'
-         },
-         {
-           value:'3',
-           label:'归还中'
-         },
-         {
-           value:'4',
-           label:'已归还'
-         }
-       ],
-       allotStatus:[
-         {
-           value:'1',
-           label:'调拨中'
-         },
-         {
-           value:'2',
-           label:'已接收'
-         }
-       ],
-       officeType:[
-         {"value": 1, "label": "自有"},
-         {"value": 2, "label": "租赁"}
-       ],
-       payType:[
-         {"value": 1, "label": "预付"},
-         {"value": 2, "label": "银行托收"},
-         {"value": 3, "label": "公对公转账"}
-       ],
-       payWay:[{"value": 1, "label": "年付"},
-         {"value": 2, "label": "季付"},
-         {"value": 3, "label": "月付"}
-       ],
-       invoiceTypeList: [
-         {"value": 1, "label": "普通发票"},
-         {"value": 2, "label": "增值税专用发票"}
-       ],
-       genderList:[
-         {
-          "value": 1,
-          "label": "男"
-         },
-         {
-           "value": 2,
-           "label": "女"
-         }
-       ],
-       jobStatusList:[
-         {
-           "value": 1,
-           "label": "在职"
-         },
-         {
-           "value": 2,
-           "label": "离职"
-         }
-       ],
-       activeStatusList:[
-         {
-           "value": 1,
-           "label": "激活"
-         },
-         {
-           "value": 2,
-           "label": "未激活"
-         }
-       ]
-     }
+     dictionary:Dictionary
 
    },
+   //权限列表
+   permission:Permission,
    // 录入时间
    formatDate:()=>{
       let date = new Date(),
@@ -217,7 +92,13 @@ let Store = {
    //重置清空数据
    resetForm(data){
      for(var i in data){
-       data[i] = '';
+       if(typeof data[i] == 'string'){
+         data[i] = '';
+       }else if(typeof data[i] == 'number'){
+         data[i] = 0;
+       }else if(data[i] instanceof Array){
+         data[i] = [];
+       }
      }
      return data;
    },
