@@ -16,7 +16,7 @@
     "element-ui": "^2.9.1",
     "es6-promise": "^4.2.6",
     "file-saver": "^2.0.2",
-    "gsap": "^2.1.2",
+    "gsap": "^3.6.0",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
     "vue": "^2.5.2",
